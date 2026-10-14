@@ -202,7 +202,9 @@ while roll_start + k * BEAT / 4 < drop - BEAT / 4:
     tt = roll_start + k * BEAT / 4
     put(music, clap(), tt, 0.12 + 0.3 * (tt - roll_start) / (drop - roll_start))
     k += 1
-put(sfx, riser(drop - roll_start - 0.08), roll_start, 0.35)
+put(sfx, riser(drop - sec(135)), sec(135), 0.75)                     # 4.5 s -> drop
+# reverse swell in the last beat before the drop
+put(sfx, rev_cymbal(BEAT / 2), drop - BEAT / 2, 0.6)
 
 # Drop (6-13 s): full groove
 t = drop
@@ -222,7 +224,8 @@ while t < impact - 1e-6:
     put(music, bass_note(root, BEAT / 4), t + 3 * BEAT / 4, 0.35)
     put(music, stab(chord), t + BEAT / 2, 0.26, -0.25 if beat_idx % 2 else 0.25)
     t += BEAT
-put(music, boom(), drop, 0.6)
+put(music, boom(), drop, 1.0)
+put(music, clap(), drop, 0.8)
 put(sfx, whoosh(0.5, 1200, 9000, 0.25), drop, 0.3)                   # line zips through
 for fr in (T["gridSnap"], T["pipeSnap"]):
     put(sfx, snap(), sec(fr), 0.5)
@@ -251,6 +254,16 @@ while t < DUR - 0.6:
     put(music, hat(), t + BEAT / 2, 0.1)
     t += BEAT
 
+# dynamics: duck the build and the hold so the drop and the impact land harder,
+# and drop the groove out for the half beat before the drop
+dyn = np.ones(N)
+tt = np.arange(N) / SR
+dyn[(tt >= s2) & (tt < drop)] = 0.68
+dyn[(tt >= drop - BEAT / 2) & (tt < drop)] = 0.08
+dyn[(tt >= sec(250)) & (tt < sec(300))] = 0.8
+music[:, 0] *= dyn
+music[:, 1] *= dyn
+
 # sidechain pump on the music bus from every kick
 pump = np.ones(N)
 for kt in kicks:
@@ -262,7 +275,8 @@ music[:, 0] *= pump
 music[:, 1] *= pump
 # kicks themselves should not be ducked: re-add a dry kick layer
 for kt in kicks:
-    put(music, kick(big=abs(kt - drop) < 1e-6 or abs(kt - impact) < 1e-6), kt, 0.45)
+    g = 0.45 * (0.7 if s2 <= kt < drop else 1.0)
+    put(music, kick(big=abs(kt - drop) < 1e-6 or abs(kt - impact) < 1e-6), kt, g)
 
 mix = music + sfx * 1.1
 fade = np.ones(N)

@@ -10,7 +10,7 @@ import {C, Dot, SANS, VantaMark, W, ease, lerp, mix, spr} from './ui';
 const APP = {x: 50, y: 250, w: 980, h: 1420};
 const TOGGLE = {x: APP.x + APP.w - 40 - 150, y: APP.y + 46, w: 150, h: 76};
 
-const Panel: React.FC<{f: number; start: number; x: number; y: number; w: number; h: number; children: React.ReactNode; from?: 'up' | 'left' | 'right'}> = ({
+const Panel: React.FC<{fadeForPush: number; f: number; start: number; x: number; y: number; w: number; h: number; children: React.ReactNode; from?: 'up' | 'left' | 'right'}> = ({
   f,
   start,
   x,
@@ -19,6 +19,7 @@ const Panel: React.FC<{f: number; start: number; x: number; y: number; w: number
   h,
   children,
   from = 'up',
+  fadeForPush,
 }) => {
   const p = spr(f, start, 230, 21);
   const dx = from === 'left' ? -120 : from === 'right' ? 120 : 0;
@@ -35,7 +36,7 @@ const Panel: React.FC<{f: number; start: number; x: number; y: number; w: number
         backgroundColor: C.panel,
         border: `2px solid ${C.line}`,
         overflow: 'hidden',
-        opacity: Math.min(1, p * 1.5),
+        opacity: Math.min(1, p * 1.5) * (1 - fadeForPush),
         transform: `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px)`,
       }}
     >
@@ -49,15 +50,15 @@ const Kicker: React.FC<{children: React.ReactNode}> = ({children}) => (
 );
 
 export const Interface: React.FC<{f: number}> = ({f}) => {
-  const open = lerp(f, 318, 332, 0, 1, ease.out);
+  const open = lerp(f, 318, 328, 0, 1, ease.out);
   const ax = mix(W / 2 - 40, APP.x, open);
   const ay = mix(960 - 40, APP.y, open);
   const aw = mix(80, APP.w, open);
   const ah = mix(80, APP.h, open);
   const [p1, p2, p3, p4] = T.panels;
   // camera: push in toward the switch
-  const push = lerp(f, 362, 378, 0, 1, ease.inOut);
-  const cs = mix(1, 1.9, push);
+  const push = lerp(f, 358, 376, 0, 1, ease.inOut);
+  const cs = mix(1, 1.9, push) * mix(1, 1.8, lerp(f, 370, 390, 0, 1, ease.in));
   const fx = TOGGLE.x + TOGGLE.w - 38;
   const fy = TOGGLE.y + TOGGLE.h / 2;
   const tasks = Math.round(lerp(f, p2, p2 + 30, 0, 12480, ease.out));
@@ -94,14 +95,14 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
             <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 18, letterSpacing: '0.18em', color: C.grey, marginTop: 10, textAlign: 'center'}}>AUTOPILOT</div>
           </div>
           {/* stats */}
-          <Panel f={f} start={p2} x={40} y={200} w={430} h={260} from="left">
+          <Panel fadeForPush={lerp(f, 356, 366, 0, 1, ease.inOut)} f={f} start={p2} x={40} y={200} w={430} h={260} from="left">
             <div style={{padding: 34}}>
               <Kicker>TASKS AUTOMATED</Kicker>
               <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 78, color: C.white, marginTop: 18, fontVariantNumeric: 'tabular-nums'}}>{tasks.toLocaleString('en-US')}</div>
               <div style={{width: 120, height: 8, borderRadius: 4, backgroundColor: C.purple, marginTop: 16}} />
             </div>
           </Panel>
-          <Panel f={f} start={p2 + 3} x={510} y={200} w={430} h={260} from="right">
+          <Panel fadeForPush={lerp(f, 356, 366, 0, 1, ease.inOut)} f={f} start={p2 + 3} x={510} y={200} w={430} h={260} from="right">
             <div style={{padding: 34}}>
               <Kicker>HOURS SAVED</Kicker>
               <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 78, color: C.white, marginTop: 18, fontVariantNumeric: 'tabular-nums'}}>
@@ -112,7 +113,7 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
             </div>
           </Panel>
           {/* the workflow, now one tidy list */}
-          <Panel f={f} start={p3} x={40} y={500} w={900} h={560}>
+          <Panel fadeForPush={lerp(f, 356, 366, 0, 1, ease.inOut)} f={f} start={p3} x={40} y={500} w={900} h={560}>
             <div style={{padding: '34px 34px 0'}}>
               <Kicker>WORKFLOW · INVOICES</Kicker>
             </div>
@@ -129,7 +130,7 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
             })}
           </Panel>
           {/* activity */}
-          <Panel f={f} start={p4} x={40} y={1100} w={900} h={280}>
+          <Panel fadeForPush={lerp(f, 356, 366, 0, 1, ease.inOut)} f={f} start={p4} x={40} y={1100} w={900} h={280}>
             <div style={{padding: '30px 34px 0'}}>
               <Kicker>THIS WEEK</Kicker>
             </div>

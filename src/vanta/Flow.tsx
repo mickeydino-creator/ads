@@ -46,15 +46,15 @@ export const NODE = {w: 700, h: 150, x: (W - 700) / 2, y0: 560, gap: 210};
 export const nodeRect = (i: number): Rect => ({x: NODE.x, y: NODE.y0 + i * NODE.gap, w: NODE.w, h: NODE.h, r: 0});
 
 const ELS: El[] = [
-  {kind: 'mail', title: 'Inbox', scatter: {x: 60, y: 340, w: 540, h: 420, r: -5}, from: {x: -500, y: 200, r: -30}, node: 0, primary: true},
-  {kind: 'notif', title: 'New invoice received', sub: 'billing@ · just now', accent: true, scatter: {x: 470, y: 290, w: 560, h: 120, r: 4}, from: {x: 1600, y: 100, r: 20}, node: 0, primary: false},
-  {kind: 'chart', title: 'Weekly report', scatter: {x: 500, y: 600, w: 520, h: 400, r: 6}, from: {x: 1700, y: 700, r: 25}, node: 1, primary: true},
-  {kind: 'table', title: 'Invoices', scatter: {x: 70, y: 860, w: 580, h: 400, r: 3}, from: {x: -600, y: 1100, r: -20}, node: 2, primary: true},
-  {kind: 'notif', title: 'CRM not synced', sub: '14 records behind', scatter: {x: 470, y: 1070, w: 540, h: 120, r: -4}, from: {x: 1600, y: 1200, r: 18}, node: 2, primary: false},
-  {kind: 'notif', title: '3 approvals waiting', sub: 'Finance · 2h overdue', accent: true, scatter: {x: 40, y: 1300, w: 560, h: 120, r: 5}, from: {x: -600, y: 1500, r: -25}, node: 3, primary: true},
-  {kind: 'chat', title: 'Team chat', scatter: {x: 520, y: 1240, w: 500, h: 380, r: -6}, from: {x: 1500, y: 2200, r: 30}, node: 4, primary: true},
-  {kind: 'notif', title: '12 new mentions', sub: '#ops · #finance', scatter: {x: 90, y: 1500, w: 520, h: 120, r: -3}, from: {x: 300, y: 2300, r: -20}, node: 4, primary: false},
-  {kind: 'notif', title: 'Reminder: send report', sub: 'Today 17:00', scatter: {x: 480, y: 1680, w: 540, h: 120, r: 3}, from: {x: 1500, y: 2100, r: 15}, node: 3, primary: false},
+  {kind: 'mail', title: 'Inbox', scatter: {x: 60, y: 442, w: 540, h: 420, r: -5}, from: {x: -500, y: 200, r: -30}, node: 0, primary: true},
+  {kind: 'notif', title: 'New invoice received', sub: 'billing@ · just now', accent: true, scatter: {x: 470, y: 400, w: 560, h: 120, r: 4}, from: {x: 1600, y: 100, r: 20}, node: 0, primary: false},
+  {kind: 'chart', title: 'Weekly report', scatter: {x: 500, y: 664, w: 520, h: 400, r: 6}, from: {x: 1700, y: 700, r: 25}, node: 1, primary: true},
+  {kind: 'table', title: 'Invoices', scatter: {x: 70, y: 884, w: 580, h: 400, r: 3}, from: {x: -600, y: 1100, r: -20}, node: 2, primary: true},
+  {kind: 'notif', title: 'CRM not synced', sub: '14 records behind', scatter: {x: 470, y: 1063, w: 540, h: 120, r: -4}, from: {x: 1600, y: 1200, r: 18}, node: 2, primary: false},
+  {kind: 'notif', title: '3 approvals waiting', sub: 'Finance · 2h overdue', accent: true, scatter: {x: 40, y: 1258, w: 560, h: 120, r: 5}, from: {x: -600, y: 1500, r: -25}, node: 3, primary: true},
+  {kind: 'chat', title: 'Team chat', scatter: {x: 520, y: 1208, w: 500, h: 380, r: -6}, from: {x: 1500, y: 2200, r: 30}, node: 4, primary: true},
+  {kind: 'notif', title: '12 new mentions', sub: '#ops · #finance', scatter: {x: 90, y: 1428, w: 520, h: 120, r: -3}, from: {x: 300, y: 2300, r: -20}, node: 4, primary: false},
+  {kind: 'notif', title: 'Reminder: send report', sub: 'Today 17:00', scatter: {x: 480, y: 1582, w: 540, h: 120, r: 3}, from: {x: 1500, y: 2100, r: 15}, node: 3, primary: false},
 ];
 
 // 3x3 alignment grid used on the first snap
@@ -111,7 +111,18 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
   const white = f >= T.whiteCut && f < T.whiteCut + 15;
   const states = ELS.map((el, i) => elementState(el, i, f));
   // camera: slow push while the pile builds, recentre after the snap
-  const cam = lerp(f, 90, 180, 1.0, 1.06, ease.inOut) * (1 - lerp(f, 180, 200, 0, 0.06, ease.out));
+  let cam = lerp(f, 90, 150, 1.0, 1.03, ease.inOut) + lerp(f, 150, 179, 0, 0.07, ease.in) - lerp(f, 180, 196, 0, 0.1, ease.out);
+  cam += lerp(f, 240, 300, 0, 0.06, ease.inOut); // slow push across the finished flow
+  // a small kick on every beat after the drop
+  if (f >= T.drop) {
+    const sinceBeat = (f - T.drop) % T.beat;
+    cam += 0.012 * Math.exp(-sinceBeat / 3);
+  }
+  const driftX = Math.sin(f / 23) * 8;
+  const driftY = Math.cos(f / 29) * 6;
+  // pre-drop tension: 16th-note jitter growing into the drop
+  const jitterAmp = lerp(f, 156, 179, 0, 7, ease.in) * (f < T.drop ? 1 : 0);
+  const jit = (i: number) => (Math.floor(f / 2) % 2 ? 1 : -1) * jitterAmp * (i % 2 ? 1 : -0.7);
 
   // the purple line runs through the elements in workflow order, from live positions
   const order = ELS.map((el, i) => ({i, node: el.node, primary: el.primary})).sort((a, b) => a.node - b.node || Number(b.primary) - Number(a.primary));
@@ -125,22 +136,45 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
   const count = Math.round(f < T.drop ? lerp(f, 92, 172, 0, 47, ease.inOut) : lerp(f, T.drop, T.pipeSnap, 47, 0, ease.out));
   const counterOut = lerp(f, T.pipeSnap, T.pipeSnap + 12, 0, 1, ease.inOut);
 
-  // pulses travel the finished pipeline
-  const pulses = [262, 277, 292].map((s) => lerp(f, s, s + 22, 0, 1, ease.inOut));
+  // a data token hops node to node on the 8th notes through the hold
+  const HOP = 7.5;
+  const tokenStart = 247;
+  const hop = (f - tokenStart) / HOP;
+  const hopIdx = Math.floor(hop);
+  const hopFrac = hop - hopIdx;
+  const tokenNode = (k: number) => ((k % 5) + 5) % 5;
+  const tokenFrom = tokenNode(hopIdx);
+  const tokenTo = tokenNode(hopIdx + 1);
+  const hopEase = ease.inOut(Math.min(1, hopFrac * 1.6));
+  const nodeCy = (k: number) => NODE.y0 + k * NODE.gap + NODE.h / 2;
+  const tokenY = tokenTo === 0 ? nodeCy(4) + hopEase * 120 : mix(nodeCy(tokenFrom), nodeCy(tokenTo), hopEase);
+  const tokenOn = f >= tokenStart && f < 300;
+  // node pop when the token lands
+  const arrive = (k: number) => {
+    if (!tokenOn) return 0;
+    let best = 0;
+    for (let j = hopIdx; j >= hopIdx - 1; j--) {
+      if (tokenNode(j + 1) !== k) continue;
+      const landed = tokenStart + (j + 1) * HOP - HOP * 0.4;
+      if (f >= landed) best = Math.max(best, Math.exp(-(f - landed) / 4));
+    }
+    return best;
+  };
+  const pulses: number[] = [];
 
   const bg = white ? C.paper : C.bg;
   return (
     <AbsoluteFill style={{backgroundColor: bg, overflow: 'hidden'}}>
-      <div style={{position: 'absolute', left: 64, top: 140, opacity: 1 - counterOut, transform: `translateY(${-counterOut * 40}px)`}}>
+      <div style={{position: 'absolute', left: 64, top: 250, opacity: 1 - counterOut, transform: `translateY(${-counterOut * 40}px)`}}>
         <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 100, lineHeight: 1, color: f < T.drop ? C.white : C.purple, fontVariantNumeric: 'tabular-nums'}}>{count}</div>
         <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 24, letterSpacing: '0.2em', color: C.grey, marginTop: 6}}>TASKS PENDING</div>
       </div>
-      <div style={{position: 'absolute', left: 64, top: 200, opacity: lerp(f, T.pipeSnap + 8, T.pipeSnap + 18, 0, 1), transform: `translateY(${lerp(f, T.pipeSnap + 8, T.pipeSnap + 20, 30, 0)}px)`, fontFamily: SANS, fontWeight: 800, fontSize: 64, lineHeight: 1.05, color: white ? C.ink : C.white}}>
+      <div style={{position: 'absolute', left: 64, top: 290, opacity: lerp(f, T.pipeSnap + 8, T.pipeSnap + 18, 0, 1), transform: `translateY(${lerp(f, T.pipeSnap + 8, T.pipeSnap + 20, 30, 0)}px)`, fontFamily: SANS, fontWeight: 800, fontSize: 64, lineHeight: 1.05, color: white ? C.ink : C.white}}>
         One flow.
         <br />
         <span style={{color: C.purple}}>Zero busywork.</span>
       </div>
-      <AbsoluteFill style={{transform: `scale(${cam})`, transformOrigin: '50% 50%'}}>
+      <AbsoluteFill style={{transform: `translate(${driftX}px, ${driftY}px) scale(${cam})`, transformOrigin: '50% 50%'}}>
         <svg width={W} height={H} style={{position: 'absolute', left: 0, top: 0}}>
           <path
             d={d}
@@ -152,11 +186,9 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
             strokeDasharray={len}
             strokeDashoffset={len * (1 - draw)}
           />
-          {pulses.map((p, k) => {
-            if (p <= 0 || p >= 1) return null;
-            const y = mix(NODE.y0 + NODE.h / 2, NODE.y0 + 4 * NODE.gap + NODE.h / 2, p);
-            return <circle key={k} cx={W / 2} cy={y} r={16} fill={white ? C.ink : C.white} stroke={C.purple} strokeWidth={6} />;
-          })}
+          {pulses.length === 0 && tokenOn && tokenTo !== 0 ? (
+            <circle cx={W / 2} cy={tokenY} r={22} fill={C.purple} stroke={white ? C.paper : C.bg} strokeWidth={8} />
+          ) : null}
         </svg>
         {ELS.map((el, i) => {
           const s = states[i];
@@ -171,19 +203,19 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
               key={i}
               style={{
                 position: 'absolute',
-                left: x,
-                top: y,
+                left: x + jit(i),
+                top: y - jit(i + 1),
                 width: w,
                 height: h,
-                transform: `rotate(${r}deg) scale(${mix(0.6, 1, s.pIn)})`,
+                transform: `rotate(${r}deg) scale(${mix(0.6, 1, s.pIn) * (1 + arrive(el.node) * 0.05)})`,
                 borderRadius: radius,
                 backgroundColor: C.white,
-                outline: white ? `3px solid ${C.ink}` : undefined,
+                outline: arrive(el.node) > 0.2 && el.primary ? `6px solid ${C.purple}` : white ? `3px solid ${C.ink}` : undefined,
                 overflow: 'hidden',
                 opacity: fadeMerged,
               }}
             >
-              <div style={{position: 'absolute', inset: 0, opacity: 1 - lerp(toNode, 0.1, 0.5, 0, 1, ease.inOut)}}>
+              <div style={{position: 'absolute', inset: 0, opacity: 1 - lerp(toNode, 0.25, 0.55, 0, 1, ease.inOut)}}>
                 <div
                   style={{
                     width: el.scatter.w,
@@ -198,7 +230,7 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
                   <Content el={el} f={f} />
                 </div>
               </div>
-              <div style={{position: 'absolute', inset: 0, opacity: lerp(toNode, 0.45, 0.85, 0, 1, ease.inOut)}}>
+              <div style={{position: 'absolute', inset: 0, opacity: lerp(toNode, 0.3, 0.6, 0, 1, ease.inOut)}}>
                 <NodeBody label={node.label} kind={node.kind} ai={node.ai} inv={white} />
               </div>
               {/* step number badge on the finished nodes */}

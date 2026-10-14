@@ -1,0 +1,32 @@
+{
+  "hard_failures": [
+    "8.05-10.0s: about 2s with almost no motion (mean frame difference 0.0-0.3 apart from two white flash cuts). The pipeline layout only ticks small checkmarks, so the 6-10s system beat ends as a static slide. This breaks 'continuous deliberate animation / no static slideshow'.",
+    "3.1-7.6s: the key narrative counter ('47' to '0' TASKS PENDING) sits at y~150-230px, straddling the ~200px Reels top unsafe zone, so the numeral is partly covered by the Reels header UI."
+  ],
+  "scores": {
+    "concept_and_art_direction": 8,
+    "kinetic_typography": 8,
+    "ui_choreography": 7,
+    "transitions_continuity": 8,
+    "easing_and_timing": 7,
+    "sound_sync": 8,
+    "palette_restraint": 9,
+    "overall_polish": 7
+  },
+  "average": 7.75,
+  "verdict": "revise",
+  "issues": [
+    "8.05-10.0s: fill the pipeline hold. Run a purple 'data token' along the connector line node to node on each beat (8.0, 8.5, 9.0, 9.5), add a slow 2D camera push and drift (about 3-5% scale) across the whole stack, and stagger each node's check with a scale and offset pop rather than an icon swap. Target mean frame difference of 2 or more every frame.",
+    "3.1-7.6s: move the TASKS PENDING counter down to y>=260px (numeral top edge) or place it on the left side around y 300-420. The 'One flow. Zero busywork.' header at about 7.8-10s (top ~220px) is also tight; push it to about 280px.",
+    "0-1.9s: the 'MONDAY 09:xx' timestamp at y~240 is about 20px tall and unreadable on a phone. Make it 34px+ or remove it.",
+    "7.0-7.5s: 0.5s fully frozen grid after the 6.5s snap (diff 0.0). Keep the cards breathing with a slight settle overshoot, line draw-on between cells, or a camera drift into the 7.5s snap.",
+    "7.5-7.6s (frames ~226-229): the grid-to-pipeline morph passes through blank white blobs with faded content that read as a rendering glitch. Keep the card labels visible through the morph, or cross-dissolve labels within 2-3 frames instead of blanking.",
+    "5.2-6.0s: motion falls to almost nothing (diff 0.5-0.9) right before the drop. Add pre-drop tension, such as card jitter or shake on 16ths, a counter tick-up, or a slow push-in timed to the riser, so 6.0s lands as a release.",
+    "6.0s drop (audio): only +3.6 dB RMS over the 3-6s bed, and spectral-flux onset (7.1) is no stronger than ordinary beats (7.0s = 7.3). 3.0-6.0s is flat at -10 dB RMS with no audible riser build. Add a real riser or filter sweep from 4.5s, a 1-beat dropout or reverse swell at 5.75s, and a heavier sub and clap hit at 6.0.",
+    "Audio overall: mean -9.8 dB with peaks at -1.5 dBFS per channel is very dense and leaves no dynamic arc. Leave about 2-3 dB of headroom in 3-6s and 8-10s so the drop and the 13.0s impact contrast more. 13.0s impact (flux 9.7, +3.3 dB) and the 6.5/7.5s snaps (flux 14.0/13.4) are correctly placed.",
+    "12.55-12.75s: the camera holds still (diff 0.0) on a cropped frame showing 'RS SAVED' / '26h', which looks like a misframed crop. Keep the push moving into the toggle and frame it so no stat label is cut mid-word, or let the label exit fully.",
+    "13.6-15.0s: the end card is fully static for 1.4s. Add a slow 2-3% scale drift on the lockup, or a late underline draw and tagline letter-spacing settle, so motion continues to the last frame.",
+    "11.0-11.3s: app shell sits with an empty interior for ~0.3s before panels fill. Start the first panel (TASKS AUTOMATED) on the 11.0 beat, not after.",
+    "13.1-13.3s: the 'VANTA' letters rise with mismatched baselines (V, A, N at different heights). The stagger reads as broken type. Use a mask wipe per letter on a shared baseline instead of offset y-rise."
+  ]
+}

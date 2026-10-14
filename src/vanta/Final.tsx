@@ -7,10 +7,11 @@ import {C, SANS, VantaMark, W, ease, lerp, mix, spr} from './ui';
 // two flat rings echo the hit, the wordmark and tagline cut in on the beat.
 
 const MaskUp: React.FC<{f: number; start: number; children: React.ReactNode; h: number; dur?: number}> = ({f, start, children, h, dur = 10}) => {
+  // reveal by a bottom-up clip on a shared baseline, with only a short lift
   const p = lerp(f, start, start + dur, 0, 1, ease.out);
   return (
-    <span style={{display: 'inline-block', overflow: 'hidden', height: h, verticalAlign: 'top'}}>
-      <span style={{display: 'inline-block', transform: `translateY(${(1 - p) * 110}%)`}}>{children}</span>
+    <span style={{display: 'inline-block', height: h, verticalAlign: 'top', clipPath: `inset(${(1 - p) * 100}% 0 0 0)`, transform: `translateY(${(1 - p) * 18}px)`}}>
+      {children}
     </span>
   );
 };
@@ -18,7 +19,7 @@ const MaskUp: React.FC<{f: number; start: number; children: React.ReactNode; h: 
 export const Final: React.FC<{f: number}> = ({f}) => {
   const s = T.impact;
   const mark = spr(f, s, 260, 14);
-  const hold = lerp(f, 420, 450, 1, 1.015, ease.inOut);
+  const hold = lerp(f, 396, 450, 1, 1.04, ease.inOut);
   const ringA = lerp(f, s, s + 22, 0, 1, ease.out);
   const ringB = lerp(f, s + 5, s + 30, 0, 1, ease.out);
   const word = 'VANTA';
@@ -55,7 +56,7 @@ export const Final: React.FC<{f: number}> = ({f}) => {
           </MaskUp>
         </div>
         <div style={{position: 'absolute', left: W / 2 - 200, top: 1115, width: 400, height: 8, borderRadius: 4, backgroundColor: C.purple, transform: `scaleX(${lerp(f, T.tagline - 4, T.tagline + 10, 0, 1, ease.inOut)})`}} />
-        <div style={{position: 'absolute', top: 1170, width: W, textAlign: 'center', fontFamily: SANS, fontWeight: 800, fontSize: 50, lineHeight: 1.25, letterSpacing: '0.12em', color: C.white}}>
+        <div style={{position: 'absolute', top: 1170, width: W, textAlign: 'center', fontFamily: SANS, fontWeight: 800, fontSize: 50, lineHeight: 1.25, letterSpacing: `${lerp(f, T.tagline, 445, 0.2, 0.1, ease.out)}em`, color: C.white}}>
           <MaskUp f={f} start={T.tagline} h={66}>
             WORK SMARTER.
           </MaskUp>

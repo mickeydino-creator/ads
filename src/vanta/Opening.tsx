@@ -204,7 +204,7 @@ export const Opening: React.FC<{f: number}> = ({f}) => {
         />
       ) : null}
       {/* frame counter detail, top-left */}
-      <div style={{position: 'absolute', left: 64, top: 230, fontFamily: SANS, fontWeight: 700, fontSize: 24, letterSpacing: '0.2em', color: C.grey}}>
+      <div style={{position: 'absolute', left: 64, top: 250, fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.16em', color: C.grey}}>
         {`MONDAY 09:${String(Math.min(59, Math.floor(f * 0.8))).padStart(2, '0')}`}
       </div>
     </AbsoluteFill>
