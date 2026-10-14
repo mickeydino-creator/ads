@@ -43,11 +43,17 @@ export const Finale: React.FC<{f: number}> = ({f}) => {
       </AbsoluteFill>
       <AbsoluteFill style={{transform: `scale(${mix(1.06, 1, lock) * (1 + kick * 0.012)})`}}>
         {'FORM'.split('').map((ch, i) => (
-          <div key={i} style={{position: 'absolute', left: letterCx(i) - LETTER_BOX / 2, top: WORD_Y, width: LETTER_BOX, textAlign: 'center', fontFamily: DISPLAY, fontSize: 330, lineHeight: 1, color: K.white}}>
+          <div key={i} style={{position: 'absolute', left: W / 2 + (i - 1.5) * LETTER_BOX * mix(1.08, 1, lock) - LETTER_BOX / 2, top: WORD_Y, width: LETTER_BOX, textAlign: 'center', fontFamily: DISPLAY, fontSize: 330, lineHeight: 1, color: K.white}}>
             {ch}
           </div>
         ))}
         <StudioReveal f={f} start={0} color={K.orange} done />
+        {/* lock flash: two hairlines snap shut around the wordmark on the downbeat */}
+        {f < fin.lock + 8
+          ? [-1, 1].map((d) => (
+              <div key={d} style={{position: 'absolute', left: 0, width: W, top: WORD_Y + 175 + d * mix(260, 200, lerp(f, fin.lock, fin.lock + 6, 0, 1)), height: 4, backgroundColor: K.orange, opacity: 1 - lerp(f, fin.lock + 3, fin.lock + 8, 0, 1)}} />
+            ))
+          : null}
         {/* travelling accent -> rule */}
         <div style={{position: 'absolute', left: x0, top: RULE_Y, width: Math.max(0, x1 - x0), height: 14, backgroundColor: K.orange}} />
         <Words f={f} start={fin.line1} text="WE DON'T JUST BUILD WEBSITES." h={66} style={{position: 'absolute', top: RULE_Y + 46, width: W, fontFamily: UI, fontWeight: 700, fontSize: 52, letterSpacing: '0.04em', color: K.white}} />

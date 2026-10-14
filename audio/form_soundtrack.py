@@ -174,7 +174,8 @@ kicks.append(sec(fn["lock"]))
 put(music, boom(), sec(fn["lock"]), 0.9)
 put(music, stab([440.0, 523.3, 659.3, 880.0], 0.6), sec(fn["lock"]), 0.4)
 groove(sec(fn["lock"]) + BEAT, sec(fn["button"]), gain=0.85)
-put(sfx, snap(), sec(fn["lock"]), 0.5)
+put(sfx, snap(), sec(fn["lock"]), 1.1)
+put(sfx, clap(), sec(fn["lock"]), 0.7)
 put(sfx, whoosh(0.3, 2000, 12000, 0.15), sec(fn["lock"]), 0.4, 0.4)
 put(sfx, whoosh(0.55, 1200, 10000, 0.5), sec(fn["accent"]), 0.35, -0.5)
 put(sfx, snap(), sec(fn["line1"]), 0.3)
@@ -202,8 +203,8 @@ sfx[:, 1] = np.concatenate([np.zeros(d), sfx[:-d, 1]])
 mix = music + sfx
 # the last accent rings out from 14.5 s and settles to silence on the 15.0 s beat
 tt = np.arange(N) / SR
-ring = np.clip((tt - sec(fn["button"]) - 0.1) / (DUR - sec(fn["button"]) - 0.1), 0, 1)
-mix *= (np.cos(ring * np.pi / 2) ** 1.5)[:, None]
+ring = np.clip((tt - sec(fn["button"])) / (DUR - sec(fn["button"])), 0, 1)
+mix *= (np.cos(ring * np.pi / 2) ** 2)[:, None]
 mix = np.tanh(mix * 0.7) / np.tanh(0.7)
 mix /= np.max(np.abs(mix)) / 10 ** (-3.0 / 20)
 

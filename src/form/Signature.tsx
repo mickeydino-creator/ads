@@ -95,7 +95,7 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
     <AbsoluteFill>
       <AbsoluteFill style={{backgroundColor: K.white}} />
       <AbsoluteFill style={{opacity: calm}}>
-        <Backdrop f={f} start={T.transform.wipe} base={K.white} ring={{x: 150, y: 1650, r: 140}} />
+        <Backdrop f={f} start={T.transform.wipe} base={K.white} ring={{x: 150, y: 1650, r: 140}} zoom={lerp(f, s.converge, 318, 1, 0.82, ez.in)} />
       </AbsoluteFill>
       <AbsoluteFill style={{backgroundColor: K.white, opacity: 1 - calm}} />
 
@@ -143,7 +143,7 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
             const fromX = W / 2;
             const x = mix(fromX, letterCx(i), inP);
             const start = s.form + i * 3;
-            const open = lerp(f, start, start + 10, 0, 1, ez.out);
+            const open = lerp(f, start + 3, start + 12, 0, 1, ez.out);
             const breathe = f < s.form ? 1 + Math.sin((f - s.shapes) / 4) * 0.04 : 1;
             const size = 170;
             return (
@@ -153,12 +153,12 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
                     position: 'absolute',
                     left: x - size / 2,
                     top: SHAPE_Y - size / 2,
-                    transform: `scale(${inP * breathe * (1 - lerp(f, start + 1, start + 7, 0, 1, ez.in))}) rotate(${(1 - inP) * 120 + open * 90}deg)`,
+                    transform: `scale(${inP * breathe * (1 - lerp(f, start, start + 5, 0, 1, ez.inOut))}) rotate(${(1 - inP) * 120 + Math.max(0, Math.min(f, s.form) - s.shapes) * 1.5}deg)`,
                   }}
                 >
                   <Shape kind={sh.kind} color={sh.color} size={size} />
                 </div>
-                {f >= start ? (
+                {f >= start + 3 ? (
                   <div
                     style={{
                       position: 'absolute',

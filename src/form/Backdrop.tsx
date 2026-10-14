@@ -15,7 +15,8 @@ export const Backdrop: React.FC<{
   hatch?: {x: number; y: number; w: number; h: number};
   chips?: boolean;
   gridStep?: number;
-}> = ({f, start, base, dark, ring, hatch, chips = true, gridStep = 90}) => {
+  zoom?: number;
+}> = ({f, start, base, dark, ring, hatch, chips = true, gridStep = 90, zoom = 1}) => {
   const ink = dark ? K.lineDark : K.line;
   const draw = lerp(f, start, start + 12, 0, 1, ez.out);
   const off = (f * 1.6) % gridStep;
@@ -24,6 +25,7 @@ export const Backdrop: React.FC<{
   const rows = Math.ceil(H / gridStep) + 2;
   return (
     <AbsoluteFill style={{backgroundColor: base, overflow: 'hidden'}}>
+      <AbsoluteFill style={{transform: `scale(${zoom})`}}>
       {/* grid */}
       {new Array(cols).fill(0).map((_, i) => (
         <div
@@ -81,7 +83,7 @@ export const Backdrop: React.FC<{
             stroke={K.orange}
             strokeWidth={4}
             strokeDasharray="22 16"
-            transform={`rotate(${f * 1.2} ${ring.x} ${ring.y})`}
+            transform={`rotate(${f * 0.6 + 30 * Math.floor(f / 15) + 30 * ez.out(Math.min(1, (f % 15) / 5))} ${ring.x} ${ring.y})`}
             opacity={draw}
           />
         </svg>
@@ -110,6 +112,7 @@ export const Backdrop: React.FC<{
             );
           })
         : null}
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

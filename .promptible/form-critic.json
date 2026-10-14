@@ -1,33 +1,26 @@
 {
-  "hard_failures": [
-    "11.63-11.93s (frames 349-358): the shape-to-letter morph for FORM shows off-palette colors. The O and M fill teal-blue (~#055274), which looks like a difference/invert blend artifact, over salmon semi-transparent orange discs. It happens during the hero brand reveal and breaks the orange/black/warm-white/gray palette."
-  ],
+  "hard_failures": [],
   "scores": {
-    "concept_and_art_direction": 8,
-    "typography": 7,
+    "concept_and_art_direction": 9,
+    "typography": 8,
     "animation_density_and_choreography": 8,
-    "ui_motion": 8,
-    "transitions": 7,
-    "background_system": 7,
+    "ui_motion": 9,
+    "transitions": 8,
+    "background_system": 8,
     "sound_sync": 8,
-    "overall_polish": 7
+    "overall_polish": 8
   },
-  "average": 7.5,
+  "average": 8.25,
   "verdict": "revise",
   "issues": [
-    "11.6-11.95s: rebuild the shape->letter morph with opaque, in-palette fills. Remove the blend mode that produces the teal O/M and the salmon half-opacity discs, and replace the opacity cross-dissolve (gray translucent triangle over R at 11.73-11.8s, gray box behind F at 11.53-11.6s) with a mask or path morph, e.g. the square clip-wipes into F and the circle scales/masks into O. As it stands it reads as a muddy crossfade, which the brief bans.",
-    "10.95-11.2s (frames 328-336): the 'calm' moment is a whole-frame dim to flat gray (#c8c4bc) and back. It reads as a basic fade/flash. Make the calm moment with motion instead, e.g. shapes settle with an overshoot while the grid stops, or a single orange hairline draws, and keep the background warm white or use a hard-edged gray panel wipe.",
-    "9.97-10.0s (frame 299->300): the browser chrome (traffic lights, URL bar, '840px' label) and the orange period of 'EVERY SCREEN.' disappear in one frame, a visible pop. Animate the chrome off (slide or mask up) on the beat, or keep it until the converge.",
-    "14.3-15.0s end frame: the closing period of 'EXPERIENCES.' is a detached cream square sitting ~20px after the word with a lower baseline, so it reads as a stray glyph or a typo ('EXPERIENCES .'). Kern it tight to the S and make it orange, or have it land as a deliberate oversized orange full-stop that snaps flush on 14.5s. Also centre the 'WE BUILD / EXPERIENCES.' block optically; right now the dangling dot pushes it off-axis.",
-    "14.0-15.0s: 'WE DON'T JUST BUILD WEBSITES.' is ~22px cap-height-ish mono-weight at 1080 wide, small next to the 'WE BUILD EXPERIENCES' line. Raise it to ~40-44px or give it heavier weight for phone legibility. The brief treats it as one of the two end-frame lines.",
-    "8.3-8.7s: the 'SEE THE WORK' pill (morphed from the PULSE circle) lands on top of the ORBIT card label ('ORBI|T' clipped) and overlaps the bottom card border. Park it below the grid with ~32px clearance or slide the grid up to make room.",
-    "7.75-8.7s: 'WORK' (orange) is jammed under 'SELECTED' with negative leading and its lower third is cut by the NOVA card. If it is meant to be type-behind, push it clearly behind (≥40% occlusion with a deliberate offset). Otherwise give 12-16px clearance; the current state looks like a collision.",
-    "6.75-7.15s: the 'DESIGN' marquee overlaps a second copy ('DESIGSIGN', 'DESIGESIGN' at frames 212-218) and changes color mid-word cream->black. Run one instance with a clean '·' separator, or swap the color with a hard mask edge at a clear wipe line so it doesn't look like a doubled render.",
-    "5.0-6.0s: the lowest-activity stretch of the spot (mean frame diff 1.5 vs 4-12 elsewhere). After the cards snap at 4.9s only the cursor moves for ~1s. Add secondary motion on the beat at 5.5s, e.g. text-line wipes, a hover state that stretches the pill, or the orange hero stripe shifting.",
-    "9.0-9.9s: the phone reflow holds nearly static apart from floating dots. Add a reflow beat at 9.5s, e.g. cards restack, the width label ticking 840px->390px, or a mask squeeze.",
-    "6.2-6.4s (frames 189-192): a thin cream sliver flickers at the right edge as the hero expands (the incoming 'D' of DESIGN entering early). Hide it until the frame is fully orange or bring it in as a clear mask reveal.",
-    "6.8-7.4s: the WEB card's top edge sits at y≈60px and MOTION at ≈160px, inside the top ~200px Reels UI zone. Keep the cards below ~220px.",
-    "10.6s (frame 318): the converge collapses to a near-empty cream frame for ~3 frames before the shapes appear. Overlap the shape emergence with the converge so the centre never goes blank.",
-    "Audio: the peak is -2.3 dBFS with both channels identical (mono program duplicated to stereo), and mean -10.2 dB is hot. Onsets land on every half-beat (0.0, 1.0, 1.5, 3.0, 6.0, 7.0, 8.5, 10.0, 12.0, 12.5, 14.5s), which is good. But at 13.0s (wordmark lock) the onset is weak (+3.4 dB), and the mix sits at ~-7 dB until 14.97s, then cuts with a ~40ms ramp. The audio stream runs 15.019s against 15.000s of video. Put a clear final hit or stinger on 14.5s with a natural ring-out, or a hard button on 15.0, trim the audio to exactly 15.000s, give the 13.0s lock a distinct SFX, and consider some stereo width on the sweeps/whooshes."
+    "Round 2: all round-1 fixes verified. A full-video scan finds no off-palette (bluish) pixels. The gray dip at 11.0s is gone, the chrome stays through 10.0s, the centre is never blank at 10.4-10.6s, the 'EXPERIENCES.' full stop is flush and orange on 14.5s, the SEE THE WORK pill parks below the grid, and the shuffle cards stay below y=240. The items below are what still holds the average under 8.5.",
+    "11.53-11.75s (frames 346-352): the in-between frames of the shape->letter reveal are messy. The rotating black square sits on top of the F as a black blob at frame 350, and the triangle and R overlap into a star-like shape at 352-353. Clip each shape to its letter's bounding box, or let the shape exit fully (scale <30%) before the letter's mask passes 50%, so each frame reads as either a shape or a letter.",
+    "12.0s (frame 360): an orange sliver of the diamond is still visible behind the M after FORM resolves. An orange sliver also sits inside the O counter at 11.63-11.8s. Kill the shapes' remnants at 100% of the letter reveal.",
+    "6.9-7.35s: the cream DESIGN marquee runs behind the cream half-disc in the same color, so the tops of E/S/I/G merge into the disc and the word loses its shape (frame 215 reads 'DESIG' with a fused top edge). Give the half-disc a 3-4px black stroke where it overlaps the type, or tint the marquee type (warm white text with the disc in gray or black), so the type-behind reads as layering rather than merging.",
+    "12.75-13.0s: the black field has fully covered the frame by ~12.83s, so the 13.0s 'lock' has almost no visual event (frame diff ~1). Its new snap is only +4.8 dB. Add a visible lock beat at 390, e.g. FORM tracking snaps tighter by 2-4%, STUDIO kicks 6px, or a hairline flash, and push the snap transient to ~+8 dB so the lock reads as a hit.",
+    "2.05-2.75s: 'NOT HERE.' holds for ~0.7s with only dots and the underline moving. Add a half-beat accent at 2.5s, e.g. the underline stretching to full width, the period hopping, or HERE. skewing 3 degrees and snapping back, to keep the 0.5-1.5s transformation rhythm tight.",
+    "11.2-11.5s: the calm moment is now clean but almost motionless (mean frame diff <1). That is fine as a breath, but let the grid drift or an underline draw continue through it so it reads as designed stillness rather than a stall.",
+    "Background system: the grid, dashed rings, hatch blocks and drifting dots are consistent but mostly static per shot. One choreographed background move per shot, e.g. the dashed ring rotating on the beat, the hatch panel sliding with the scene change, or the grid scaling with the 10.0s converge, would earn the 'dynamic animated background' requirement more clearly.",
+    "Audio is acceptable. Peak is -2.8/-3.2 dBFS and mean -12 dB. Stereo L/R correlation is 0.976 with side ~-19 dB below mid, so the Haas widening is audible but subtle. Onsets land at 1.0, 3.0, 6.0, 9.97, 12.5 and 14.5s, and the tail decays from ~14.78s to -44 dB at 14.98s and silence at 15.0s. The ring-out is only ~200ms after a renewed swell at 14.7s; starting the decay on the 14.5s boom (no swell after) would feel more final. The extra 19ms in the AAC stream is silent (<-100 dB), so it's not a defect."
   ]
 }

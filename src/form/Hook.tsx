@@ -53,6 +53,7 @@ export const Hook: React.FC<{f: number}> = ({f}) => {
         dark={dark}
         ring={dark ? {x: 860, y: 1580, r: 210} : {x: 830, y: 380, r: 170}}
         hatch={dark ? {x: 0, y: 1500, w: 520, h: 300} : {x: 560, y: 1450, w: 520, h: 260}}
+        zoom={dark ? lerp(f, h.flip, h.flip + 8, 1.25, 1, ez.out) : 1}
       />
 
       {/* BORING. */}
@@ -140,10 +141,10 @@ export const Hook: React.FC<{f: number}> = ({f}) => {
           </div>
           {f >= h.here ? (
             <div style={{overflow: 'hidden', height: 470}}>
-              <div style={{fontFamily: DISPLAY, fontSize: 470, lineHeight: 1, color: K.orange, transform: `translateY(${(1 - hereIn) * -480}px)`}}>HERE.</div>
+              <div style={{fontFamily: DISPLAY, fontSize: 470, lineHeight: 1, color: K.orange, transform: `translateY(${(1 - hereIn) * -480}px) skewX(${f >= 67 ? -8 * Math.exp(-(f - 67) / 3) : 0}deg)`}}>HERE.</div>
             </div>
           ) : null}
-          <div style={{margin: '18px auto 0', width: 620, height: 14, backgroundColor: K.white, transform: `scaleX(${lerp(f, 60, 68, 0, 1)})`, transformOrigin: 'left'}} />
+          <div style={{margin: '18px auto 0', width: lerp(f, 67, 73, 620, 940, ez.out), height: 14, backgroundColor: K.white, transform: `scaleX(${lerp(f, 60, 68, 0, 1)})`, transformOrigin: 'left'}} />
         </div>
       ) : null}
 

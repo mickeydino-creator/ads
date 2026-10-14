@@ -98,6 +98,8 @@ const ArtSection: React.FC<{f: number}> = ({f}) => {
           width: 520 * s,
           height: 260 * s,
           backgroundColor: K.white,
+          border: `5px solid ${K.black}`,
+          boxSizing: 'border-box',
           borderRadius: `0 0 ${260 * s}px ${260 * s}px`,
           transformOrigin: '50% 0%',
           transform: `rotate(${f * 0.6 + lerp(f, 206, 216, 0, 180, ez.inOut)}deg)`,
