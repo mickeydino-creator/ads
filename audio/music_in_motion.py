@@ -180,7 +180,9 @@ while t < sec(T["s4"]) - 1e-6:
     t += BEAT
     b += 1
 put(music, wobble(55.0, sec(T["s4"] - w["bass"]), rate=4.0), sec(w["bass"]), 0.45)
-put(music, boom(), sec(w["bass"]), 0.6)
+put(music, boom(), sec(w["bass"]), 0.9)
+put(sfx, snap(), sec(w["bass"]), 0.6)
+put(music, clap(), sec(w["bass"]), 0.5)
 
 # ---------------- 10-13 s: converge ----------------
 put(sfx, rev_cymbal(sec(c["rings"] - c["rush"])), sec(c["rush"]), 0.5)

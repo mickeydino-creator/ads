@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import T from './timeline.json';
 import {SUN} from './Player';
-import {ALBUMS, AlbumArt, Art, BODY, DISP, H, P, W, bounce, eighth, ez, hash, lerp, mix, onBeat, wavePath} from './kit';
+import {ALBUMS, AlbumArt, Art, BODY, DISP, H, P, W, bounce, eighth, ez, hash, lerp, mix, onBeat, outline as outlineFx, wavePath} from './kit';
 
 // 6-10 s: three visual worlds for three moods, chained by match cuts:
 // the sun becomes the moon, the moon's wave lines straighten into the bass bars.
@@ -30,13 +30,13 @@ const NowPlaying: React.FC<{f: number; start: number; art: Art; dark?: boolean; 
   );
 };
 
-const StackWord: React.FC<{f: number; start: number; text: string; color: string; size: number; top: number; left?: number; skew?: number; outline?: boolean}> = ({f, start, text, color, size, top, left = 70, skew = 0, outline}) => (
+const StackWord: React.FC<{f: number; start: number; text: string; color: string; size: number; top: number; left?: number; skew?: number; outline?: boolean; bg?: string}> = ({f, start, text, color, size, top, left = 70, skew = 0, outline, bg = P.black}) => (
   <div style={{position: 'absolute', left, top, display: 'flex', transform: `skewX(${skew}deg)`}}>
     {text.split('').map((c, i) => {
       const k = bounce(f, start + i * 1.2, 420, 14);
       return (
         <div key={i} style={{overflow: 'hidden', height: size * 1.05, marginRight: outline ? size * 0.05 : 0}}>
-          <div style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.05, color: outline ? 'transparent' : color, WebkitTextStroke: outline ? `4px ${color}` : undefined, transform: `translateY(${(1 - k) * 110}%)`}}>{c}</div>
+          <div style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.05, color: outline ? bg : color, textShadow: outline ? outlineFx(color, 4) : undefined, transform: `translateY(${(1 - k) * 110}%)`}}>{c}</div>
         </div>
       );
     })}
@@ -53,7 +53,7 @@ const SunWorld: React.FC<{f: number}> = ({f}) => {
       <div style={{position: 'absolute', inset: 0, backgroundImage: `radial-gradient(${P.pink} 32%, transparent 34%)`, backgroundSize: '44px 44px', backgroundPosition: `${f * 3}px ${f * 1.5}px`, opacity: 0.55}} />
       {/* sun rings, beating */}
       {[0, 1, 2, 3, 4].map((i) => {
-        const r = (SUN.r + 260 - i * 130) * (1 + kick * 0.04 * (5 - i));
+        const r = (SUN.r + 260 - i * 130) * (1 + kick * 0.07 * (5 - i));
         return <div key={i} style={{position: 'absolute', left: SUN.cx - r, top: SUN.cy - r, width: r * 2, height: r * 2, borderRadius: '50%', backgroundColor: i % 2 ? P.orange : P.pink, border: i === 4 ? `10px solid ${P.black}` : undefined}} />;
       })}
       {/* horizon stripes sliding */}
@@ -92,7 +92,7 @@ const MoonWorld: React.FC<{f: number}> = ({f}) => {
           <path key={i} d={wavePath(f + i * 4, -20, W + 20, 1060 + i * 46, 34 * (1 - straighten), {seed: i, freq: 0.012})} stroke={i % 2 ? P.blue : P.purple} strokeWidth={12} fill="none" strokeLinecap="round" />
         ))}
       </svg>
-      <StackWord f={f} start={w.moon + 2} text="MIDNIGHT" color={P.white} size={130} top={300} skew={-10} outline />
+      <StackWord f={f} start={w.moon + 2} text="MIDNIGHT" color={P.white} size={130} top={300} skew={-10} outline bg="#1b1450" />
       <StackWord f={f} start={w.moon + 9} text="DRIVE" color={P.blue} size={170} top={450} left={150} skew={-10} />
       <NowPlaying f={f} start={w.moon} art="moon" dark accent={P.purple} />
       <div style={{position: 'absolute', right: 70, top: 250, fontFamily: BODY, fontWeight: 800, fontSize: 24, letterSpacing: '0.2em', color: P.white, opacity: 0.6}}>{`MOOD ${t >= 0 ? '02' : ''}`}</div>
@@ -116,7 +116,7 @@ const BassWorld: React.FC<{f: number}> = ({f}) => {
       {/* the moon's lines, now equaliser bars */}
       {new Array(7).fill(0).map((_, i) => {
         const h = (140 + 520 * hash(i * 7 + Math.floor((f - w.bass) / 7.5))) * (0.7 + k8 * 0.3);
-        const grow = lerp(f, w.bass + i, w.bass + 8 + i, 0, 1);
+        const grow = lerp(f, w.bass, w.bass + 4 + i * 0.5, 0.55, 1);
         return <div key={i} style={{position: 'absolute', left: 90 + i * 135, top: 1380 - h * grow, width: 100, height: h * grow, backgroundColor: i % 3 === 1 ? P.white : P.green}} />;
       })}
       {/* repeating type stack */}
@@ -131,8 +131,8 @@ const BassWorld: React.FC<{f: number}> = ({f}) => {
             fontWeight: 900,
             fontSize: 150,
             lineHeight: 1,
-            color: i % 2 ? 'transparent' : P.green,
-            WebkitTextStroke: i % 2 ? `3px ${P.green}` : undefined,
+            color: i % 2 ? P.black : P.green,
+            textShadow: i % 2 ? outlineFx(P.green, 3) : undefined,
             letterSpacing: i % 2 ? '0.06em' : undefined,
             clipPath: `inset(0 ${(1 - lerp(f, w.bass + i * 2, w.bass + 6 + i * 2, 0, 1)) * 100}% 0 0)`,
             transform: `translateX(${(i % 2 ? 1 : -1) * Math.min(60, (f - w.bass) * 2)}px)`,

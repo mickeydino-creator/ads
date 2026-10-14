@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import T from './timeline.json';
-import {AlbumArt, Art, DISP, H, P, W, bounce, eighth, ez, lerp, mix, onBeat} from './kit';
+import {AlbumArt, Art, DISP, H, P, W, bounce, eighth, ez, lerp, mix, onBeat, outline as outlineFx} from './kit';
 
 // 10-13 s: the bass world rushes to the centre; a straight sound wave bends
 // into a ring, the ring splits into three, each ring squares off into an album
@@ -128,7 +128,7 @@ export const Converge: React.FC<{f: number}> = ({f}) => {
           {[2, 1, 0].map((g) => {
             const k = bounce(f - g * 1.5, c.world - 6, 360, 15);
             return (
-              <div key={g} style={{position: 'absolute', left: 0, width: W, textAlign: 'center', fontFamily: DISP, fontWeight: 900, fontSize: 190, lineHeight: 1, color: g ? 'transparent' : P.white, WebkitTextStroke: g ? `3px ${g === 1 ? P.pink : P.purple}` : undefined, transform: `translateX(${(1 - k) * -1100}px)`, opacity: g ? (1 - k) * 0.9 : 1}}>
+              <div key={g} style={{position: 'absolute', left: 0, width: W, textAlign: 'center', fontFamily: DISP, fontWeight: 900, fontSize: 190, lineHeight: 1, color: g ? P.black : P.white, textShadow: g ? outlineFx(g === 1 ? P.pink : P.purple, 3) : undefined, transform: `translateX(${(1 - k) * -1100}px)`, opacity: g ? (1 - k) * 0.9 : 1}}>
                 YOUR
               </div>
             );

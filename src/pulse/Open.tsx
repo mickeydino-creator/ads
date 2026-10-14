@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import T from './timeline.json';
-import {AlbumArt, DISP, H, P, W, bounce, eighth, ez, hash, lerp, mix, wavePath} from './kit';
+import {AlbumArt, DISP, H, P, W, bounce, eighth, ez, hash, lerp, mix, ringPath, wavePath} from './kit';
 
 // 0-3 s: a sound wave bursts across black, PRESS PLAY. rises out of the wave
 // line, the letters stretch into equalizer bars, the bars bounce on the 8ths,
@@ -42,6 +42,16 @@ export const Open: React.FC<{f: number}> = ({f}) => {
         ))}
       </svg>
 
+      {/* outer waves and expanding rings use the whole frame */}
+      <svg width={W} height={H} style={{position: 'absolute', left: 0, top: 0}}>
+        {[440, 1500].map((y, k) => (
+          <path key={y} d={wavePath(f + k * 9, -40, W + 40, y, 60 * lerp(f, o.bars, o.bars + 8, 0, 1) * (1 - lerp(f, o.iris, o.iris + 10, 0, 1)), {seed: 4 + k})} stroke={k ? P.purple : P.pink} strokeWidth={5} fill="none" opacity={0.7} />
+        ))}
+        {[o.radial, o.iris].map((st, k) => {
+          const g = lerp(f, st, st + 16, 0, 1, ez.out);
+          return f >= st ? <path key={st} d={ringPath(f, IRIS.cx, IRIS.cy, mix(300, 760, g), 26 * (1 - g) + 6, 10 + k * 4)} stroke={k ? P.green : P.pink} strokeWidth={6} fill="none" opacity={1 - g * 0.85} /> : null;
+        })}
+      </svg>
       {/* letters -> bars */}
       {LETTERS.map((L, n) => {
         const start = L.word === 0 ? o.press + L.i : o.play + L.i;

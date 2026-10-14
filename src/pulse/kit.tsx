@@ -131,7 +131,7 @@ export const AlbumArt: React.FC<{art: Art; f: number; size: number; label?: bool
       <div style={{position: 'absolute', left: 20 * s, top: 18 * s, fontFamily: DISP, fontWeight: 900, fontSize: 52 * s, color: P.green, lineHeight: 0.9}}>
         BASS
         <br />
-        <span style={{WebkitTextStroke: `${2 * s}px ${P.green}`, color: 'transparent'}}>BASS</span>
+        <span style={{textShadow: outline(P.green, 2 * s), color: P.black}}>BASS</span>
       </div>
     </div>
   );
@@ -149,3 +149,15 @@ export const SkipGlyph: React.FC<{size: number; color: string; back?: boolean}> 
     <rect x="70" y="20" width="12" height="60" fill={color} />
   </svg>
 );
+
+// Outline made from a ring of hard shadows around a fill that matches the
+// background: traces the union of the glyphs, so overlapping contours never
+// show as stray inner lines (unlike -webkit-text-stroke on this font).
+export const outline = (color: string, w = 3) => {
+  const pts: string[] = [];
+  for (let a = 0; a < 16; a++) {
+    const t = (a / 16) * Math.PI * 2;
+    pts.push(`${(Math.cos(t) * w).toFixed(2)}px ${(Math.sin(t) * w).toFixed(2)}px 0 ${color}`);
+  }
+  return pts.join(', ');
+};
