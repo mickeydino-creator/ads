@@ -124,7 +124,7 @@ export const Opening: React.FC<{f: number}> = ({f}) => {
   }
 
   const tooY = mix(760, 470, stack);
-  const tooSize = mix(330, 230, stack);
+  const tooSize = mix(330 * (1 + lerp(f, 6, 21, 0, 0.08, ease.out)), 230, stack);
   const manyY = mix(760, 690, stack);
   const manySize = mix(330, 230, stack);
 

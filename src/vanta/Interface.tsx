@@ -58,13 +58,13 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
   const [p1, p2, p3, p4] = T.panels;
   // camera: push in toward the switch
   const push = lerp(f, 358, 376, 0, 1, ease.inOut);
-  const cs = mix(1, 1.9, push) * mix(1, 1.8, lerp(f, 370, 390, 0, 1, ease.in));
+  const cs = mix(1, 1.9, push) * mix(1, 1.8, lerp(f, 368, 390, 0, 1, ease.inOut));
   const fx = TOGGLE.x + TOGGLE.w - 38;
   const fy = TOGGLE.y + TOGGLE.h / 2;
   const tasks = Math.round(lerp(f, p2, p2 + 30, 0, 12480, ease.out));
   const hours = Math.round(lerp(f, p2 + 4, p2 + 34, 0, 326, ease.out));
   // knob opens into a white field
-  const knobR = mix(28, 1400, lerp(f, T.circleWipe, T.impact - 2, 0, 1, ease.in));
+  const knobR = mix(28, 1400, lerp(f, T.circleWipe - 4, T.impact - 1, 0, 1, ease.inOut));
   const steps = ['New invoice email', 'Extract & classify', 'Update records', 'Request approval', 'Notify the team'];
   return (
     <AbsoluteFill style={{backgroundColor: C.purple, overflow: 'hidden'}}>
@@ -142,7 +142,7 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
           </Panel>
         </div>
       </AbsoluteFill>
-      {f >= T.circleWipe ? (
+      {f >= T.circleWipe - 4 ? (
         <div style={{position: 'absolute', left: W / 2 - knobR, top: 960 - knobR, width: knobR * 2, height: knobR * 2, borderRadius: knobR, backgroundColor: C.white}} />
       ) : null}
     </AbsoluteFill>
