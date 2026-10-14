@@ -1,42 +1,36 @@
 {
-  "round": 2,
+  "round": 3,
   "hard_failures": [],
   "scores": {
     "concept_and_art_direction": 9,
-    "typography": 8,
+    "typography": 9,
     "animation_density_and_choreography": 8,
     "ui_motion": 8,
-    "transitions_and_match_cuts": 8,
+    "transitions_and_match_cuts": 9,
     "identity_distinctness": 9,
-    "sound_sync": 8,
-    "overall_polish": 8
+    "sound_sync": 9,
+    "overall_polish": 9
   },
-  "average": 8.25,
-  "verdict": "revise",
-  "resolved_since_round_1": [
-    "The WORLD./SOUND. roll is clean: no internal gap, and the letters swap one by one (f356-389)",
-    "NEON is hidden while the disc is circular and appears once the art squares off (f100+)",
-    "There is no blank purple frame; the player stays on screen into the colour blocks (f158-166)",
-    "TURN IT UP holds and is readable from f166 to about f180",
-    "There is a hard hit at 0s (peak 0.62 in the first 50ms) and a dedicated hit on the moon landing at 7.5s (+6.7 dB RMS)",
-    "The end-card rings sit below the top label; the disclaimer is 31px, lighter, at y 1441-1516 (safe zone) and on screen from 13.5s",
-    "The shot-1 wave, bars and radial EQ are larger",
-    "The AAC length is accepted as encoder padding; the tail is silent (-128 dB at 15.0s)"
+  "average": 8.75,
+  "verdict": "pass",
+  "resolved_since_round_2": [
+    "All outline type is clean: MIDNIGHT, the BASS stack and the album-art BASS show no inner contour lines (checked at full resolution on f255 and f290)",
+    "The bass cut is on the 9.0s beat (f270): the bars are present on the cut frame, and the audio jumps from -21.0 to -10.4 dB RMS",
+    "Shot 1 now uses the full frame: content spans y 245-1561, with the outer waves and the 2.0s and 2.5s rings (both hits about +9 to +11 dB)",
+    "The 7.0s sun lead-in has an accent (+5.3 dB) before the 7.4s moon wipe, which lands on the 7.5s hit"
   ],
   "issues": [
-    {"t": "7.5-8.7s (f225-261) and 8.73-10.0s (f262-299)", "fix": "Wider spacing did not fix the outline type. The stroked display glyphs still show internal contour lines from overlapping paths: diagonal strokes inside M and N, a triangle inside D and a stray bar in G and H in MIDNIGHT, and a '$'-like cross-stroke in the outlined B of BASS. Flatten or union the glyph outlines before stroking (or use an outline-safe font or static instance), or switch to a solid fill with an offset outline."},
-    {"t": "8.73s (f262)", "fix": "The waves-to-bars match cut lands on an almost empty black frame showing only the 'BASS THEORY' caption, and the bars only rise over the next 2-4 frames. The audio at the cut is also weak (+1.1 dB RMS, compared with +7 to +18 dB at the other world and shot cuts), and 8.73s is off the 120 BPM grid (17.47 beats). Either move the cut to 8.5s or 9.0s or keep 8.73s, but make the straightened wave lines become the bars on the first frame and give the cut a kick and snap."},
-    {"t": "0-3.0s", "fix": "The opening is bigger, but every element still sits in a band from about y 300 to 1050, leaving the lower ~45% of the frame black for the whole of shot 1. Lower the composition centre, or let the radial EQ or the burst reach past y 1300 on the 2.0s and 2.5s hits."},
-    {"t": "3.57-4.0s, 4.7-5.0s, 6.73-7.37s, 11.7-12.0s", "fix": "There are short low-motion pockets (frame MAD below 1.5). None breaks the 1.5s rule, but the 6.73-7.37s pocket in the sun world sits right before the moon cut. Add an on-beat accent at 7.0s, such as the rings stepping or the dot grid pulsing, so the beat is carried into the cut."},
-    {"t": "14.6-15.0s", "fix": "The final 0.4s end-card hold is acceptable. Optionally, let the progress-thumb ring or the wave ring do one last beat pulse at 14.5-14.6s so the final frame is not completely static."}
+    {"t": "11.0-13.0s (f330-389)", "fix": "Minor: in the BASS album-frame thumbnail, the tallest EQ bar runs up through the outlined second 'BASS' row. Clip the bars below the wordmark or shorten that bar."},
+    {"t": "3.57-4.0s, 4.7-5.0s, 11.7-12.0s", "fix": "Minor: short low-motion pockets remain (frame MAD below 1.5), all well under the 1.5s major-change limit. Acceptable, but a small on-beat accent at 4.0s and 12.0s would tighten the rhythm."},
+    {"t": "14.6-15.0s", "fix": "Optional: the end card holds still for about 0.4s; a final pulse at 14.5-14.6s would keep it alive to the last frame."}
   ],
   "checks": {
-    "format": "1080x1920, 30fps, video 15.000s; audio 48kHz stereo (AAC 15.019s with padding, silent tail)",
-    "audio_levels": "L peak -2.9 dB, R peak -2.9 dB, true peak -2.9 dBFS, integrated -12.7 LUFS",
-    "event_hits": "0s hard hit; 0.5s present; 3.0s riser then +10.8 dB; 6.0s riser then +7.8 dB; moon cut 7.4s wipe landing at 7.5s with +6.7 dB; 8.73s weak (+1.1 dB); 11.0s +18 dB; 13.0s +8.3 dB; 14.5s +7.2 dB",
-    "hard_cuts": "5.53s (composition), 6.0s (sun), 7.40s (moon wipe), 8.73s (bass), 10.0s (converge)",
-    "static_stretches": "No run of 8+ frames with MAD < 0.3; the end card is quiet from 14.6s",
-    "trademark": "No Spotify logo or logo-like mark. The disclaimer is accurate and legible.",
+    "format": "1080x1920, 30fps, video 15.000s; audio 48kHz stereo (AAC padding to 15.019s, tail -80 dB at 14.99s)",
+    "audio_levels": "L peak -2.9 dB, R peak -2.9 dB, true peak -2.9 dBFS, integrated -12.8 LUFS",
+    "event_hits_rms_jump_db": {"0": "hit at start (-10.6 dB RMS)", "0.5": "present", "2.0": 9.0, "2.5": 10.7, "3.0": 10.8, "6.0": 7.8, "7.0": 5.3, "7.5": 6.7, "9.0": 10.6, "11.0": 13.5, "13.0": 7.8, "14.5": 7.2},
+    "static_stretches": "No run of 8+ frames with MAD < 0.3",
+    "safe_zones": "Key copy and the disclaimer are inside y 200-1600; the shot-1 content bottom is at y 1561",
+    "trademark": "No Spotify logo or logo-like mark. The disclaimer is accurate, 31px and on screen from 13.5s.",
     "distinctness_vs_form": "Strongly distinct in type, palette, colour fields and rhythm"
   }
 }
