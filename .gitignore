@@ -5,3 +5,5 @@ out/frames
 .promptible/yavg.txt
 .promptible/flick.jpg
 out/render.log
+.promptible/eframes
+.promptible/tiles.jpg
