@@ -48,7 +48,7 @@ export const VantaAd: React.FC = () => {
       ) : null}
       {f >= 318 && f < T.impact ? <Interface f={f} /> : null}
       {f >= T.impact ? <Final f={f} /> : null}
-      <Audio src={staticFile('music/vanta-soundtrack.wav')} />
+      <Audio src={staticFile('music/vanta-mix.wav')} />
     </AbsoluteFill>
   );
 };

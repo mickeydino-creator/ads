@@ -17,7 +17,7 @@
   ],
   "circleWipe": 378,
   "impact": 390,
-  "tagline": 405,
+  "tagline": 391,
   "entries": [
     92,
     97,
@@ -42,5 +42,80 @@
     60,
     75
   ],
-  "accent9": 270
+  "accent9": 270,
+  "tagline2": 416,
+  "vo": [
+    {
+      "src": [
+        0.04,
+        1.11
+      ],
+      "at": 0.1,
+      "tempo": 1.06,
+      "text": "Too many tasks?"
+    },
+    {
+      "src": [
+        1.44,
+        4.07
+      ],
+      "at": 1.95,
+      "tempo": 1.06,
+      "text": "Emails. Invoices. Approvals."
+    },
+    {
+      "src": [
+        4.3,
+        5.69
+      ],
+      "at": 4.58,
+      "tempo": 1.06,
+      "text": "It never stops."
+    },
+    {
+      "src": [
+        6.15,
+        9.02
+      ],
+      "at": 6.12,
+      "tempo": 1.06,
+      "text": "VANTA connects your apps into one intelligent flow."
+    },
+    {
+      "src": [
+        9.38,
+        10.4
+      ],
+      "at": 10.57,
+      "tempo": 1.06,
+      "text": "Turn on autopilot."
+    },
+    {
+      "src": [
+        10.74,
+        11.74
+      ],
+      "at": 11.74,
+      "tempo": 1.06,
+      "text": "VANTA AI."
+    },
+    {
+      "src": [
+        12.03,
+        12.86
+      ],
+      "at": 12.98,
+      "tempo": 1.1,
+      "text": "Work smarter."
+    },
+    {
+      "src": [
+        13.15,
+        14.41
+      ],
+      "at": 13.84,
+      "tempo": 1.13,
+      "text": "Automate everything."
+    }
+  ]
 }

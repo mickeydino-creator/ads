@@ -62,7 +62,7 @@ export const Final: React.FC<{f: number}> = ({f}) => {
             WORK SMARTER.
           </MaskUp>
           <br />
-          <MaskUp f={f} start={T.tagline + 6} h={66}>
+          <MaskUp f={f} start={T.tagline2} h={66}>
             <span style={{color: C.purple}}>AUTOMATE EVERYTHING.</span>
           </MaskUp>
         </div>
