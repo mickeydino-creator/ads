@@ -1,0 +1,24 @@
+{
+  "name": "noir-commercial",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "audio": "python3 audio/generate_soundtrack.py",
+    "render": "remotion render NoirCommercial out/noir-commercial.mp4"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
+    "@react-three/fiber": "^9.8.1",
+    "@remotion/cli": "^4.0.535",
+    "@remotion/fonts": "^4.0.535",
+    "@remotion/three": "^4.0.535",
+    "@types/react": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.535",
+    "three": "^0.170.0",
+    "typescript": "^7.0.2"
+  }
+}

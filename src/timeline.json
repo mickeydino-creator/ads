@@ -1,0 +1,14 @@
+{
+  "fps": 30,
+  "durationInFrames": 450,
+  "width": 1080,
+  "height": 1920,
+  "shot2Start": 90,
+  "shot3Start": 210,
+  "closeUpPeak": 266,
+  "impact": 270,
+  "shot4Start": 330,
+  "wordmark": 345,
+  "tagline": 372,
+  "liquidDrops": [100, 124, 151, 172, 196]
+}
