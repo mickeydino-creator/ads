@@ -130,7 +130,7 @@ const FOLIO_Y = 232;
 // ---------------------------------------------------------------------------
 const ShotLine: React.FC<{f: number}> = ({f}) => {
   const draw = lerp(f, 0, 12, 0, 1);
-  const slit = lerp(f, 12, 26, 0, 360, out);
+  const slit = lerp(f, 8, 22, 0, 360, out);
   const expand = lerp(f, 46, 60, 0, 1, inOut);
   const bandH = slit + (H - slit) * expand;
   const top = H / 2 - bandH / 2;
@@ -152,7 +152,7 @@ const ShotLine: React.FC<{f: number}> = ({f}) => {
             top: H / 2 - top - imgSize / 2,
             width: imgSize,
             height: imgSize,
-            transform: `scale(${lerp(f, 12, 60, 1.1, 1.0, Easing.out(Easing.quad))})`,
+            transform: `scale(${lerp(f, 8, 60, 1.1, 1.0, Easing.out(Easing.quad))})`,
           }}
         />
       </div>
@@ -187,7 +187,7 @@ const ShotLetters: React.FC<{f: number}> = ({f}) => {
   const ww = winOpen * 300 + winGrow * (LEAD.w - 300);
   const wh = 760 + winGrow * (LEAD.h - 760);
   const wy = H / 2 - wh / 2 + winGrow * (LEAD.y - (H / 2 - LEAD.h / 2));
-  const wordOut = lerp(f, 119, 129, 0, 1, inOut);
+  const wordOut = lerp(f, 112, 122, 0, 1, inOut);
   return (
     <AbsoluteFill style={{backgroundColor: BLACK}}>
       {ww > 0.5 ? (
@@ -313,17 +313,27 @@ const ShotSheet: React.FC<{f: number}> = ({f}) => {
 // Shot 4 - The cut (240-330): hard cut on the drop to a new angle in the same
 // frame; four bands step out of register and ease back, twice on the bar.
 // ---------------------------------------------------------------------------
-const BANDS = [0, 0.3, 0.62, 0.8, 1]; // cuts avoid splitting cap and label
+// Band cuts sit above the shoulders and below the label so cap and label stay whole.
+const BANDS = [0, 0.3, 0.72, 0.86, 1];
 const SHIFT = [-1, 0.7, -0.55, 0.85];
+const HERO = {size: 640, cy: 720};
+const BLEED = 90; // bands are wider than the frame so a shift never exposes an edge
 
 const ShotCut: React.FC<{f: number}> = ({f}) => {
   const hit = (start: number, amp: number) => (f < start ? 0 : amp * lerp(f, start, start + 12, 1, 0, Easing.bezier(0.2, 0.9, 0.3, 1)));
   const k = hit(T.slices[0], 38) + hit(T.slices[1], 24);
   const lineOp = Math.min(1, k / 14);
   const wipe = lerp(f, T.wipe, 326, 0, 1, inOut);
-  const x0 = W / 2 - STAGE.w / 2;
-  const y0 = STAGE.cy - STAGE.h / 2;
-  const imgSize = STAGE.h;
+  // the frame travels into the signature frame while the page turns white
+  const move = lerp(f, T.wipe, 330, 0, 1, inOut);
+  const fw = STAGE.w + (HERO.size - STAGE.w) * move;
+  const fh = STAGE.h + (HERO.size - STAGE.h) * move;
+  const fcy = STAGE.cy + (HERO.cy - STAGE.cy) * move;
+  const x0 = W / 2 - fw / 2;
+  const y0 = fcy - fh / 2;
+  const imgSize = Math.max(fw, fh);
+  // on the half-beat the front view slides in over the angle, inside the frame
+  const swap = lerp(f, 315, 327, 0, 1, inOut);
   return (
     <AbsoluteFill style={{backgroundColor: BLACK}}>
       <div
@@ -344,28 +354,33 @@ const ShotCut: React.FC<{f: number}> = ({f}) => {
           SCENT.
         </MaskRise>
       </div>
-      <div style={{position: 'absolute', left: x0, top: y0, width: STAGE.w, height: STAGE.h, overflow: 'hidden', backgroundColor: '#1c1d20'}}>
+      <Label x={W / 2 - STAGE.w / 2} y={STAGE.cy + STAGE.h / 2 + 24} color={SILVER} size={22} opacity={lerp(f, 262, 276, 0, 1)}>
+        04 / ANGLE
+      </Label>
+      {/* white page rises behind the photograph */}
+      <div style={{position: 'absolute', left: 0, top: H * (1 - wipe), width: W, height: H, backgroundColor: PAPER}} />
+      <div style={{position: 'absolute', left: x0, top: y0, width: fw, height: fh, overflow: 'hidden', backgroundColor: '#1c1d20'}}>
         {SHIFT.map((sh, i) => {
-          const top = BANDS[i] * STAGE.h;
-          const h = (BANDS[i + 1] - BANDS[i]) * STAGE.h;
+          const top = Math.round(BANDS[i] * fh);
+          const bottom = Math.round(BANDS[i + 1] * fh);
           return (
-            <div key={i} style={{position: 'absolute', left: sh * k, top, width: STAGE.w, height: h + 0.5, overflow: 'hidden'}}>
+            <div key={i} style={{position: 'absolute', left: -BLEED + sh * k, top, width: fw + BLEED * 2, height: bottom - top + (i < SHIFT.length - 1 ? 1 : 0), overflow: 'hidden'}}>
               <Img
                 src={photo('three-quarter-r')}
-                style={{position: 'absolute', left: (STAGE.w - imgSize) / 2, top: -top, width: imgSize, height: imgSize}}
+                style={{position: 'absolute', left: BLEED + (fw - imgSize) / 2, top: (fh - imgSize) / 2 - top, width: imgSize, height: imgSize}}
               />
             </div>
           );
         })}
         {BANDS.slice(1, -1).map((b) => (
-          <div key={b} style={{position: 'absolute', left: 0, top: b * STAGE.h, width: STAGE.w, height: 1, backgroundColor: SILVER, opacity: lineOp}} />
+          <div key={b} style={{position: 'absolute', left: 0, top: Math.round(b * fh), width: fw, height: 1, backgroundColor: SILVER, opacity: lineOp}} />
         ))}
+        {swap > 0 ? (
+          <div style={{position: 'absolute', left: 0, top: 0, width: fw, height: fh * swap, overflow: 'hidden'}}>
+            <PhotoWindow src={photo('front')} x={0} y={0} w={fw} h={fh} />
+          </div>
+        ) : null}
       </div>
-      <Label x={x0} y={y0 + STAGE.h + 24} color={SILVER} size={22} opacity={lerp(f, 262, 276, 0, 1)}>
-        04 / ANGLE
-      </Label>
-      {/* white page rises over everything */}
-      <div style={{position: 'absolute', left: 0, top: H * (1 - wipe), width: W, height: H, backgroundColor: PAPER}} />
     </AbsoluteFill>
   );
 };
@@ -374,10 +389,8 @@ const ShotCut: React.FC<{f: number}> = ({f}) => {
 // Shot 5 - Signature (330-450): framed photograph, wordmark, rule, tagline.
 // One restrained accent on the 13 s downbeat: a hairline frame draws.
 // ---------------------------------------------------------------------------
-const HERO = {size: 640, cy: 720};
 const ShotSignature: React.FC<{f: number}> = ({f}) => {
   const push = lerp(f, 330, 450, 1, 1.02, Easing.linear);
-  const reveal = lerp(f, 330, 346, 0, 1);
   const frameDraw = lerp(f, T.endAccent, T.endAccent + 20, 0, 1, inOut);
   const pad = 22;
   const fx = W / 2 - HERO.size / 2 - pad;
@@ -386,8 +399,8 @@ const ShotSignature: React.FC<{f: number}> = ({f}) => {
   return (
     <AbsoluteFill style={{backgroundColor: PAPER}}>
       <AbsoluteFill style={{transform: `scale(${push})`, transformOrigin: '50% 45%'}}>
-        <div style={{position: 'absolute', left: W / 2 - HERO.size / 2, top: HERO.cy - HERO.size / 2, width: HERO.size, height: HERO.size * reveal, overflow: 'hidden'}}>
-          <PhotoWindow src={photo('front')} x={0} y={0} w={HERO.size} h={HERO.size} zoom={lerp(f, 330, 360, 1.08, 1.0)} />
+        <div style={{position: 'absolute', left: W / 2 - HERO.size / 2, top: HERO.cy - HERO.size / 2, width: HERO.size, height: HERO.size, overflow: 'hidden'}}>
+          <PhotoWindow src={photo('front')} x={0} y={0} w={HERO.size} h={HERO.size} />
         </div>
         {/* hairline frame: top+bottom draw from the centre, sides from the top */}
         <div style={{position: 'absolute', left: fx, top: fy, width: fs, height: 1, backgroundColor: INK, transform: `scaleX(${frameDraw})`}} />
