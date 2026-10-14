@@ -114,6 +114,7 @@ for fr in T["slices"]:
     place(swish(0.22, 1500, 10000, 0.3), sec(fr), 0.07, 0.0)     # the slice
 place(swish(0.9, 300, 5000, 0.7), sec(T["wipe"]), 0.06, 0.0)     # page wipe
 place(chime(), sec(T["wordmark"]), 0.035, 0.0)                    # signature
+place(tick(0.6), sec(T["endAccent"]), 0.06, 0.0)                  # hairline frame accent
 
 mix = music + sfx
 mix /= np.max(np.abs(mix)) / 10 ** (-1.5 / 20)

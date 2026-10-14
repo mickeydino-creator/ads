@@ -42,7 +42,7 @@ const Label: React.FC<{
   size?: number;
   align?: 'left' | 'right' | 'center';
   opacity?: number;
-}> = ({children, x, y, color, size = 24, align = 'left', opacity = 1}) => (
+}> = ({children, x, y, color, size = 26, align = 'left', opacity = 1}) => (
   <div
     style={{
       position: 'absolute',
@@ -117,25 +117,32 @@ const PhotoWindow: React.FC<{
   </div>
 );
 
+// Layout grid: one image column (x 230-850) shared by every page.
+const COL_X = 230;
+const COL_W = 620;
+const LEAD = {x: COL_X, y: 300, w: COL_W, h: 700};
+// Frame used on the black pages (shot 4), photos never shown larger than this.
+const STAGE = {w: 660, h: 800, cy: 1010};
+const FOLIO_Y = 232;
+
 // ---------------------------------------------------------------------------
 // Shot 1 - The line (0-60): a hairline draws, opens into a slit onto the cap.
 // ---------------------------------------------------------------------------
 const ShotLine: React.FC<{f: number}> = ({f}) => {
-  const draw = lerp(f, 2, 24, 0, 1);
-  const slit = lerp(f, 26, 44, 0, 320, out);
+  const draw = lerp(f, 0, 12, 0, 1);
+  const slit = lerp(f, 12, 26, 0, 360, out);
   const expand = lerp(f, 46, 60, 0, 1, inOut);
   const bandH = slit + (H - slit) * expand;
   const top = H / 2 - bandH / 2;
-  const imgSize = W * 1.05;
+  const imgSize = 760;
   return (
     <AbsoluteFill style={{backgroundColor: PAPER}}>
-      <Label x={72} y={96} color={INK} opacity={lerp(f, 4, 18, 0, 1)}>
+      <Label x={72} y={FOLIO_Y} color={INK} opacity={lerp(f, 4, 16, 0, 1) * (1 - expand)}>
         N° 01
       </Label>
-      <Label x={W - 72} y={96} color={INK} align="right" opacity={lerp(f, 8, 22, 0, 1)}>
+      <Label x={W - 72} y={FOLIO_Y} color={INK} align="right" opacity={lerp(f, 8, 20, 0, 1) * (1 - expand)}>
         NOIR
       </Label>
-      {/* the band: black field, cap photograph centred inside */}
       <div style={{position: 'absolute', left: 0, top, width: W, height: bandH, overflow: 'hidden', backgroundColor: BLACK}}>
         <Img
           src={photo('cap-macro')}
@@ -145,18 +152,17 @@ const ShotLine: React.FC<{f: number}> = ({f}) => {
             top: H / 2 - top - imgSize / 2,
             width: imgSize,
             height: imgSize,
-            transform: `scale(${lerp(f, 26, 60, 1.12, 1.0, Easing.out(Easing.quad))})`,
+            transform: `scale(${lerp(f, 12, 60, 1.1, 1.0, Easing.out(Easing.quad))})`,
           }}
         />
       </div>
-      {/* the hairline splits into the slit's two edges */}
       {[-1, 1].map((s) => (
         <div
           key={s}
           style={{
             position: 'absolute',
             left: 0,
-            top: H / 2 + (s * bandH) / 2 - 0.5,
+            top: H / 2 + (s * bandH) / 2 - 0.75,
             width: W,
             height: 1.5,
             backgroundColor: INK,
@@ -171,36 +177,40 @@ const ShotLine: React.FC<{f: number}> = ({f}) => {
 };
 
 // ---------------------------------------------------------------------------
-// Shot 2 - The letters (60-135): NOIR cut in letter by letter, then a window
-// opens through the word onto the bottle.
+// Shot 2 - The letters (60-135): NOIR set inside the margins, cut in on the
+// eighth notes, held whole, then a window opens on the bottle behind it.
 // ---------------------------------------------------------------------------
 const WORD = ['N', 'O', 'I', 'R'];
 const ShotLetters: React.FC<{f: number}> = ({f}) => {
   const winOpen = lerp(f, T.window, T.window + 14, 0, 1);
   const winGrow = lerp(f, 121, 135, 0, 1, inOut);
-  // window grows from a slim column to the contact sheet's lead frame size
-  const ww = winOpen * 300 + winGrow * (620 - 300);
-  const wh = 900 + winGrow * (780 - 900);
-  const wy = H / 2 - wh / 2 + winGrow * (300 - (H / 2 - 780 / 2));
+  const ww = winOpen * 300 + winGrow * (LEAD.w - 300);
+  const wh = 760 + winGrow * (LEAD.h - 760);
+  const wy = H / 2 - wh / 2 + winGrow * (LEAD.y - (H / 2 - LEAD.h / 2));
+  const wordOut = lerp(f, 119, 129, 0, 1, inOut);
   return (
     <AbsoluteFill style={{backgroundColor: BLACK}}>
+      {ww > 0.5 ? (
+        <PhotoWindow src={photo('front')} x={W / 2 - ww / 2} y={wy} w={ww} h={wh} zoom={lerp(f, T.window, 135, 1.2, 1.0)} />
+      ) : null}
       <div
         style={{
           position: 'absolute',
-          top: 620,
+          top: 760,
+          width: W,
           textAlign: 'center',
           fontFamily: SERIF,
-          fontSize: 500,
+          fontSize: 380,
           lineHeight: 1,
           color: PAPER,
-          letterSpacing: '-0.02em',
+          letterSpacing: '0.02em',
           whiteSpace: 'nowrap',
-          left: -100,
-          width: W + 200,
+          opacity: 1 - wordOut,
+          transform: `translateY(${-wordOut * 30}px)`,
         }}
       >
         {WORD.map((ch, i) => (
-          <MaskRise key={ch} start={T.letters[i]} frame={f} dur={12} style={{height: 560}}>
+          <MaskRise key={ch} start={T.letters[i]} frame={f} dur={10} style={{height: 420}}>
             {ch}
           </MaskRise>
         ))}
@@ -209,199 +219,181 @@ const ShotLetters: React.FC<{f: number}> = ({f}) => {
         style={{
           position: 'absolute',
           left: 72,
-          top: 1290,
+          top: 1250,
           width: W - 144,
           height: 1,
           backgroundColor: SILVER,
-          transform: `scaleX(${lerp(f, 62, 104, 0, 1, inOut)})`,
+          opacity: 1 - wordOut,
+          transform: `scaleX(${lerp(f, 60, 96, 0, 1, inOut)})`,
           transformOrigin: 'left',
         }}
       />
-      <Label x={72} y={1316} color={SILVER} opacity={lerp(f, 90, 102, 0, 1)}>
+      <Label x={72} y={1276} color={SILVER} opacity={lerp(f, 86, 98, 0, 1) * (1 - wordOut)}>
         EAU DE PARFUM
       </Label>
-      <Label x={W - 72} y={1316} color={SILVER} align="right" opacity={lerp(f, 96, 108, 0, 1)}>
+      <Label x={W - 72} y={1276} color={SILVER} align="right" opacity={lerp(f, 92, 104, 0, 1) * (1 - wordOut)}>
         N° 02
       </Label>
-      {ww > 0.5 ? (
-        <PhotoWindow src={photo('front')} x={W / 2 - ww / 2} y={wy} w={ww} h={wh} zoom={lerp(f, T.window, 135, 1.25, 1.0)} />
-      ) : null}
     </AbsoluteFill>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Shot 3 - Contact sheet (135-240): white page, lead frame + two studies,
-// kinetic words on the beats, then the lead frame takes the page.
+// Shot 3 - Contact sheet (135-240): white page on one column grid, lead frame,
+// two studies, a two-line headline on the beats; the page then turns black
+// around the lead frame for the drop.
 // ---------------------------------------------------------------------------
-const LEAD = {x: (W - 620) / 2, y: 300, w: 620, h: 780};
+const STUDY = 290;
 const STUDIES = [
-  {src: 'profile-b', x: 230, label: '02 / PROFILE'},
-  {src: 'top', x: 574, label: '03 / CROWN'},
+  {src: 'profile-b', x: COL_X, label: '02 / PROFILE'},
+  {src: 'top', x: COL_X + COL_W - STUDY, label: '03 / CROWN'},
 ];
-const WORDS = ['Shadow,', 'line,', 'silence.'];
+const STUDY_Y = LEAD.y + LEAD.h + 74;
+const HEAD_Y = STUDY_Y + STUDY + 92;
 
 const ShotSheet: React.FC<{f: number}> = ({f}) => {
-  // lead frame fills the screen into the drop
-  const take = lerp(f, 222, 240, 0, 1, Easing.bezier(0.7, 0, 0.84, 0));
-  const lx = LEAD.x * (1 - take);
-  const ly = LEAD.y * (1 - take);
-  const lw = LEAD.w + (W - LEAD.w) * take;
-  const lh = LEAD.h + (H - LEAD.h) * take;
-  const fade = 1 - lerp(f, 222, 232, 0, 1, inOut);
-  // the photo inside grows from the lead crop to a full-width square
-  const pw = LEAD.w + take * (W - LEAD.w);
-  const ph = LEAD.h + take * (W - LEAD.h);
+  const take = lerp(f, 222, 240, 0, 1, inOut);
+  const fade = 1 - lerp(f, 220, 230, 0, 1, inOut);
+  // black page grows out of the lead frame; the photo frame travels to the stage
+  const bx = LEAD.x * (1 - take);
+  const by = LEAD.y * (1 - take);
+  const bw = LEAD.w + (W - LEAD.w) * take;
+  const bh = LEAD.h + (H - LEAD.h) * take;
+  const pw = LEAD.w + (STAGE.w - LEAD.w) * take;
+  const ph = LEAD.h + (STAGE.h - LEAD.h) * take;
+  const pcy = LEAD.y + LEAD.h / 2 + (STAGE.cy - (LEAD.y + LEAD.h / 2)) * take;
   return (
     <AbsoluteFill style={{backgroundColor: PAPER}}>
-      <Label x={72} y={96} color={INK} opacity={fade}>
+      <Label x={72} y={FOLIO_Y} color={INK} opacity={fade}>
         N° 03
       </Label>
-      <Label x={W - 72} y={96} color={INK} align="right" opacity={fade}>
+      <Label x={W - 72} y={FOLIO_Y} color={INK} align="right" opacity={fade}>
         {`0${Math.min(3, 1 + Math.floor(Math.max(0, f - 135) / 15))} / 03`}
+      </Label>
+      <Label x={LEAD.x} y={LEAD.y + LEAD.h + 22} color={INK} size={22} opacity={lerp(f, 140, 152, 0, 1) * fade}>
+        01 / FORM
       </Label>
       {STUDIES.map((s, i) => {
         const t = T.sheetFrames[i];
         const open = lerp(f, t, t + 14, 0, 1);
-        const size = 276;
         return (
           <div key={s.src} style={{opacity: fade}}>
-            <div style={{position: 'absolute', left: s.x, top: 1130, width: size, height: size * open, overflow: 'hidden'}}>
-              <PhotoWindow src={photo(s.src)} x={0} y={0} w={size} h={size} zoom={lerp(f, t, t + 40, 1.3, 1.05)} />
+            <div style={{position: 'absolute', left: s.x, top: STUDY_Y, width: STUDY, height: STUDY * open, overflow: 'hidden'}}>
+              <PhotoWindow src={photo(s.src)} x={0} y={0} w={STUDY} h={STUDY} zoom={lerp(f, t, t + 40, 1.3, 1.05)} />
             </div>
-            <Label x={s.x} y={1130 + size + 22} color={INK} size={18} opacity={lerp(f, t + 6, t + 18, 0, 1)}>
+            <Label x={s.x} y={STUDY_Y + STUDY + 22} color={INK} size={22} opacity={lerp(f, t + 6, t + 18, 0, 1)}>
               {s.label}
             </Label>
           </div>
         );
       })}
-      <Label x={LEAD.x} y={LEAD.y + LEAD.h + 22} color={INK} size={18} opacity={lerp(f, 140, 152, 0, 1) * fade}>
-        01 / FORM
-      </Label>
-      {/* kinetic words, one per beat */}
       <div
-        style={{
-          position: 'absolute',
-          left: 72,
-          top: 1500,
-          fontFamily: SERIF,
-          fontStyle: 'normal',
-          fontSize: 118,
-          lineHeight: 1.0,
-          color: INK,
-          opacity: fade,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {WORDS.map((w, i) => (
-          <MaskRise key={w} start={T.words[i]} frame={f} dur={11} style={{marginRight: 26, height: 132}}>
-            {w}
-          </MaskRise>
-        ))}
-      </div>
-      <div
-        style={{position: 'absolute', left: 72, top: 1470, width: W - 144, height: 1, backgroundColor: SILVER, opacity: fade, transform: `scaleX(${lerp(f, 168, 200, 0, 1, inOut)})`, transformOrigin: 'left'}}
+        style={{position: 'absolute', left: COL_X, top: HEAD_Y - 30, width: COL_W, height: 1, backgroundColor: SILVER, opacity: fade, transform: `scaleX(${lerp(f, 168, 200, 0, 1, inOut)})`, transformOrigin: 'left'}}
       />
-      <div style={{position: 'absolute', left: lx, top: ly, width: lw, height: lh, backgroundColor: BLACK, overflow: 'hidden'}}>
-        <PhotoWindow
-          src={photo('front')}
-          x={(lw - pw) / 2}
-          y={(lh - ph) / 2}
-          w={pw}
-          h={ph}
-          zoom={lerp(f, 135, 240, 1.0, 1.06, Easing.linear)}
-        />
+      <div style={{position: 'absolute', left: COL_X, top: HEAD_Y, fontFamily: SERIF, fontSize: 96, lineHeight: 1.04, color: INK, opacity: fade}}>
+        <div style={{whiteSpace: 'nowrap'}}>
+          <MaskRise start={T.words[0]} frame={f} dur={11} style={{marginRight: 24, height: 104}}>
+            Shadow,
+          </MaskRise>
+          <MaskRise start={T.words[1]} frame={f} dur={11} style={{height: 104}}>
+            line,
+          </MaskRise>
+        </div>
+        <MaskRise start={T.words[2]} frame={f} dur={11} style={{height: 104}}>
+          silence.
+        </MaskRise>
       </div>
+      <div style={{position: 'absolute', left: bx, top: by, width: bw, height: bh, backgroundColor: BLACK}} />
+      <PhotoWindow src={photo('front')} x={W / 2 - pw / 2} y={pcy - ph / 2} w={pw} h={ph} zoom={lerp(f, 135, 240, 1.0, 1.05, Easing.linear)} />
     </AbsoluteFill>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Shot 4 - The cut (240-330): on the drop the photograph is sliced into
-// strips that snap back into register; SCENT. lands on the next accent.
+// Shot 4 - The cut (240-330): hard cut on the drop to a new angle in the same
+// frame; four bands step out of register and ease back, twice on the bar.
 // ---------------------------------------------------------------------------
-const STRIPS = 9;
-const OFFSETS = [-1, 0.6, -0.35, 1, -0.8, 0.45, -0.55, 0.9, -0.25];
+const BANDS = [0, 0.3, 0.62, 0.8, 1]; // cuts avoid splitting cap and label
+const SHIFT = [-1, 0.7, -0.55, 0.85];
 
 const ShotCut: React.FC<{f: number}> = ({f}) => {
-  // two hits: the drop and one bar later
-  const hit = (start: number, amp: number) =>
-    f < start ? 0 : amp * Math.exp(-(f - start) / 4.5) * Math.cos((f - start) * 0.0);
-  const k = hit(T.slices[0], 150) + hit(T.slices[1], 90);
-  const lineOp = Math.min(1, k / 40);
-  // photo travels into the hero frame while the page wipes to white
-  const move = lerp(f, T.wipe, 330, 0, 1, inOut);
-  const size = W + (640 - W) * move;
-  const cx = W / 2;
-  const cy = H / 2 + (720 - H / 2) * move;
-  const stripH = size / STRIPS;
+  const hit = (start: number, amp: number) => (f < start ? 0 : amp * lerp(f, start, start + 12, 1, 0, Easing.bezier(0.2, 0.9, 0.3, 1)));
+  const k = hit(T.slices[0], 38) + hit(T.slices[1], 24);
+  const lineOp = Math.min(1, k / 14);
   const wipe = lerp(f, T.wipe, 326, 0, 1, inOut);
+  const x0 = W / 2 - STAGE.w / 2;
+  const y0 = STAGE.cy - STAGE.h / 2;
+  const imgSize = STAGE.h;
   return (
     <AbsoluteFill style={{backgroundColor: BLACK}}>
-      {/* white page rises from below */}
-      <div style={{position: 'absolute', left: 0, top: H * (1 - wipe), width: W, height: H, backgroundColor: PAPER}} />
       <div
         style={{
           position: 'absolute',
-          top: 150,
+          top: 250,
           width: W,
           textAlign: 'center',
           fontFamily: SERIF,
-          fontSize: 210,
+          fontSize: 190,
           lineHeight: 1,
           color: PAPER,
-          letterSpacing: '0.04em',
-          opacity: 1 - lerp(f, T.wipe - 4, T.wipe + 8, 0, 1, inOut),
+          letterSpacing: '0.06em',
+          paddingLeft: '0.06em',
         }}
       >
-        <MaskRise start={T.scent} frame={f} dur={12} style={{height: 230}}>
+        <MaskRise start={T.scent} frame={f} dur={12} style={{height: 210}}>
           SCENT.
         </MaskRise>
       </div>
-      <div style={{position: 'absolute', left: cx - size / 2, top: cy - size / 2, width: size, height: size}}>
-        {new Array(STRIPS).fill(0).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: OFFSETS[i] * k,
-              top: i * stripH,
-              width: size,
-              height: stripH + 0.5,
-              overflow: 'hidden',
-            }}
-          >
-            <Img
-              src={photo('front')}
-              style={{position: 'absolute', left: 0, top: -i * stripH, width: size, height: size}}
-            />
-          </div>
-        ))}
-        {/* silver hairlines mark the cut while the strips are out of register */}
-        {new Array(STRIPS - 1).fill(0).map((_, i) => (
-          <div
-            key={`l${i}`}
-            style={{position: 'absolute', left: -60, top: (i + 1) * stripH, width: size + 120, height: 1, backgroundColor: SILVER, opacity: lineOp}}
-          />
+      <div style={{position: 'absolute', left: x0, top: y0, width: STAGE.w, height: STAGE.h, overflow: 'hidden', backgroundColor: '#1c1d20'}}>
+        {SHIFT.map((sh, i) => {
+          const top = BANDS[i] * STAGE.h;
+          const h = (BANDS[i + 1] - BANDS[i]) * STAGE.h;
+          return (
+            <div key={i} style={{position: 'absolute', left: sh * k, top, width: STAGE.w, height: h + 0.5, overflow: 'hidden'}}>
+              <Img
+                src={photo('three-quarter-r')}
+                style={{position: 'absolute', left: (STAGE.w - imgSize) / 2, top: -top, width: imgSize, height: imgSize}}
+              />
+            </div>
+          );
+        })}
+        {BANDS.slice(1, -1).map((b) => (
+          <div key={b} style={{position: 'absolute', left: 0, top: b * STAGE.h, width: STAGE.w, height: 1, backgroundColor: SILVER, opacity: lineOp}} />
         ))}
       </div>
-      <Label x={72} y={1700} color={SILVER} opacity={(1 - wipe) * lerp(f, 262, 276, 0, 1)}>
-        N° 04
+      <Label x={x0} y={y0 + STAGE.h + 24} color={SILVER} size={22} opacity={lerp(f, 262, 276, 0, 1)}>
+        04 / ANGLE
       </Label>
+      {/* white page rises over everything */}
+      <div style={{position: 'absolute', left: 0, top: H * (1 - wipe), width: W, height: H, backgroundColor: PAPER}} />
     </AbsoluteFill>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Shot 5 - Signature (330-450): white page, framed photograph, wordmark,
-// rule, tagline. Near-still; a 2% push holds attention.
+// Shot 5 - Signature (330-450): framed photograph, wordmark, rule, tagline.
+// One restrained accent on the 13 s downbeat: a hairline frame draws.
 // ---------------------------------------------------------------------------
+const HERO = {size: 640, cy: 720};
 const ShotSignature: React.FC<{f: number}> = ({f}) => {
   const push = lerp(f, 330, 450, 1, 1.02, Easing.linear);
+  const reveal = lerp(f, 330, 346, 0, 1);
+  const frameDraw = lerp(f, T.endAccent, T.endAccent + 20, 0, 1, inOut);
+  const pad = 22;
+  const fx = W / 2 - HERO.size / 2 - pad;
+  const fy = HERO.cy - HERO.size / 2 - pad;
+  const fs = HERO.size + pad * 2;
   return (
     <AbsoluteFill style={{backgroundColor: PAPER}}>
       <AbsoluteFill style={{transform: `scale(${push})`, transformOrigin: '50% 45%'}}>
-        <PhotoWindow src={photo('front')} x={W / 2 - 320} y={720 - 320} w={640} h={640} />
+        <div style={{position: 'absolute', left: W / 2 - HERO.size / 2, top: HERO.cy - HERO.size / 2, width: HERO.size, height: HERO.size * reveal, overflow: 'hidden'}}>
+          <PhotoWindow src={photo('front')} x={0} y={0} w={HERO.size} h={HERO.size} zoom={lerp(f, 330, 360, 1.08, 1.0)} />
+        </div>
+        {/* hairline frame: top+bottom draw from the centre, sides from the top */}
+        <div style={{position: 'absolute', left: fx, top: fy, width: fs, height: 1, backgroundColor: INK, transform: `scaleX(${frameDraw})`}} />
+        <div style={{position: 'absolute', left: fx, top: fy + fs, width: fs, height: 1, backgroundColor: INK, transform: `scaleX(${frameDraw})`}} />
+        <div style={{position: 'absolute', left: fx, top: fy, width: 1, height: fs, backgroundColor: INK, transform: `scaleY(${frameDraw})`}} />
+        <div style={{position: 'absolute', left: fx + fs, top: fy, width: 1, height: fs, backgroundColor: INK, transform: `scaleY(${frameDraw})`}} />
         <div
           style={{
             position: 'absolute',
@@ -431,24 +423,12 @@ const ShotSignature: React.FC<{f: number}> = ({f}) => {
             transform: `scaleX(${lerp(f, T.rule, T.rule + 18, 0, 1, inOut)})`,
           }}
         />
-        <div
-          style={{
-            position: 'absolute',
-            top: 1410,
-            width: W,
-            textAlign: 'center',
-            fontFamily: SANS,
-            fontSize: 38,
-            letterSpacing: '0.36em',
-            paddingLeft: '0.36em',
-            color: INK,
-          }}
-        >
+        <div style={{position: 'absolute', top: 1410, width: W, textAlign: 'center', fontFamily: SANS, fontSize: 38, letterSpacing: '0.36em', paddingLeft: '0.36em', color: INK}}>
           <MaskRise start={T.tagline} frame={f} dur={14} style={{height: 50}}>
             SCENT. WITHOUT WORDS.
           </MaskRise>
         </div>
-        <Label x={W / 2} y={1522} color={INK} size={22} align="center" opacity={0.55 * lerp(f, T.tagline + 10, T.tagline + 24, 0, 1)}>
+        <Label x={W / 2} y={1500} color={INK} size={24} align="center" opacity={0.55 * lerp(f, T.tagline + 10, T.tagline + 24, 0, 1)}>
           EAU DE PARFUM
         </Label>
       </AbsoluteFill>

@@ -1,0 +1,45 @@
+{
+  "candidate": "/home/user/ads/out/noir-editorial.mp4",
+  "measurements": {
+    "video": "1080x1920, 30fps, 15.000s (450 frames); audio 15.019s",
+    "audio_peak_per_channel_dB": {"L": -1.7, "R": -1.8},
+    "true_peak_dBTP": -1.7,
+    "integrated_loudness_LUFS": -15.7,
+    "audio_alignment": "cross-correlation vs track-full.mp3 cut at 7.99s: 0 ms lag (correct segment)",
+    "bass_drop_onset_s": 8.057,
+    "beat_grid": "post-drop downbeats at 8.03, 8.53, 9.03 ... 14.04 (steady 0.5s, ~+33 ms after the video grid, about 1 frame); eighth-note onsets at x.29/x.79",
+    "cut_vs_nearest_onset_s": {"2.0": 1.997, "4.5": 4.54, "8.0": 8.057, "11.0": 11.04},
+    "end_fade": "-28 dB at 14.5s, -59 dB at 15.0s (clean tail)",
+    "photo_source_resolution": "1024px collage cut into 3x3, so each tile is about 341px of real detail, stored as 984px PNGs (about 2.9x upscale) and shown up to 1080px wide (about 3.2x)"
+  },
+  "hard_failures": [],
+  "scores": {
+    "editorial_art_direction": 7.5,
+    "typography": 7.0,
+    "motion_purpose_and_rhythm": 7.5,
+    "transitions_continuity": 8.0,
+    "photo_usage_quality": 6.0,
+    "music_sync": 8.5,
+    "restraint_no_cheap_effects": 7.5,
+    "overall_polish": 7.0
+  },
+  "average": 7.38,
+  "verdict": "revise",
+  "issues": [
+    {"t": "8.0-9.4s", "severity": "high", "area": "photo_usage_quality", "issue": "Full-bleed front.png at 1080px wide is visibly soft: the label lettering is mushy, the cap edges are smeared, and there is JPEG blocking and banding in the dark backdrop. This is the hero moment on the drop, and it reads as an upscaled thumbnail. The same softness shows at 10.0-10.5s (photo about 900px wide).", "fix": "Never show a tile wider than about 620-700px. On the drop, keep the bottle in a framed window (for example 640px wide, centred) on the black field rather than full bleed, or crop to a region that tolerates enlargement. Optionally add a very light sharpen and grain pass to the tiles to hide the upscale."},
+    {"t": "8.0-8.4s and 9.0-9.4s", "severity": "high", "area": "restraint", "issue": "The slice effect looks like a digital glitch rather than an editorial cut. Strips shift by up to about 150px, which duplicates the cap (two cap fragments stacked at 8.05s), tears the label in two, and leaves ragged black gaps at the left and right edges where strips stop short of the frame. That is close to the 'cheap template' look the client asked to avoid.", "fix": "Use 3-5 wide bands. Offset them by 20-40px with alternating directions, all clipped to a fixed frame rectangle so no edge gaps show, and ease back into register over about 10-12 frames. Keep the cap and label inside a single band so the product is never duplicated or torn. Consider a single vertical or horizontal split-and-reregister on 240 instead of a second slice burst on 270."},
+    {"t": "0.0-1.0s", "severity": "medium", "area": "motion_purpose_and_rhythm", "issue": "The first second is an almost empty off-white page with one 1px hairline at mid-height. It is a weak hook: the scroll-stop moment carries nothing.", "fix": "Start drawing the hairline from frame 0 at full speed (done by about frame 12) and open the slit by about frame 15-20, so the cap texture is visible within the first 0.6s. Alternatively, put the small 'N° 01 / NOIR' captions on the line itself so the frame has typographic tension."},
+    {"t": "2.0-4.5s", "severity": "medium", "area": "typography", "issue": "The NOIR letters are set wider than the frame. The N bleeds off the left edge at every moment (its serif is cut at x=0), and once the R lands at 3.5s it is cut at x=1080, so the bleed is asymmetric and looks accidental. At 3.0-3.4s 'NOI' sits left-heavy with a large empty right side. After 3.6s the bottle window covers the O, so the word reads 'NC IR', and by 4.25s it reads 'N  R'. The wordmark is never seen whole and clean.", "fix": "Either fit NOIR inside the 72px margins (about 900px wide), or bleed both outer letters by the same amount. Hold the complete word for at least 6-8 frames (about 3.5-3.75s) before the window opens. Open the window in the counter space between the letters, or knock the letters out of the window (mask) so the word stays legible."},
+    {"t": "6.0-7.5s", "severity": "medium", "area": "typography/layout", "issue": "The headline 'Shadow, line, silence.' runs to about x=1040, past the 1008px right margin that the rule and captions use (right margin about 40px against a 72px left margin). The contact-sheet image column (230-850) is narrower than the text column (72-1008), so the page has two competing grids.", "fix": "Reduce the headline to about 95-100px, or break it over two lines, so it ends at or before x=1008. Align the image column and the headline to one grid: either widen the images to 72-1008, or indent the headline to x=230."},
+    {"t": "8.25-10.0s", "severity": "low", "area": "safe zone", "issue": "The top of 'SCENT.' sits at y≈185, just inside the top 200px Reels UI zone.", "fix": "Move SCENT. down to start at y≥230 (for example a baseline at about 360)."},
+    {"t": "4.5-15s", "severity": "medium", "area": "photo_usage_quality / art direction", "issue": "The same front.png is the hero in shots 2, 3, 4 and 5. Only 4 of the 9 tiles are used (cap-macro, front, profile, top). The match-cut continuity is good, but the spot feels repetitive and adds nothing visually after 4.5s.", "fix": "Use three-quarter-l or three-quarter-r, or low-angle, for the drop (shot 4), and keep front for the final signature frame only. Add back or low-angle as a fourth contact-sheet frame."},
+    {"t": "12.75-15.0s", "severity": "low", "area": "motion_purpose_and_rhythm", "issue": "After the 'EAU DE PARFUM' line lands, the end card holds for about 2.25s with only a slow drift. That is acceptable, but nothing marks the final downbeats (13.04 and 14.04).", "fix": "Tie one last restrained event to the 14.04 downbeat, such as the rule extending a few px or a 1-2% settle of the photo frame, then hold."},
+    {"t": "4.6-7.5s", "severity": "low", "area": "typography", "issue": "The Montserrat captions ('01 / FORM', '02 / PROFILE', 'N° 03', '03 / 03') have about an 18px cap height, which is unreadable at phone size. 'N° 01 / NOIR' and 'N° 03 / 03 / 03' at y≈108 sit inside the top Reels UI zone.", "fix": "Raise the captions to at least 24-26px with the tracking kept, and move the folio row to y≥220. Alternatively, accept them as texture but make sure nothing needs to be read there."},
+    {"t": "8.0s", "severity": "low", "area": "music_sync", "issue": "The bass onset measures at 8.057s, and the musical grid runs about 33ms (1 frame) behind the video grid. The visual hit at frame 240 therefore lands about 1.7 frames early.", "fix": "Optionally shift musicStartSec to 7.96-7.97s (about 1 frame earlier), so the bass drop and downbeats land exactly on frames 240, 255 and so on."}
+  ],
+  "strengths": [
+    "The match cuts are precise: the bottle window at 4.47s lands exactly in the contact-sheet lead frame at 4.5s, and the lead frame scales up into the drop frame from 7.6s to 8.0s.",
+    "The signature end page (11-15s) is clean and well spaced. It has the NOIR wordmark in wide-tracked Cormorant, a silver rule and the tagline, all within the safe zones.",
+    "The letter cut-ins are locked to the beats, the black and off-white palette is disciplined, and there is no glow, smoke, particles, 3D or gradients."
+  ]
+}
