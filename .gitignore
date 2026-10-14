@@ -10,3 +10,4 @@ out/render.log
 .promptible/vframes
 .promptible/fframes
 out/form-test-hook.mp4
+__pycache__/
