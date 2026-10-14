@@ -43,7 +43,7 @@ export const Finale: React.FC<{f: number}> = ({f}) => {
       </AbsoluteFill>
       <AbsoluteFill style={{transform: `scale(${mix(1.06, 1, lock) * (1 + kick * 0.012)})`}}>
         {'FORM'.split('').map((ch, i) => (
-          <div key={i} style={{position: 'absolute', left: W / 2 + (i - 1.5) * LETTER_BOX * mix(1.08, 1, lock) - LETTER_BOX / 2, top: WORD_Y, width: LETTER_BOX, textAlign: 'center', fontFamily: DISPLAY, fontSize: 330, lineHeight: 1, color: K.white}}>
+          <div key={i} style={{position: 'absolute', left: W / 2 + (i - 1.5) * LETTER_BOX * mix(1.05, 1, lock) - LETTER_BOX / 2, top: WORD_Y, width: LETTER_BOX, textAlign: 'center', fontFamily: DISPLAY, fontSize: 330, lineHeight: 1, color: K.white}}>
             {ch}
           </div>
         ))}

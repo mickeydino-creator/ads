@@ -2,25 +2,22 @@
   "hard_failures": [],
   "scores": {
     "concept_and_art_direction": 9,
-    "typography": 8,
-    "animation_density_and_choreography": 8,
+    "typography": 9,
+    "animation_density_and_choreography": 9,
     "ui_motion": 9,
-    "transitions": 8,
+    "transitions": 9,
     "background_system": 8,
     "sound_sync": 8,
-    "overall_polish": 8
+    "overall_polish": 9
   },
-  "average": 8.25,
-  "verdict": "revise",
+  "average": 8.75,
+  "verdict": "pass",
   "issues": [
-    "Round 2: all round-1 fixes verified. A full-video scan finds no off-palette (bluish) pixels. The gray dip at 11.0s is gone, the chrome stays through 10.0s, the centre is never blank at 10.4-10.6s, the 'EXPERIENCES.' full stop is flush and orange on 14.5s, the SEE THE WORK pill parks below the grid, and the shuffle cards stay below y=240. The items below are what still holds the average under 8.5.",
-    "11.53-11.75s (frames 346-352): the in-between frames of the shape->letter reveal are messy. The rotating black square sits on top of the F as a black blob at frame 350, and the triangle and R overlap into a star-like shape at 352-353. Clip each shape to its letter's bounding box, or let the shape exit fully (scale <30%) before the letter's mask passes 50%, so each frame reads as either a shape or a letter.",
-    "12.0s (frame 360): an orange sliver of the diamond is still visible behind the M after FORM resolves. An orange sliver also sits inside the O counter at 11.63-11.8s. Kill the shapes' remnants at 100% of the letter reveal.",
-    "6.9-7.35s: the cream DESIGN marquee runs behind the cream half-disc in the same color, so the tops of E/S/I/G merge into the disc and the word loses its shape (frame 215 reads 'DESIG' with a fused top edge). Give the half-disc a 3-4px black stroke where it overlaps the type, or tint the marquee type (warm white text with the disc in gray or black), so the type-behind reads as layering rather than merging.",
-    "12.75-13.0s: the black field has fully covered the frame by ~12.83s, so the 13.0s 'lock' has almost no visual event (frame diff ~1). Its new snap is only +4.8 dB. Add a visible lock beat at 390, e.g. FORM tracking snaps tighter by 2-4%, STUDIO kicks 6px, or a hairline flash, and push the snap transient to ~+8 dB so the lock reads as a hit.",
-    "2.05-2.75s: 'NOT HERE.' holds for ~0.7s with only dots and the underline moving. Add a half-beat accent at 2.5s, e.g. the underline stretching to full width, the period hopping, or HERE. skewing 3 degrees and snapping back, to keep the 0.5-1.5s transformation rhythm tight.",
-    "11.2-11.5s: the calm moment is now clean but almost motionless (mean frame diff <1). That is fine as a breath, but let the grid drift or an underline draw continue through it so it reads as designed stillness rather than a stall.",
-    "Background system: the grid, dashed rings, hatch blocks and drifting dots are consistent but mostly static per shot. One choreographed background move per shot, e.g. the dashed ring rotating on the beat, the hatch panel sliding with the scene change, or the grid scaling with the 10.0s converge, would earn the 'dynamic animated background' requirement more clearly.",
-    "Audio is acceptable. Peak is -2.8/-3.2 dBFS and mean -12 dB. Stereo L/R correlation is 0.976 with side ~-19 dB below mid, so the Haas widening is audible but subtle. Onsets land at 1.0, 3.0, 6.0, 9.97, 12.5 and 14.5s, and the tail decays from ~14.78s to -44 dB at 14.98s and silence at 15.0s. The ring-out is only ~200ms after a renewed swell at 14.7s; starting the decay on the 14.5s boom (no swell after) would feel more final. The extra 19ms in the AAC stream is silent (<-100 dB), so it's not a defect."
+    "Round 3: the round-2 items are verified as fixed. The 11.5-12.0s reveal is now clean: frames 345-360 each show only shapes or only letters, there are no orange or black remnants, and a full scan finds no off-palette pixels. The DESIGN type reads as layered behind the stroked half-disc (frame 215). HERE. skews and the underline extends at 2.2-2.4s. The dashed ring steps on every beat, the grid zooms on the 1.0s cut and the 10.0s converge, the shapes keep rotating through the calm, and the lock at 13.0s now reads visually (frame diff 11.4 at frame 390). The remaining items are optional polish.",
+    "13.0s (frame 390): the wordmark jumps to the wide 8% tracking on 390 and then tightens, so for one frame it visibly un-locks before locking, and at 390 the F and M sit within ~20px of the frame edges. Optional: start the wide tracking 2-3 frames earlier, during the 12.9s black-field settle, so 390 is purely the snap shut.",
+    "13.0s audio: the lock snap and clap is now +5.5-6 dB over the bed (-17 to -10.7 dB). That is audible but still softer than the 10.0s and 12.5s hits (+10 dB). Optional: 2-3 dB more transient on the clap, or duck the bed for 100ms before it.",
+    "2.23s: the HERE. skew has no sound accent (+0.7 dB) and lands ~1 frame before the 2.25s 8th note. Optional: snap it to frame 68 and add a small tick or zip.",
+    "14.5-15.0s: the boom holds at -10 to -13 dB until ~14.78s, then decays to -44 dB at 14.92s, -60 dB at 14.98s and silence at 15.0s. That is clean. The AAC tail past 15.0s is silent (<-100 dB). Peak -2.8/-3.0 dBFS and mean -12.4 dB are fine.",
+    "Background system: it is now choreographed (the ring steps on the beat, the grid zooms on the major cuts), but the hatch blocks and drifting dots stay generic within each shot. A further idea, not required: slide the hatch panels with each scene wipe."
   ]
 }

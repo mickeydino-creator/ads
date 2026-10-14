@@ -141,10 +141,10 @@ export const Hook: React.FC<{f: number}> = ({f}) => {
           </div>
           {f >= h.here ? (
             <div style={{overflow: 'hidden', height: 470}}>
-              <div style={{fontFamily: DISPLAY, fontSize: 470, lineHeight: 1, color: K.orange, transform: `translateY(${(1 - hereIn) * -480}px) skewX(${f >= 67 ? -8 * Math.exp(-(f - 67) / 3) : 0}deg)`}}>HERE.</div>
+              <div style={{fontFamily: DISPLAY, fontSize: 470, lineHeight: 1, color: K.orange, transform: `translateY(${(1 - hereIn) * -480}px) skewX(${f >= 68 ? -8 * Math.exp(-(f - 68) / 3) : 0}deg)`}}>HERE.</div>
             </div>
           ) : null}
-          <div style={{margin: '18px auto 0', width: lerp(f, 67, 73, 620, 940, ez.out), height: 14, backgroundColor: K.white, transform: `scaleX(${lerp(f, 60, 68, 0, 1)})`, transformOrigin: 'left'}} />
+          <div style={{margin: '18px auto 0', width: lerp(f, 68, 74, 620, 940, ez.out), height: 14, backgroundColor: K.white, transform: `scaleX(${lerp(f, 60, 68, 0, 1)})`, transformOrigin: 'left'}} />
         </div>
       ) : null}
 
