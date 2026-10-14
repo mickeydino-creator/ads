@@ -8,3 +8,5 @@ out/render.log
 .promptible/eframes
 .promptible/tiles.jpg
 .promptible/vframes
+.promptible/fframes
+out/form-test-hook.mp4

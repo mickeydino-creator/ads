@@ -1,0 +1,60 @@
+{
+  "fps": 30,
+  "durationInFrames": 450,
+  "bpm": 120,
+  "beat": 15,
+  "s2": 90,
+  "s3": 180,
+  "s4": 300,
+  "s5": 390,
+  "hook": {
+    "slam": 0,
+    "split": 8,
+    "browser": 15,
+    "sweep": 22,
+    "flip": 30,
+    "strike": 38,
+    "not": 45,
+    "here": 52,
+    "shatter": 44,
+    "wipe": 75
+  },
+  "build": {
+    "frame": 90,
+    "nav": 105,
+    "hero": 112,
+    "image": 120,
+    "button": 128,
+    "cards": [
+      135,
+      139,
+      143
+    ],
+    "footer": 150,
+    "click": 160
+  },
+  "transform": {
+    "expand": 180,
+    "typeSwap": 195,
+    "shuffle": 210,
+    "scroll": 225,
+    "morph": 240,
+    "wipe": 255,
+    "reflow": 262,
+    "collapse": 285
+  },
+  "signature": {
+    "converge": 300,
+    "shapes": 318,
+    "calm": 330,
+    "form": 345,
+    "studio": 360
+  },
+  "finale": {
+    "lock": 390,
+    "accent": 395,
+    "line1": 405,
+    "line2": 420,
+    "button": 435
+  }
+}

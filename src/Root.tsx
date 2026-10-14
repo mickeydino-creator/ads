@@ -6,6 +6,8 @@ import {NoirEditorial} from './editorial/NoirEditorial';
 import ET from './editorial/timeline.json';
 import {VantaAd} from './vanta/VantaAd';
 import VT from './vanta/timeline.json';
+import {FormAd} from './form/FormAd';
+import FT from './form/timeline.json';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -31,6 +33,14 @@ export const RemotionRoot: React.FC = () => {
       component={VantaAd}
       durationInFrames={VT.durationInFrames}
       fps={VT.fps}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="FormAd"
+      component={FormAd}
+      durationInFrames={FT.durationInFrames}
+      fps={FT.fps}
       width={1080}
       height={1920}
     />
