@@ -1,37 +1,34 @@
 {
-  "round": 3,
+  "round": 4,
   "hard_failures": [],
   "scores": {
-    "concept_and_art_direction": 8,
+    "concept_and_art_direction": 9,
     "kinetic_typography": 8,
-    "ui_choreography": 8,
+    "ui_choreography": 9,
     "transitions_continuity": 9,
     "easing_and_timing": 8,
     "sound_sync": 9,
     "palette_restraint": 9,
-    "overall_polish": 8
+    "overall_polish": 9
   },
-  "average": 8.375,
-  "verdict": "revise",
+  "average": 8.75,
+  "verdict": "pass",
   "measurements": {
     "video": "1080x1920, 30fps, 15.000s",
-    "audio_as_delivered_mp4": "15.019s stereo; volumedetect max -1.6 dB per channel, mean -12.0 dB; numpy sample peak -1.76 dBFS per channel; ebur128 true peak -1.1 dBFS. No clipping risk.",
-    "onsets_spectral_flux_x_median": "6.0s drop 13.8 (RMS -14.3 dB build to -7.6 dB, +6.7 dB); 6.5s snap 14.2; 7.5s snap 12.7; 13.0s impact 9.8 (+3.4 dB). All aligned within 10 ms.",
-    "frame_diff": "Mean abs luma diff per frame at 135x240. Stretches under 0.5 for 6 or more frames: 10.9-11.1s (0.0-0.2) and 13.8-15.0s (0.1-0.3, a linear lockup scale, not frozen). Exactly static frames (<0.05) at 0.93-0.97s (text hold), 3.0s, 11.07s and 12.97s (single frames). 8.0-10.0s: 0.4-1.0 between hops, 2-3 on each 8th-note hop."
+    "audio_as_delivered_mp4": "15.019s stereo; volumedetect max -1.6 dB per channel, mean -12.0 dB; sample peak -1.76 dBFS; ebur128 true peak -1.2 dBFS.",
+    "onsets_spectral_flux_x_median": "6.0s drop 13.5 (RMS -14.2 dB build to -7.6 dB); 6.5s snap 13.9; 7.5s snap 12.6; 9.0s snap and boom 10.8 (previously 6.7); 13.0s impact 9.9. All within 10 ms of target.",
+    "frame_diff": "Mean abs luma diff per frame at 135x240. The only stretch under 0.5 for 6 or more frames is the 13.8-15.0s end-card hold (0.1-0.3, linear scale, never frozen). The 10.9-11.1s lull is gone (now 1.2-3.2 per frame). 9.0s kick reads 3.2. Exactly static frames only at 0.93-0.97s (deliberate text hold), 3.0s and 12.97s (single frames)."
   },
   "verified_fixes": [
-    "7.53-7.70s: the morph is now clean and sequential. Grid content fades out, ghost cards leave, then single node labels fade in. No doubled icons or labels in frames 224-235.",
-    "12.4-13.0s: the knob wipe grows continuously and covers the frame on 12.93s. The cut to the black end frame lands on 13.0s, so there is no white hold.",
-    "13.07-13.27s: the end letters reveal 1 frame apart. Mid-reveal clipped letters show for only a single frame each.",
-    "14.5s: the underline extends on the beat, and the lockup scale continues to the last frame.",
-    "Reminder card text now sits around y 1480-1530, above the bottom caption zone. Only the lower card corner reaches about y 1640.",
-    "8-10s: done connector segments now have a thicker purple fill trailing the token.",
-    "Audio master: delivered true peak is -1.1 dBFS; the build is ducked and the drop and impact contrast clearly."
+    "10.67-11.2s: the app header lands around 10.73s. TASKS AUTOMATED snaps in at full opacity with an overshoot from about 10.87s and its counter rolls immediately. HOURS SAVED follows at 11.0s. Panels and the workflow list build continuously through 11.5s.",
+    "9.0s: the light-to-dark cut, the stack kick and the underline drawing under 'Zero busywork.' land together with an audible snap and boom.",
+    "10.6-12.3s: flat purple-on-purple rounded panels drift behind the app at different rates. This adds depth and the 'expanding shapes' from the brief, with no gradients or glow.",
+    "Everything verified in round 3 still holds: the clean sequential morph at 7.5s, no white hold at 13.0s, the end-letter reveal 1 frame apart, the underline beat at 14.5s, safe-zone positions, and a true peak of -1.2 dBFS."
   ],
   "issues": [
-    "10.85-11.15s: still the weakest moment (diff 0.0-0.2, exactly static at 11.07s). The app shell sits empty while the first stat ghosts in at low opacity ('2,430' at about 15% alpha at 11.0s). The described spring snap does not read on the 11.0 beat. Bring TASKS AUTOMATED in at full opacity with a scale of about 0.85 to 1.04 to 1.0 over 6-8 frames, landing exactly on frame 330, and start the counter roll at the same moment.",
-    "8.0-10.0s: the sync section is now alive but low-amplitude. Between hops the frame diff is 0.4-1.0, versus 20-40 at the 6.5/7.5s snaps. For a more studio-grade arc, add one bigger beat event at 9.0s, such as a whole-stack 1.5% scale kick with a fast settle, or the header 'Zero busywork.' underline drawing in on that downbeat.",
-    "11.0-12.0s: the app reveal sits on a flat purple field with the device frame centered and no secondary motion. Add a subtle counter-drift between the app card and the background, such as a few large purple-on-purple shape panels sliding behind at a different speed. That would deliver the brief's 'expanding shapes and camera-like 2D moves' more fully.",
-    "Optional: 13.8-15.0s is a calm hold (diff 0.1-0.3). It's acceptable for an end card, but easing the 4% scale out (rather than linear) would make the 14.5s underline beat land as the final accent."
+    "Optional, 13.8-15.0s: the end card is a calm linear 4% scale (diff 0.1-0.3). An ease-out on the scale would let the 14.5s underline beat read as the final accent.",
+    "Optional, 10.87s: TASKS AUTOMATED enters cropped by the app's left edge for 1-2 frames ('ASKS AUTOMATED', '0'). Masking it to the panel bounds, or starting the spring from center scale, would be cleaner.",
+    "Optional, 1.0-1.05s: the TOO/MANY overlap frame reads as a collision for 2 frames. A 1-frame tighter mask handoff would sharpen it.",
+    "Optional, 8.0-10.0s: between hops the motion is still gentle (0.4-1.0). It's acceptable now that 9.0s carries a strong accent."
   ]
 }
