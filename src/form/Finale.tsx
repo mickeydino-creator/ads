@@ -50,11 +50,13 @@ export const Finale: React.FC<{f: number}> = ({f}) => {
         <StudioReveal f={f} start={0} color={K.orange} done />
         {/* travelling accent -> rule */}
         <div style={{position: 'absolute', left: x0, top: RULE_Y, width: Math.max(0, x1 - x0), height: 14, backgroundColor: K.orange}} />
-        <Words f={f} start={fin.line1} text="WE DON'T JUST BUILD WEBSITES." h={58} style={{position: 'absolute', top: RULE_Y + 50, width: W, fontFamily: UI, fontWeight: 700, fontSize: 46, letterSpacing: '0.04em', color: K.white}} />
+        <Words f={f} start={fin.line1} text="WE DON'T JUST BUILD WEBSITES." h={66} style={{position: 'absolute', top: RULE_Y + 46, width: W, fontFamily: UI, fontWeight: 700, fontSize: 52, letterSpacing: '0.04em', color: K.white}} />
         <Words f={f} start={fin.line2} text="WE BUILD" step={3} h={140} style={{position: 'absolute', top: RULE_Y + 130, width: W, fontFamily: DISPLAY, fontSize: 140, lineHeight: 1, color: K.white}} />
-        <Words f={f} start={fin.line2 + 6} text="EXPERIENCES" h={140} style={{position: 'absolute', top: RULE_Y + 270, width: W - 70, fontFamily: DISPLAY, fontSize: 140, lineHeight: 1, color: K.orange}} />
-        {/* the final square: the full stop of the whole spot */}
-        <div style={{position: 'absolute', left: 872, top: RULE_Y + 370, width: 38, height: 38, backgroundColor: K.white, transform: `scale(${end}) rotate(${(1 - end) * 90}deg)`}} />
+        <div style={{position: 'absolute', top: RULE_Y + 270, width: W, display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+          <Words f={f} start={fin.line2 + 6} text="EXPERIENCES" h={140} style={{fontFamily: DISPLAY, fontSize: 140, lineHeight: 1, color: K.orange}} />
+          {/* the full stop of the whole spot, flush to the word, snapping on 14.5 s */}
+          <div style={{width: 34, height: 34, marginLeft: 8, marginBottom: 14, backgroundColor: K.orange, transform: `scale(${end}) rotate(${(1 - end) * 90}deg)`}} />
+        </div>
       </AbsoluteFill>
     </AbsoluteFill>
   );

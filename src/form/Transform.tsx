@@ -76,8 +76,8 @@ const ArtSection: React.FC<{f: number}> = ({f}) => {
   const w = mix(IMG.w, W, grow);
   const h = mix(IMG.h, H, grow);
   const s = mix(0.62, 1.7, grow);
-  const wordX = lerp(f, t.typeSwap - 6, 252, W + 40, -2300, ez.lin);
-  const front = f >= 212;
+  const wordX = lerp(f, t.typeSwap, 252, W + 40, -2300, ez.lin);
+  const front = false; // the word always travels behind the black disc and the white half-disc
   const circleR = 260 * s * (1 - 0.35 * lerp(f, 206, 214, 0, 1, ez.inOut));
   const Word = (
     <div style={{position: 'absolute', left: wordX, top: 1060, fontFamily: DISPLAY, fontSize: 600, lineHeight: 1, color: front ? K.black : K.white, whiteSpace: 'nowrap'}}>DESIGN · MOTION</div>
@@ -110,9 +110,9 @@ const ArtSection: React.FC<{f: number}> = ({f}) => {
 
 // cards that trade places over the art (on the beat)
 const SHUFFLE = [
-  {x: 70, y: 300},
-  {x: 400, y: 260},
-  {x: 730, y: 300},
+  {x: 70, y: 400},
+  {x: 400, y: 360},
+  {x: 730, y: 400},
 ];
 const ShuffleCards: React.FC<{f: number}> = ({f}) => {
   if (f < 202) return null;
@@ -124,7 +124,7 @@ const ShuffleCards: React.FC<{f: number}> = ({f}) => {
         const from = SHUFFLE[i];
         const to = SHUFFLE[(i + 1) % 3];
         const x = mix(from.x, to.x, swap);
-        const y = mix(from.y, to.y, swap) - Math.sin(swap * Math.PI) * (i === 2 ? -160 : 160);
+        const y = mix(from.y, to.y, swap) - Math.sin(swap * Math.PI) * (i === 2 ? -120 : 120);
         return (
           <div
             key={c.n}
@@ -150,9 +150,9 @@ const PROJECTS = ['NOVA', 'ARC', 'PULSE', 'ORBIT'];
 const WorkSection: React.FC<{f: number; top: number}> = ({f, top}) => {
   const morph = lerp(f, t.morph, t.morph + 14, 0, 1, ez.inOut);
   // tile 3 (PULSE) holds the circle that becomes the button
-  const tile = {x: 70, y: 560 + 470};
+  const tile = {x: 70, y: 560 + 450};
   const c0 = {x: tile.x + 205, y: tile.y + 200, w: 230, h: 230};
-  const c1 = {x: W / 2, y: 1500, w: 560, h: 110};
+  const c1 = {x: W / 2, y: 1525, w: 560, h: 110};
   const bx = mix(c0.x, c1.x, morph);
   const by = mix(c0.y, c1.y, morph);
   const bw = mix(c0.w, c1.w, morph);
@@ -160,17 +160,17 @@ const WorkSection: React.FC<{f: number; top: number}> = ({f, top}) => {
   return (
     <div style={{position: 'absolute', left: 0, top, width: W, height: H}}>
       <Backdrop f={f} start={t.scroll} base={K.black} dark ring={{x: 960, y: 260, r: 120}} chips={false} />
-      <div style={{position: 'absolute', left: 70, top: 300, fontFamily: DISPLAY, fontSize: 150, lineHeight: 0.9, color: K.white}}>
+      <div style={{position: 'absolute', left: 70, top: 290, fontFamily: DISPLAY, fontSize: 120, lineHeight: 0.92, color: K.white}}>
         SELECTED
         <br />
         <span style={{color: K.orange}}>WORK</span>
       </div>
       {PROJECTS.map((p, i) => {
         const x = 70 + (i % 2) * 480;
-        const y = 560 + Math.floor(i / 2) * 470;
+        const y = 560 + Math.floor(i / 2) * 450;
         const shift = morph * (i % 2 ? 40 : -40);
         return (
-          <div key={p} style={{position: 'absolute', left: x + shift, top: y, width: 450, height: 440, border: `3px solid ${K.white}`, backgroundColor: i === 0 ? K.orange : K.black, overflow: 'hidden'}}>
+          <div key={p} style={{position: 'absolute', left: x + shift, top: y, width: 450, height: 420, border: `3px solid ${K.white}`, backgroundColor: i === 0 ? K.orange : K.black, overflow: 'hidden'}}>
             {i === 1 ? <div style={{position: 'absolute', inset: 40, backgroundImage: `repeating-linear-gradient(90deg, ${K.white} 0 6px, transparent 6px 28px)`, opacity: 0.5, transform: `translateX(${(f % 28) - 28}px)`}} /> : null}
             {i === 3 ? <div style={{position: 'absolute', left: 90, top: 70, width: 270, height: 270, border: `14px solid ${K.orange}`, transform: `rotate(${f * 2}deg)`}} /> : null}
             {i === 0 ? <div style={{position: 'absolute', left: 60, top: 60, width: 330, height: 200, backgroundColor: K.black, transform: `skewX(${Math.sin(f / 12) * 10}deg)`}} /> : null}

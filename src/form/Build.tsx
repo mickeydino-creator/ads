@@ -87,7 +87,7 @@ export const SiteContent: React.FC<{f: number; build?: boolean}> = ({f, build = 
       </Fly>
       <Fly f={f} start={st(b.image)} rect={R.image} from={{dx: 1000, dy: 160, rot: 14, sx: 1.5, sy: 0.6}} reveal="right">
         <div style={{position: 'absolute', inset: 0, border: `3px solid ${K.black}`, overflow: 'hidden'}}>
-          <HeroArt f={f} scale={0.62} />
+          <HeroArt f={f} scale={0.62} spin={lerp(f, 164, 176, 0, 180, ez.inOut)} />
         </div>
       </Fly>
       <Fly f={f} start={st(b.button)} rect={R.button} from={{dx: 0, dy: 120, rot: -10, sx: 0.2, sy: 0.2}}>
@@ -98,11 +98,17 @@ export const SiteContent: React.FC<{f: number; build?: boolean}> = ({f, build = 
       <Fly f={f} start={st(b.footer)} rect={R.cols} from={{dx: 700, dy: 0, rot: 0}} reveal="right">
         <TextLines n={4} />
       </Fly>
-      {CARDS.map((c, i) => (
-        <Fly key={c.n} f={f} start={st(b.cards[i])} rect={R.cards[i]} from={{dx: (i - 1) * 200, dy: 900, rot: (i - 1) * 22 + 8, sy: 1.4}}>
-          <Card n={c.n} title={c.title} tone={c.tone} />
-        </Fly>
-      ))}
+      {CARDS.map((c, i) => {
+        // hop on the 8th notes after the build completes
+        const hop = [165, 172.5].reduce((a, b0) => a + (f >= b0 + i * 2 ? Math.exp(-(f - b0 - i * 2) / 3) : 0), 0);
+        return (
+          <Fly key={c.n} f={f} start={st(b.cards[i])} rect={R.cards[i]} from={{dx: (i - 1) * 200, dy: 900, rot: (i - 1) * 22 + 8, sy: 1.4}}>
+            <div style={{position: 'absolute', inset: 0, transform: `translateY(${-hop * 26}px)`}}>
+              <Card n={c.n} title={c.title} tone={c.tone} />
+            </div>
+          </Fly>
+        );
+      })}
     </>
   );
 };

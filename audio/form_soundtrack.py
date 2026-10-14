@@ -174,6 +174,8 @@ kicks.append(sec(fn["lock"]))
 put(music, boom(), sec(fn["lock"]), 0.9)
 put(music, stab([440.0, 523.3, 659.3, 880.0], 0.6), sec(fn["lock"]), 0.4)
 groove(sec(fn["lock"]) + BEAT, sec(fn["button"]), gain=0.85)
+put(sfx, snap(), sec(fn["lock"]), 0.5)
+put(sfx, whoosh(0.3, 2000, 12000, 0.15), sec(fn["lock"]), 0.4, 0.4)
 put(sfx, whoosh(0.55, 1200, 10000, 0.5), sec(fn["accent"]), 0.35, -0.5)
 put(sfx, snap(), sec(fn["line1"]), 0.3)
 put(sfx, snap(), sec(fn["line2"]), 0.4)
@@ -181,6 +183,7 @@ put(music, kick(big=True), sec(fn["button"]), 1.0)
 kicks.append(sec(fn["button"]))
 put(music, stab([220.0, 440.0, 523.3, 659.3, 880.0], 0.5), sec(fn["button"]), 0.5)
 put(sfx, ding(1760), sec(fn["button"]), 0.15)
+put(music, boom(), sec(fn["button"]), 0.6)
 
 # ---------------- dynamics & master ----------------
 pump = np.ones(N)
@@ -193,11 +196,15 @@ music *= pump[:, None]
 for kt in kicks:
     put(music, kick(big=True), kt, 0.35)
 
+# widen the effects bus: right channel lags 11 ms
+d = int(0.011 * SR)
+sfx[:, 1] = np.concatenate([np.zeros(d), sfx[:-d, 1]])
 mix = music + sfx
-# stop exactly on the 15.0 s beat: 60 ms tail fade into the last frame
-tail = int(0.06 * SR)
-mix[-tail:] *= np.linspace(1, 0, tail)[:, None]
-mix = np.tanh(mix * 0.9) / np.tanh(0.9)
+# the last accent rings out from 14.5 s and settles to silence on the 15.0 s beat
+tt = np.arange(N) / SR
+ring = np.clip((tt - sec(fn["button"]) - 0.1) / (DUR - sec(fn["button"]) - 0.1), 0, 1)
+mix *= (np.cos(ring * np.pi / 2) ** 1.5)[:, None]
+mix = np.tanh(mix * 0.7) / np.tanh(0.7)
 mix /= np.max(np.abs(mix)) / 10 ** (-3.0 / 20)
 
 dest = ROOT / "public" / "music" / "form-soundtrack.wav"

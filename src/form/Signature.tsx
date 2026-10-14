@@ -4,7 +4,7 @@ import T from './timeline.json';
 import {Backdrop} from './Backdrop';
 import {CARDS, } from './Build';
 import {reflowRects} from './Transform';
-import {Card, DISPLAY, K, MONO, Pill, W, ez, lerp, mix, pop} from './system';
+import {BrowserChrome, Card, DISPLAY, K, MONO, Pill, W, ez, lerp, mix, pop} from './system';
 import {} from './system';
 
 // 10-13 s: every component of the phone layout accelerates to the centre and
@@ -60,18 +60,40 @@ const Shape: React.FC<{kind: string; color: string; size: number}> = ({kind, col
 
 export const Signature: React.FC<{f: number}> = ({f}) => {
   const L = reflowRects(1);
-  const conv = lerp(f, s.converge, s.shapes, 0, 1, ez.in);
+  const conv = lerp(f, s.converge, 318, 0, 1, ez.in);
   const center = {x: W / 2, y: SHAPE_Y};
   const calm = lerp(f, s.calm - 4, s.calm + 8, 1, 0, ez.inOut);
   // elements of the phone layout, in screen coordinates
   const items = [
-    {x: L.win.x, y: L.win.y, w: L.win.w, h: L.win.h, node: <div style={{position: 'absolute', inset: 0, border: `4px solid ${K.black}`, borderRadius: 56}} />},
-    {x: L.win.x + L.title.x, y: L.win.y + L.title.y, w: 460, h: 80, node: <div style={{fontFamily: DISPLAY, fontSize: 74, color: K.black, whiteSpace: 'nowrap'}}>EVERY SCREEN.</div>},
+    {
+      x: L.win.x,
+      y: L.win.y,
+      w: L.win.w,
+      h: L.win.h,
+      node: (
+        <div style={{position: 'absolute', inset: 0, border: `4px solid ${K.black}`, borderRadius: 56, overflow: 'hidden', backgroundColor: K.white}}>
+          <BrowserChrome url="form.studio · mobile" h={60} />
+          <div style={{position: 'absolute', left: L.label.x, top: L.label.y, fontFamily: MONO, fontSize: 20, color: K.gray}}>{`${Math.round(L.win.w * 1.5)}px`}</div>
+        </div>
+      ),
+    },
+    {
+      x: L.win.x + L.title.x,
+      y: L.win.y + L.title.y,
+      w: 460,
+      h: 80,
+      node: (
+        <div style={{fontFamily: DISPLAY, fontSize: 74, lineHeight: 0.92, color: K.black, whiteSpace: 'nowrap'}}>
+          EVERY SCREEN<span style={{color: K.orange}}>.</span>
+        </div>
+      ),
+    },
     ...CARDS.map((c, i) => ({x: L.win.x + L.cards[i].x, y: L.win.y + L.cards[i].y, w: L.cards[i].w, h: L.cards[i].h, node: <Card n={c.n} title={c.title} tone={c.tone} />})),
     {x: L.win.x + L.pill.x, y: L.win.y + L.pill.y, w: 360, h: 78, node: <Pill label="SEE THE WORK" />},
   ];
   return (
     <AbsoluteFill>
+      <AbsoluteFill style={{backgroundColor: K.white}} />
       <AbsoluteFill style={{opacity: calm}}>
         <Backdrop f={f} start={T.transform.wipe} base={K.white} ring={{x: 150, y: 1650, r: 140}} />
       </AbsoluteFill>
@@ -91,7 +113,7 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
         />
       ) : null}
       {/* converge */}
-      {f < s.shapes + 2
+      {f < 320
         ? items.map((it, i) => {
             const cx = it.x + it.w / 2;
             const cy = it.y + it.h / 2;
@@ -131,8 +153,7 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
                     position: 'absolute',
                     left: x - size / 2,
                     top: SHAPE_Y - size / 2,
-                    transform: `scale(${inP * breathe * mix(1, 1.9, open)}) rotate(${(1 - inP) * 120}deg)`,
-                    opacity: 1 - open,
+                    transform: `scale(${inP * breathe * (1 - lerp(f, start + 1, start + 7, 0, 1, ez.in))}) rotate(${(1 - inP) * 120 + open * 90}deg)`,
                   }}
                 >
                   <Shape kind={sh.kind} color={sh.color} size={size} />
@@ -148,8 +169,8 @@ export const Signature: React.FC<{f: number}> = ({f}) => {
                       fontFamily: DISPLAY,
                       fontSize: 330,
                       lineHeight: 1,
-                      color: K.white,
-                      mixBlendMode: 'difference',
+                      color: f >= 370 ? K.white : K.black,
+                      mixBlendMode: f >= 370 ? 'difference' : 'normal',
                       transform: `scale(${lerp(f, 360, 390, 1, 1.05, ez.lin)})`,
                       transformOrigin: `${W / 2 - (letterCx(i) - LETTER_BOX / 2)}px 400px`,
                       clipPath: clipFor(sh.kind, Math.min(1, open * 1.15)),
