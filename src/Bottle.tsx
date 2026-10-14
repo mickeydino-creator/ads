@@ -162,7 +162,7 @@ export const Bottle: React.FC<{labelMap: THREE.Texture; frame: number}> = ({labe
   const dropletMesh = useMemo(() => {
     const geo = new THREE.SphereGeometry(1, 14, 10);
     const mat = new THREE.MeshPhysicalMaterial({
-      color: '#0b0c0e',
+      color: '#4a4e55',
       roughness: 0.0,
       metalness: 0,
       clearcoat: 1,

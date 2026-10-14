@@ -43,8 +43,41 @@ const CameraRig: React.FC<{frame: number}> = ({frame}) => {
 };
 
 // ---------- Studio light rig, re-baked into the environment every frame ----------
-const panel = (w: number, h: number) => {
-  const mat = new THREE.MeshBasicMaterial({color: COOL_WHITE.clone(), side: THREE.DoubleSide});
+// Softbox diffusion: brightness falls off toward the panel edges, so a flat
+// glass face catches a graded sheen instead of a hard white bar.
+let softboxMap: THREE.Texture | null = null;
+const getSoftboxMap = () => {
+  if (softboxMap) return softboxMap;
+  const c = document.createElement('canvas');
+  c.width = 128;
+  c.height = 128;
+  const ctx = c.getContext('2d')!;
+  const gx = ctx.createLinearGradient(0, 0, 128, 0);
+  gx.addColorStop(0, 'rgba(255,255,255,0)');
+  gx.addColorStop(0.5, 'rgba(255,255,255,1)');
+  gx.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 128, 128);
+  ctx.fillStyle = gx;
+  ctx.fillRect(0, 0, 128, 128);
+  ctx.globalCompositeOperation = 'multiply';
+  const gy = ctx.createLinearGradient(0, 0, 0, 128);
+  gy.addColorStop(0, '#000');
+  gy.addColorStop(0.25, '#fff');
+  gy.addColorStop(0.75, '#fff');
+  gy.addColorStop(1, '#000');
+  ctx.fillStyle = gy;
+  ctx.fillRect(0, 0, 128, 128);
+  softboxMap = new THREE.CanvasTexture(c);
+  return softboxMap;
+};
+
+const panel = (w: number, h: number, soft = false) => {
+  const mat = new THREE.MeshBasicMaterial({
+    color: COOL_WHITE.clone(),
+    side: THREE.DoubleSide,
+    map: soft ? getSoftboxMap() : null,
+  });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
   return mesh;
 };
@@ -62,9 +95,9 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
   const rig = useMemo(() => {
     const envScene = new THREE.Scene();
     envScene.background = new THREE.Color(0, 0, 0);
-    const sweep = panel(0.32, 9);
-    const key = panel(1.8, 7);
-    const fill = panel(1.2, 6);
+    const sweep = panel(0.45, 9, true);
+    const key = panel(2.4, 7, true);
+    const fill = panel(1.6, 6, true);
     const rimL = panel(0.6, 9);
     const rimR = panel(0.6, 9);
     const front = panel(3.5, 2.5);
@@ -81,10 +114,10 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
     const f = frame;
     // Shot 1: a single narrow strip sweeps across the bottle edge in darkness.
     placeOnRing(rig.sweep, spline(f, [[0, 112], [90, 40], [150, 18], [450, 18]]), 6, 0);
-    setIntensity(rig.sweep, spline(f, [[0, 0], [8, 5], [90, 6], [150, 4.5], [450, 4.5]]));
+    setIntensity(rig.sweep, spline(f, [[0, 0], [8, 6], [90, 7], [150, 1.2], [450, 1.2]]));
     // Studio opens up from shot 2 onward.
     placeOnRing(rig.key, -62, 6, 0.6);
-    setIntensity(rig.key, spline(f, [[0, 0], [70, 0], [140, 0.85], [450, 0.85]]));
+    setIntensity(rig.key, spline(f, [[0, 0], [70, 0], [140, 0.6], [450, 0.6]]));
     placeOnRing(rig.fill, 75, 6, 0.4);
     setIntensity(rig.fill, spline(f, [[0, 0], [90, 0], [150, 0.7], [450, 0.7]]));
     // Rim strips behind the product: the crisp silver outline of the hero frame.
