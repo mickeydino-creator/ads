@@ -88,7 +88,8 @@ G = [196.0, 246.9, 293.7]
 
 # ---------------- 0-3 s: burst and type ----------------
 K(0, 1.0, big=True)
-put(music, boom(), 0, 0.7)
+put(music, boom(), 0, 1.0)
+put(music, clap(), 0, 0.6)
 put(sfx, whoosh(0.5, 2000, 12000, 0.08), 0, 0.5)
 put(music, stab(Am, 0.4), sec(o["press"]), 0.35)
 put(music, stab([329.6, 440.0, 523.3], 0.4), sec(o["play"]), 0.4)
@@ -153,11 +154,12 @@ while t < sec(w["moon"]) - 1e-6:
     b += 1
 put(music, boom(), sec(w["sun"]), 0.7)
 put(sfx, whoosh(0.4, 500, 9000, 0.5), sec(w["moon"]) - 0.2, 0.4, -0.3)
+K(sec(w["moon"]), 0.9, big=True)
+put(sfx, snap(), sec(w["moon"]), 0.5)
 
 # ---------------- 7.3-8.7 s: MIDNIGHT DRIVE (half-time night) ----------------
 put(music, pad([110.0, 164.8, 220.0, 261.6], sec(w["bass"] - w["moon"]) + 0.3), sec(w["moon"]), 0.35)
-for k, bt in enumerate([0, 2]):
-    K(sec(w["moon"]) + bt * BEAT, 0.8)
+K(sec(w["moon"]) + 2 * BEAT, 0.8)
 put(music, clap(), sec(w["moon"]) + BEAT * 1, 0.3)
 put(music, clap(), sec(w["moon"]) + BEAT * 3, 0.3)
 for k in range(8):

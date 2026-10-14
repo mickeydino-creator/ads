@@ -20,7 +20,7 @@ const letterY = (word: number) => (word === 0 ? 640 : 860);
 
 export const Open: React.FC<{f: number}> = ({f}) => {
   const burst = lerp(f, o.burst, o.burst + 14, 1, 0, ez.out);
-  const amp = mix(70, 620, burst) * (f < o.split ? 1 : lerp(f, o.split, o.split + 8, 1, 0.3));
+  const amp = mix(110, 820, burst) * (f < o.split ? 1 : lerp(f, o.split, o.split + 8, 1, 0.3));
   const stretch = (k: number) => lerp(f, o.split + k * 0.6, o.bars, 0, 1, ez.in);
   const radialAll = lerp(f, o.radial, o.radial + 12, 0, 1, ez.inOut);
   const iris = lerp(f, o.iris, o.iris + 10, 0, 1, ez.out);
@@ -53,12 +53,12 @@ export const Open: React.FC<{f: number}> = ({f}) => {
         const color = L.word === 0 ? P.white : L.c === '.' ? P.pink : P.green;
         // radial target
         const ang = (n / LETTERS.length) * Math.PI * 2 - Math.PI / 2 + f * 0.02;
-        const rx = IRIS.cx + Math.cos(ang) * 360;
-        const ry = IRIS.cy + Math.sin(ang) * 360;
+        const rx = IRIS.cx + Math.cos(ang) * 430;
+        const ry = IRIS.cy + Math.sin(ang) * 430;
         const rowX = 130 + n * 92;
         const bx = mix(rowX, rx, radial) + Math.cos(ang) * scatter * 900;
         const by = mix(960, ry, radial) + Math.sin(ang) * scatter * 900;
-        const barH = (120 + 300 * hash(n * 3 + Math.floor((f - o.bars) / 7.5))) * (0.75 + kick * 0.35) * mix(1, 0.55, radial);
+        const barH = (180 + 480 * hash(n * 3 + Math.floor((f - o.bars) / 7.5))) * (0.75 + kick * 0.35) * mix(1, 0.55, radial);
         if (isBar) {
           return (
             <div
@@ -104,7 +104,7 @@ export const Open: React.FC<{f: number}> = ({f}) => {
       {f >= o.iris ? (
         <div style={{position: 'absolute', left: IRIS.cx - IRIS.r * iris, top: IRIS.cy - IRIS.r * iris, width: IRIS.r * 2 * iris, height: IRIS.r * 2 * iris, borderRadius: '50%', overflow: 'hidden', backgroundColor: P.pink}}>
           <div style={{position: 'absolute', left: IRIS.r * iris - IRIS.r, top: IRIS.r * iris - IRIS.r, width: IRIS.r * 2, height: IRIS.r * 2, opacity: lerp(f, o.iris + 4, o.iris + 10, 0, 1)}}>
-            <AlbumArt art="neon" f={f} size={IRIS.r * 2} />
+            <AlbumArt art="neon" f={f} size={IRIS.r * 2} label={false} />
           </div>
         </div>
       ) : null}

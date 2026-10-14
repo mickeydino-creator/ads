@@ -1,0 +1,40 @@
+{
+  "hard_failures": [
+    "Hero line typography is broken: during the YOUR WORLD. hold (frames 330-363, 11.0-12.1s) the word renders as 'WORL D.' with a full word-space between L and D. During the YOUR SOUND. hold (frames 366-389, 12.2-13.0s) it renders as 'S OUND.'. The letter-swap morph leaves per-glyph slot widths from the old word, so the key line of the brief reads as misspelled for about 1.8s."
+  ],
+  "scores": {
+    "concept_and_art_direction": 8,
+    "typography": 6,
+    "animation_density_and_choreography": 7,
+    "ui_motion": 7,
+    "transitions_and_match_cuts": 8,
+    "identity_distinctness": 9,
+    "sound_sync": 8,
+    "overall_polish": 6
+  },
+  "average": 7.38,
+  "verdict": "revise",
+  "issues": [
+    {"t": "11.0-13.0s (f330-389)", "fix": "Recompute glyph x-positions from the target word's real advance widths (or morph whole words with a mask wipe) so the lines read 'WORLD.' and 'SOUND.' with no internal gap. Also keep the transitional frame at f364 (where 'W' and 'S' overlap and drop below the baseline) inside the line box."},
+    {"t": "2.5-3.1s (f76-92)", "fix": "The NEON wordmark on the circular disc is clipped by the circle mask to 'EON'. Either inset it inside the circle or fade it in only once the square art frame is formed (around f96)."},
+    {"t": "5.53s (f166)", "fix": "There is a single blank solid-purple frame between the player breakup and the colour-block composition, and it reads as a dropout. Carry at least one shape through it, such as the album stripes or the pink circle, so the break flows into the composition."},
+    {"t": "5.6-6.0s (f170-180)", "fix": "The 'TURN IT UP' composition is on screen for only about 8 frames before the cut to the sun world, so it is unreadable at phone speed. Hold it for 12-15 frames or remove the words and keep only the shapes."},
+    {"t": "3.37-4.27s and 4.53-5.13s", "fix": "There are two near-static stretches (frame MAD below 1.5) where only the progress thumb moves. Add rhythmic secondary motion on the beats at 3.5, 4.0 and 4.5s: art stripes pulsing, background rings stepping, track rows ticking in on beat."},
+    {"t": "7.23s (f217) and 8.67s (f260)", "fix": "The sun-to-moon and moon-to-bass cuts land off the 120 BPM grid (14.47 and 17.33 beats), so the 'music-driven' match cuts feel unsynced to the kick. Move them to f210 or f225 and f255 or f270, and give each one a dedicated whoosh-to-hit SFX. There is currently no distinct impact at 7.23s, only a small onset."},
+    {"t": "7.5-10.0s (f225-299)", "fix": "Outline display type collides with itself. In MIDNIGHT the outlined 'GH' glyphs overlap, and in the outlined BASS rows the stroked 'B' reads like a '$'. Increase the tracking on outline rows or switch them to a solid fill plus offset."},
+    {"t": "6.0-6.2s (f180-186) and 7.23-7.5s (f217-224)", "fix": "The now-playing cards enter from the bottom edge, partly cropped in the bottom 320px Reels UI zone. That is acceptable as motion, but make sure they settle at or above y~1480 and enter faster (6 frames or fewer) so nothing readable sits under the caption UI."},
+    {"t": "13.73-15.0s (f412-449)", "fix": "The disclaimer is accurate and safe-zone compliant (y 1448-1508) but small: about 24px line height in mid-grey. Raise it to about 30-32px and lighten it toward warm white at 70% opacity. Bring it in at f405 so it stays on screen for at least 1.5s."},
+    {"t": "13.0-15.0s", "fix": "The wavy ring outlines run through the 'MUSIC IN MOTION · PORTFOLIO CONCEPT' label at the top. Keep the ring inside a radius that clears the label, or put a black knockout behind the label."},
+    {"t": "0-3.0s", "fix": "Shot 1 lives in a narrow middle band with about 55% of the frame empty. Let the opening wave burst and the radial EQ scale toward the frame edges at f0 and f60 so the impacts hit at full-screen scale."},
+    {"t": "15.0s", "fix": "The AAC stream runs to 15.019s (silent past about 14.95s). Trim the audio to exactly 15.000s with '-t 15' / '-shortest' at mux."}
+  ],
+  "checks": {
+    "format": "1080x1920, 30fps, video 15.000s, audio 48kHz stereo 15.019s",
+    "audio_levels": "L peak -3.0 dB, R peak -2.9 dB, true peak -2.9 dBFS, integrated -12.7 LUFS, LRA 1.4 LU",
+    "onsets": "0.0s weak start onset (0.03s); 0.5s strong; 3.0, 6.0, 8.67 and 13.0s have a riser before and a +8 to +11 dB low-end hit after; 7.33s has no hit (visual cut at 7.23s, onset at 7.25s); 11.0s strong; 14.5s strong (pause-button hit)",
+    "ending": "Clean fade: -45 dB at 14.95s, digital silence at 15.0s",
+    "static_stretches": "No run of 8+ frames with MAD < 0.3. Low-motion runs (MAD < 1.5): 3.37-4.27s, 4.53-5.13s, 14.53-15.0s (end card, acceptable)",
+    "trademark": "No Spotify logo or logo-like mark found. The disclaimer reads 'Unofficial portfolio concept inspired by Spotify. Not affiliated with or endorsed by Spotify.', which is accurate.",
+    "distinctness_vs_form": "Strongly distinct: FORM uses Anton on warm-white and orange grids with editorial web frames; this spot uses wide Unbounded type, acid green, purple and pink, a black base and full-bleed colour worlds. Only the meta labels and the UI-card-breaks-apart beat echo it."
+  }
+}

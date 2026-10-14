@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import T from './timeline.json';
 import {IRIS} from './Open';
-import {ALBUMS, AlbumArt, BODY, DISP, H, P, PlayGlyph, SkipGlyph, W, bounce, eighth, ez, lerp, mix} from './kit';
+import {ALBUMS, AlbumArt, BODY, DISP, H, P, PlayGlyph, SkipGlyph, W, bounce, eighth, ez, lerp, mix, onBeat} from './kit';
 
 // 3-6 s: the iris settles into album art and a player assembles around it:
 // card, title, progress, controls, queue. Then it breaks apart into a
@@ -45,6 +45,7 @@ export const Player: React.FC<{f: number}> = ({f}) => {
   const prog = f < p.scrub ? lerp(f, p.progress, p.progress + 10, 0, 0.18) : lerp(f, p.scrub, p.breakup, 0.18, 0.62, ez.inOut);
   const beat = eighth(f, p.art);
   const composeOn = f >= p.compose;
+  const playerOn = f < p.compose + 3;
   return (
     <AbsoluteFill style={{backgroundColor: f >= p.breakup + 4 ? P.purple : P.black, overflow: 'hidden'}}>
       {/* concentric rings behind the player, pulsing on the 8ths */}
@@ -52,17 +53,17 @@ export const Player: React.FC<{f: number}> = ({f}) => {
         <div key={i} style={{position: 'absolute', left: W / 2 - (420 + i * 170), top: 640 - (420 + i * 170), width: (420 + i * 170) * 2, height: (420 + i * 170) * 2, borderRadius: '50%', border: `3px solid ${[P.purple, P.pink, P.green][i]}`, opacity: 0.35 * card * (1 - lerp(f, p.breakup, p.breakup + 6, 0, 1)), transform: `scale(${1 + beat * 0.03 * (3 - i)})`}} />
       ))}
 
-      {!composeOn ? (
+      {playerOn ? (
         <>
           {/* card */}
           <div style={{position: 'absolute', left: CARD.x, top: CARD.y, width: CARD.w, height: CARD.h, borderRadius: 48, backgroundColor: P.ink2, transform: `${flyAway(f, 0, 0, 1400, 8)} scale(${mix(0.6, 1, card)})`, opacity: card}} />
           {/* album art */}
-          <div style={{position: 'absolute', left: ax, top: ay, width: size, height: size, borderRadius: radius, overflow: 'hidden', transform: flyAway(f, 1, -900, -600, -30)}}>
-            <AlbumArt art="neon" f={f} size={size} />
+          <div style={{position: 'absolute', left: ax, top: ay, width: size, height: size, borderRadius: radius, overflow: 'hidden', transform: `${flyAway(f, 1, -900, -600, -30)} scale(${1 + onBeat(f, p.art) * 0.035})`}}>
+            <AlbumArt art="neon" f={f} size={size} label={m > 0.98} />
           </div>
           {/* title + artist */}
           <div style={{position: 'absolute', left: ART.x, top: 980, clipPath: `inset(0 ${(1 - lerp(f, p.title, p.title + 9, 0, 1)) * 100}% 0 0)`, transform: flyAway(f, 2, 1200, -200, 12)}}>
-            <div style={{fontFamily: DISP, fontWeight: 900, fontSize: 60, color: P.white, whiteSpace: 'nowrap'}}>{ALBUMS.neon.title}</div>
+            <div style={{fontFamily: DISP, fontWeight: 900, fontSize: 60, color: P.white, whiteSpace: 'nowrap', transform: `translateY(${-onBeat(f, p.art) * 8}px)`}}>{ALBUMS.neon.title}</div>
             <div style={{fontFamily: BODY, fontWeight: 600, fontSize: 34, color: P.mute, marginTop: 6}}>{ALBUMS.neon.artist}</div>
           </div>
           {/* progress */}
@@ -120,6 +121,7 @@ export const Player: React.FC<{f: number}> = ({f}) => {
         ? BLOCKS.map((b, i) => {
             const t0 = p.compose + (i % 3) * 2.5;
             const k = bounce(f, t0, 380, 16);
+            if (f < t0) return null;
             return (
               <div
                 key={i}
@@ -137,13 +139,13 @@ export const Player: React.FC<{f: number}> = ({f}) => {
         : null}
       {composeOn ? (
         <>
-          <div style={{position: 'absolute', left: 60, top: 300, fontFamily: DISP, fontWeight: 900, fontSize: 200, lineHeight: 0.9, color: P.black, transform: `translateX(${(1 - bounce(f, p.compose + 4, 380, 14)) * -900}px)`}}>
+          <div style={{position: 'absolute', left: 60, top: 300, fontFamily: DISP, fontWeight: 900, fontSize: 200, lineHeight: 0.9, color: P.black, transform: `translateX(${(1 - bounce(f, p.compose + 2, 380, 14)) * -900}px)`}}>
             TURN
             <br />
             IT UP
           </div>
           {(() => {
-            const g = lerp(f, p.compose + 6, T.s3, 0, 1, ez.inOut);
+            const g = lerp(f, p.compose + 12, T.s3, 0, 1, ez.inOut);
             return <div style={{position: 'absolute', left: SUN.cx - SUN.r * g, top: SUN.cy - SUN.r * g, width: SUN.r * 2 * g, height: SUN.r * 2 * g, borderRadius: '50%', backgroundColor: P.pink, border: `${10 * g}px solid ${P.black}`}} />;
           })()}
         </>

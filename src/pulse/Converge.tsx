@@ -35,15 +35,24 @@ const FRAMES: {art: Art; x: number; color: string}[] = [
   {art: 'bass', x: CX + 330, color: P.green},
 ];
 
-// slot-machine roll of one letter from a to b
-const Roll: React.FC<{f: number; start: number; a: string; b: string; colorA: string; colorB: string; size: number}> = ({f, start, a, b, colorA, colorB, size}) => {
-  const k = a === b ? 0 : lerp(f, start, start + 8, 0, 1, ez.inOut);
+// Word roll: the outgoing and incoming words are laid out independently (real
+// advance widths); each letter of one rolls up as the matching letter of the
+// other rolls in, staggered.
+const WordRoll: React.FC<{f: number; start: number; a: string; b: string; colorA: string; colorB: string; size: number}> = ({f, start, a, b, colorA, colorB, size}) => {
+  const k = (i: number) => lerp(f, start + i * 1.5, start + i * 1.5 + 8, 0, 1, ez.inOut);
+  const row = (word: string, color: string, dir: number) => (
+    <div style={{position: 'absolute', left: 0, top: 0, width: '100%', display: 'flex', justifyContent: 'center'}}>
+      {word.split('').map((ch, i) => (
+        <div key={i} style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.1, color, transform: `translateY(${dir < 0 ? -k(i) * 110 : (1 - k(i)) * 110}%)`}}>
+          {ch}
+        </div>
+      ))}
+    </div>
+  );
   return (
-    <div style={{overflow: 'hidden', height: size * 1.1, position: 'relative'}}>
-      <div style={{transform: `translateY(${-k * size * 1.1}px)`}}>
-        <div style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.1, color: a === b ? (f >= start + 4 ? colorB : colorA) : colorA}}>{a}</div>
-        <div style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.1, color: colorB}}>{b}</div>
-      </div>
+    <div style={{position: 'relative', overflow: 'hidden', height: size * 1.1, width: '100%'}}>
+      {row(a, colorA, -1)}
+      {row(b, colorB, 1)}
     </div>
   );
 };
@@ -124,10 +133,8 @@ export const Converge: React.FC<{f: number}> = ({f}) => {
               </div>
             );
           })}
-          <div style={{position: 'absolute', top: 230, width: W, display: 'flex', justifyContent: 'center', transform: `translateX(${(1 - bounce(f, c.world, 360, 15)) * 1100}px)`}}>
-            {'WORLD.'.split('').map((ch, i) => (
-              <Roll key={i} f={f} start={c.sound + i * 1.5} a={ch} b={'SOUND.'[i]} colorA={P.green} colorB={P.pink} size={150} />
-            ))}
+          <div style={{position: 'absolute', top: 230, width: W, transform: `translateX(${(1 - bounce(f, c.world, 360, 15)) * 1100}px)`}}>
+            <WordRoll f={f} start={c.sound} a="WORLD." b="SOUND." colorA={P.green} colorB={P.pink} size={150} />
           </div>
         </div>
       ) : null}

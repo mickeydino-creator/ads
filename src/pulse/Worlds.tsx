@@ -10,11 +10,11 @@ import {ALBUMS, AlbumArt, Art, BODY, DISP, H, P, W, bounce, eighth, ez, hash, le
 const w = T.worlds;
 
 const NowPlaying: React.FC<{f: number; start: number; art: Art; dark?: boolean; accent: string}> = ({f, start, art, dark, accent}) => {
-  const k = bounce(f, start + 6, 360, 15);
+  const k = bounce(f, start + 4, 520, 18);
   const prog = lerp(f, start + 6, start + 40, 0.1, 0.7, ez.lin);
   const fg = dark ? P.white : P.black;
   return (
-    <div style={{position: 'absolute', left: 90, top: 1330, width: 900, height: 190, borderRadius: 28, backgroundColor: dark ? 'rgba(255,244,232,0.08)' : 'rgba(10,10,10,0.1)', transform: `translateY(${(1 - k) * 500}px)`, display: 'flex', alignItems: 'center', gap: 26, padding: '0 26px'}}>
+    <div style={{position: 'absolute', left: 90, top: 1330, width: 900, height: 190, borderRadius: 28, backgroundColor: dark ? 'rgba(255,244,232,0.08)' : 'rgba(10,10,10,0.1)', transform: `translateY(${(1 - k) * 260}px)`, display: 'flex', alignItems: 'center', gap: 26, padding: '0 26px'}}>
       <div style={{position: 'relative', width: 140, height: 140, borderRadius: 16, overflow: 'hidden', flexShrink: 0}}>
         <AlbumArt art={art} f={f} size={140} />
       </div>
@@ -35,7 +35,7 @@ const StackWord: React.FC<{f: number; start: number; text: string; color: string
     {text.split('').map((c, i) => {
       const k = bounce(f, start + i * 1.2, 420, 14);
       return (
-        <div key={i} style={{overflow: 'hidden', height: size * 1.05}}>
+        <div key={i} style={{overflow: 'hidden', height: size * 1.05, marginRight: outline ? size * 0.05 : 0}}>
           <div style={{fontFamily: DISP, fontWeight: 900, fontSize: size, lineHeight: 1.05, color: outline ? 'transparent' : color, WebkitTextStroke: outline ? `4px ${color}` : undefined, transform: `translateY(${(1 - k) * 110}%)`}}>{c}</div>
         </div>
       );
@@ -132,7 +132,8 @@ const BassWorld: React.FC<{f: number}> = ({f}) => {
             fontSize: 150,
             lineHeight: 1,
             color: i % 2 ? 'transparent' : P.green,
-            WebkitTextStroke: i % 2 ? `4px ${P.green}` : undefined,
+            WebkitTextStroke: i % 2 ? `3px ${P.green}` : undefined,
+            letterSpacing: i % 2 ? '0.06em' : undefined,
             clipPath: `inset(0 ${(1 - lerp(f, w.bass + i * 2, w.bass + 6 + i * 2, 0, 1)) * 100}% 0 0)`,
             transform: `translateX(${(i % 2 ? 1 : -1) * Math.min(60, (f - w.bass) * 2)}px)`,
           }}

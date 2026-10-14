@@ -23,8 +23,8 @@ export const Final: React.FC<{f: number}> = ({f}) => {
   return (
     <AbsoluteFill style={{backgroundColor: P.black, overflow: 'hidden'}}>
       <svg width={W} height={H} style={{position: 'absolute', left: 0, top: 0, opacity: 0.55}}>
-        <path d={ringPath(f, W / 2, 700, 430 * ring, 22, 14)} stroke={P.purple} strokeWidth={6} fill="none" />
-        <path d={ringPath(f + 9, W / 2, 700, 500 * ring, 16, 9)} stroke={P.pink} strokeWidth={3} fill="none" />
+        <path d={ringPath(f, W / 2, 760, 400 * ring, 22, 14)} stroke={P.purple} strokeWidth={6} fill="none" />
+        <path d={ringPath(f + 9, W / 2, 760, 440 * ring, 16, 9)} stroke={P.pink} strokeWidth={3} fill="none" />
       </svg>
       <div style={{position: 'absolute', left: 0, width: W, top: 250, textAlign: 'center', fontFamily: BODY, fontWeight: 800, fontSize: 24, letterSpacing: '0.24em', color: P.mute}}>MUSIC IN MOTION · PORTFOLIO CONCEPT</div>
       {LINES.map((L) => (
@@ -60,7 +60,7 @@ export const Final: React.FC<{f: number}> = ({f}) => {
           <PlayGlyph size={76} color={P.black} />
         )}
       </div>
-      <div style={{position: 'absolute', top: 1440, width: W, textAlign: 'center', fontFamily: BODY, fontWeight: 600, fontSize: 25, lineHeight: 1.45, color: P.mute, opacity: lerp(f, fin.legal, fin.legal + 8, 0, 1), transform: `translateY(${lerp(f, fin.legal, fin.legal + 10, 16, 0)}px)`}}>
+      <div style={{position: 'absolute', top: 1430, width: W, textAlign: 'center', fontFamily: BODY, fontWeight: 600, fontSize: 31, lineHeight: 1.45, color: '#d6cfdc', opacity: lerp(f, fin.legal, fin.legal + 8, 0, 1), transform: `translateY(${lerp(f, fin.legal, fin.legal + 10, 16, 0)}px)`}}>
         Unofficial portfolio concept inspired by Spotify.
         <br />
         Not affiliated with or endorsed by Spotify.

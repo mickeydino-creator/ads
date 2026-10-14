@@ -83,7 +83,7 @@ export const ALBUMS: Record<Art, {title: string; artist: string}> = {
   bass: {title: 'Bass Theory', artist: 'Grid Kid'},
 };
 
-export const AlbumArt: React.FC<{art: Art; f: number; size: number}> = ({art, f, size}) => {
+export const AlbumArt: React.FC<{art: Art; f: number; size: number; label?: boolean}> = ({art, f, size, label = true}) => {
   const s = size / 400;
   if (art === 'neon') {
     return (
@@ -92,7 +92,7 @@ export const AlbumArt: React.FC<{art: Art; f: number; size: number}> = ({art, f,
           <div key={i} style={{position: 'absolute', left: (40 + i * 70) * s, top: 0, width: 26 * s, height: size, backgroundColor: i % 2 ? P.pink : P.green, transform: `translateY(${Math.sin(f / 8 + i) * 40 * s}px)`}} />
         ))}
         <div style={{position: 'absolute', left: 90 * s, top: 90 * s, width: 220 * s, height: 220 * s, borderRadius: '50%', border: `${18 * s}px solid ${P.black}`}} />
-        <div style={{position: 'absolute', left: 20 * s, bottom: 18 * s, fontFamily: DISP, fontWeight: 900, fontSize: 44 * s, color: P.white}}>NEON</div>
+        {label ? <div style={{position: 'absolute', left: 20 * s, bottom: 18 * s, fontFamily: DISP, fontWeight: 900, fontSize: 44 * s, color: P.white}}>NEON</div> : null}
       </div>
     );
   }
