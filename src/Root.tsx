@@ -8,6 +8,8 @@ import {VantaAd} from './vanta/VantaAd';
 import VT from './vanta/timeline.json';
 import {FormAd} from './form/FormAd';
 import FT from './form/timeline.json';
+import {PulseAd} from './pulse/PulseAd';
+import PT from './pulse/timeline.json';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -41,6 +43,14 @@ export const RemotionRoot: React.FC = () => {
       component={FormAd}
       durationInFrames={FT.durationInFrames}
       fps={FT.fps}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="MusicInMotion"
+      component={PulseAd}
+      durationInFrames={PT.durationInFrames}
+      fps={PT.fps}
       width={1080}
       height={1920}
     />

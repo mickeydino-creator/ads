@@ -1,0 +1,15 @@
+{
+  "fps": 30,
+  "durationInFrames": 450,
+  "bpm": 120,
+  "beat": 15,
+  "s2": 90,
+  "s3": 180,
+  "s4": 300,
+  "s5": 390,
+  "open": {"burst": 0, "press": 3, "play": 15, "split": 30, "bars": 36, "radial": 60, "iris": 75},
+  "player": {"art": 90, "title": 98, "progress": 105, "controls": 112, "tracks": [120, 125, 130], "scrub": 135, "breakup": 150, "compose": 165},
+  "worlds": {"sun": 180, "moon": 220, "bass": 260},
+  "converge": {"rush": 300, "rings": 312, "frames": 324, "world": 330, "sound": 360},
+  "final": {"cut": 390, "mood": 392, "beat": 405, "fill": 405, "full": 435, "legal": 412}
+}
