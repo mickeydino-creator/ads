@@ -178,9 +178,9 @@ xd = np.arange(dn) / SR
 fsub = 30 + 55 * np.exp(-xd / 0.07)
 sub = np.sin(2 * np.pi * np.cumsum(fsub) / SR) * np.exp(-xd / 1.1)
 sub = np.tanh(sub * 1.6) / np.tanh(1.6)
-place(mix, sub, impact_s, 0.95)
+place(mix, sub, impact_s, 0.55)
 body = lowpass(rng.standard_normal(dn), 900) * np.exp(-xd / 0.09)
-place(mix, body, impact_s, 0.5)
+place(mix, body, impact_s, 0.3)
 click = fft_filter(rng.standard_normal(int(0.03 * SR)), lo=3000) * np.exp(-np.arange(int(0.03 * SR)) / SR / 0.004)
 place(mix, click, impact_s, 0.18)
 place(fx, metallic(220.0, 4.0, 1.6, 0.8), impact_s, 0.2, 0.0)
@@ -207,7 +207,8 @@ fade = np.ones(N)
 fade[: int(0.02 * SR)] = np.linspace(0, 1, int(0.02 * SR))
 fade[-int(0.9 * SR) :] = np.linspace(1, 0, int(0.9 * SR)) ** 1.5
 out *= fade[:, None]
-out /= np.max(np.abs(out)) / 10 ** (-1 / 20)
+# normalise to -3 dBFS sample peak; leaves headroom for AAC inter-sample overs
+out /= np.max(np.abs(out)) / 10 ** (-3 / 20)
 
 dest = ROOT / "public" / "noir-soundtrack.wav"
 dest.parent.mkdir(exist_ok=True)

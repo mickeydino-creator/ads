@@ -54,14 +54,14 @@ const makeCondensation = (): DropletSpec[] => {
     Math.abs(x) < LABEL.w / 2 + 0.02 && Math.abs(y - LABEL.y) < LABEL.h / 2 + 0.02;
   const size = () => {
     const k = r();
-    return 0.003 + k * k * k * 0.017;
+    return 0.003 + k * k * k * 0.012;
   };
   // front + back faces
   for (const side of [1, -1]) {
-    for (let i = 0; i < 170; i++) {
+    for (let i = 0; i < 70; i++) {
       const x = (r() * 2 - 1) * (hx - BODY.r);
       // condensation gathers toward the lower half
-      const y = -hy + BODY.r + Math.pow(r(), 1.35) * (BODY.h - BODY.r * 2);
+      const y = -hy + BODY.r + Math.pow(r(), 2.2) * (BODY.h - BODY.r * 2);
       if (side === 1 && inLabel(x, y)) continue;
       out.push({
         pos: new THREE.Vector3(x, y, side * hz),
@@ -72,9 +72,9 @@ const makeCondensation = (): DropletSpec[] => {
   }
   // left + right faces
   for (const side of [1, -1]) {
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 22; i++) {
       const z = (r() * 2 - 1) * (hz - BODY.r);
-      const y = -hy + BODY.r + Math.pow(r(), 1.35) * (BODY.h - BODY.r * 2);
+      const y = -hy + BODY.r + Math.pow(r(), 2.2) * (BODY.h - BODY.r * 2);
       out.push({
         pos: new THREE.Vector3(side * hx, y, z),
         normal: new THREE.Vector3(side, 0, 0),
@@ -124,7 +124,7 @@ export const Bottle: React.FC<{labelMap: THREE.Texture; frame: number}> = ({labe
       new THREE.MeshPhysicalMaterial({
         color: '#d3d6da',
         metalness: 1,
-        roughness: 0.42,
+        roughness: 0.55,
         roughnessMap: brushed,
         // brushed aluminium reads bright even in a black set (diffuse bounce stand-in)
         emissive: new THREE.Color(0.2, 0.205, 0.215),

@@ -15,9 +15,9 @@ const COOL_WHITE = new THREE.Color(0.93, 0.96, 1.0);
 const CAM = {
   az: [[0, 64], [45, 56], [90, 44], [150, 6], [210, -36], [240, -30], [262, -10], [268, -8], [305, -1], [330, 0], [450, 0]] as [number, number][],
   el: [[0, 1], [90, 5], [150, 7], [210, 9], [262, 3], [268, 3], [330, 4], [450, 4]] as [number, number][],
-  dist: [[0, 1.9], [60, 2.2], [90, 3.0], [150, 8.6], [210, 9.4], [235, 8.8], [252, 6.4], [262, 4.1], [268, 3.6], [300, 12.4], [330, 15.0], [450, 14.5]] as [number, number][],
+  dist: [[0, 1.9], [60, 2.2], [90, 3.0], [150, 8.6], [210, 9.4], [235, 8.8], [252, 6.4], [262, 4.1], [268, 3.6], [300, 12.0], [330, 14.2], [450, 13.8]] as [number, number][],
   tx: [[0, 0.5], [90, 0.35], [150, 0], [450, 0]] as [number, number][],
-  ty: [[0, 1.0], [90, 0.8], [150, 0.36], [210, 0.32], [262, 0.2], [268, 0.2], [330, -0.37], [450, -0.37]] as [number, number][],
+  ty: [[0, 1.0], [90, 0.8], [150, 0.36], [210, 0.32], [262, 0.2], [268, 0.2], [330, -0.28], [450, -0.28]] as [number, number][],
   fov: [[0, 24], [90, 22], [150, 20], [450, 20]] as [number, number][],
 };
 
@@ -95,11 +95,11 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
   const rig = useMemo(() => {
     const envScene = new THREE.Scene();
     envScene.background = new THREE.Color(0, 0, 0);
-    const sweep = panel(0.45, 9, true);
+    const sweep = panel(0.8, 9, true);
     const key = panel(2.4, 7, true);
     const fill = panel(1.6, 6, true);
-    const rimL = panel(0.6, 9);
-    const rimR = panel(0.6, 9);
+    const rimL = panel(0.9, 9);
+    const rimR = panel(0.9, 9);
     const front = panel(3.5, 2.5);
     const top = panel(4, 4);
     const rimTop = panel(7, 0.4);
@@ -117,15 +117,15 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
     setIntensity(rig.sweep, spline(f, [[0, 0], [8, 6], [90, 7], [150, 1.2], [450, 1.2]]));
     // Studio opens up from shot 2 onward.
     placeOnRing(rig.key, -62, 6, 0.6);
-    setIntensity(rig.key, spline(f, [[0, 0], [70, 0], [140, 0.6], [450, 0.6]]));
+    setIntensity(rig.key, spline(f, [[0, 0], [70, 0], [140, 0.4], [450, 0.4]]));
     placeOnRing(rig.fill, 75, 6, 0.4);
-    setIntensity(rig.fill, spline(f, [[0, 0], [90, 0], [150, 0.7], [450, 0.7]]));
+    setIntensity(rig.fill, spline(f, [[0, 0], [90, 0], [150, 0.28], [450, 0.28]]));
     // Rim strips behind the product: the crisp silver outline of the hero frame.
     placeOnRing(rig.rimL, -168, 6, 0);
     placeOnRing(rig.rimR, 168, 6, 0);
     rig.rimTop.position.set(0, 4.2, -4.5);
     rig.rimTop.lookAt(0, 0, 0);
-    const rim = spline(f, [[0, 0], [60, 0], [130, 3.5], [266, 3.5], [300, 8], [450, 8]]);
+    const rim = spline(f, [[0, 0], [60, 0], [130, 3.5], [266, 3.5], [310, 14], [450, 14]]);
     setIntensity(rig.rimL, rim);
     setIntensity(rig.rimR, rim);
     setIntensity(rig.rimTop, rim * 0.6);
@@ -134,7 +134,7 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
     setIntensity(rig.front, spline(f, [[0, 0], [90, 0], [160, 0.5], [300, 0.5], [330, 0.9], [450, 0.9]]));
     setIntensity(rig.top, spline(f, [[0, 0.0], [90, 0.15], [150, 1.1], [450, 1.1]]));
 
-    const rt = rig.pmrem.fromScene(rig.envScene, 0, 0.1, 50, {size: 256});
+    const rt = rig.pmrem.fromScene(rig.envScene, 0, 0.1, 50, {size: 512});
     scene.environment = rt.texture;
     if (last.current) last.current.dispose();
     last.current = rt;
@@ -187,7 +187,8 @@ const AirDroplets: React.FC<{frame: number}> = ({frame}) => {
       p.y += Math.sin(frame / 45 + d.phase) * 0.04;
       const out = new THREE.Vector3(p.x, (p.y - 0.4) * 0.5, p.z).normalize();
       p.addScaledVector(out, kick * 0.9);
-      const s = d.r;
+      // air clears after the impact so the hero frame stays clean
+      const s = d.r * spline(frame, [[0, 1], [275, 1], [325, 0], [450, 0]]);
       m.compose(p, q, new THREE.Vector3(s, s, s));
       mesh.setMatrixAt(i, m);
     });
@@ -259,7 +260,7 @@ const MistWave: React.FC<{frame: number}> = ({frame}) => {
     return new Array(56).fill(0).map((_, i) => ({
       angle: (i / 56) * Math.PI * 2 + r() * 0.3,
       speed: 0.7 + r() * 0.6,
-      size: 0.7 + r() * 0.8,
+      size: 0.5 + r() * 0.5,
       y: 0.3 + (r() - 0.5) * 0.6,
       z: -1.2 - r() * 1.4,
       tex: i % 3,
@@ -314,7 +315,7 @@ const MistWave: React.FC<{frame: number}> = ({frame}) => {
       mat.rotation = p.angle + t * p.spin;
       const fadeIn = Math.min(1, t / 4);
       // the wave dissipates fully before the wordmark lands
-      mat.opacity = fadeIn * 0.44 * Math.exp(-t / 34);
+      mat.opacity = fadeIn * 0.3 * Math.exp(-t / 22);
     });
     const hazeOpacity = spline(frame, [[0, 0.05], [90, 0.07], [450, 0.07]]);
     haze.forEach((h, i) => {

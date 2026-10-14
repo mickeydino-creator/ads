@@ -22,7 +22,7 @@ const serif = {fontFamily: 'NoirSerif'};
 const sans = {fontFamily: 'NoirSans'};
 const fontsReady = Promise.all([
   loadFont({family: serif.fontFamily, url: staticFile('fonts/cormorant-garamond-latin-500-normal.woff2'), weight: '500'}),
-  loadFont({family: sans.fontFamily, url: staticFile('fonts/montserrat-latin-300-normal.woff2'), weight: '300'}),
+  loadFont({family: sans.fontFamily, url: staticFile('fonts/montserrat-latin-400-normal.woff2'), weight: '400'}),
 ]);
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -100,11 +100,11 @@ const Wordmark: React.FC = () => {
           width: '100%',
           textAlign: 'center',
           fontFamily: sans.fontFamily,
-          fontWeight: 300,
-          fontSize: 31,
-          letterSpacing: '0.5em',
-          paddingLeft: '0.5em',
-          color: '#b9bec4',
+          fontWeight: 400,
+          fontSize: 40,
+          letterSpacing: '0.38em',
+          paddingLeft: '0.38em',
+          color: '#c9cdd2',
           opacity: tag,
           transform: `translateY(${(1 - tag) * 12}px)`,
         }}
