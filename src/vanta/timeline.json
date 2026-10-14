@@ -1,0 +1,18 @@
+{
+  "fps": 30,
+  "durationInFrames": 450,
+  "bpm": 120,
+  "beat": 15,
+  "s2": 90,
+  "drop": 180,
+  "gridSnap": 195,
+  "pipeSnap": 225,
+  "whiteCut": 255,
+  "s4": 300,
+  "panels": [330, 338, 346, 354],
+  "circleWipe": 378,
+  "impact": 390,
+  "tagline": 405,
+  "entries": [92, 97, 105, 110, 120, 127, 135, 142, 150],
+  "textHits": [0, 15, 30, 33, 36, 39, 42, 52, 56, 60, 75]
+}
