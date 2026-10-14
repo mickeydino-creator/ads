@@ -231,6 +231,8 @@ for fr in (T["gridSnap"], T["pipeSnap"]):
     put(sfx, snap(), sec(fr), 0.5)
     put(sfx, tick(1800), sec(fr) + 0.03, 0.25)
 put(sfx, stab([698.5, 830.6, 1046.5], 0.4), sec(T["whiteCut"]), 0.35)
+put(sfx, snap(), sec(T["accent9"]), 0.45)                              # 9.0 s accent
+put(music, boom(), sec(T["accent9"]), 0.35)
 for fr in (262, 277, 292):
     put(sfx, ding(2093), sec(fr), 0.08)
 put(sfx, whoosh(0.65, 300, 6000, 0.85), sec(T["s4"]), 0.45)           # dive into the AI node

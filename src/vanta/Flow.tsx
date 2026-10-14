@@ -113,6 +113,8 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
   // camera: slow push while the pile builds, recentre after the snap
   let cam = lerp(f, 90, 150, 1.0, 1.03, ease.inOut) + lerp(f, 150, 179, 0, 0.07, ease.in) - lerp(f, 180, 196, 0, 0.1, ease.out);
   cam += lerp(f, 240, 300, 0, 0.06, ease.inOut); // slow push across the finished flow
+  // the 9.0 s downbeat: a bigger kick across the whole stack
+  if (f >= T.accent9) cam += 0.03 * Math.exp(-(f - T.accent9) / 5);
   // a small kick on every beat after the drop
   if (f >= T.drop) {
     const sinceBeat = (f - T.drop) % T.beat;
@@ -173,6 +175,7 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
         One flow.
         <br />
         <span style={{color: C.purple}}>Zero busywork.</span>
+        <div style={{width: 470, height: 10, borderRadius: 5, marginTop: 14, backgroundColor: C.purple, transform: `scaleX(${lerp(f, T.accent9, T.accent9 + 10, 0, 1, ease.out)})`, transformOrigin: 'left'}} />
       </div>
       <AbsoluteFill style={{transform: `translate(${driftX}px, ${driftY}px) scale(${cam})`, transformOrigin: '50% 50%'}}>
         <svg width={W} height={H} style={{position: 'absolute', left: 0, top: 0}}>

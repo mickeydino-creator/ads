@@ -21,7 +21,7 @@ const Panel: React.FC<{fadeForPush: number; f: number; start: number; x: number;
   from = 'up',
   fadeForPush,
 }) => {
-  const p = spr(f, start, 260, 12);
+  const p = spr(f, start, 320, 13);
   const dx = from === 'left' ? -120 : from === 'right' ? 120 : 0;
   const dy = from === 'up' ? 90 : 0;
   return (
@@ -36,8 +36,8 @@ const Panel: React.FC<{fadeForPush: number; f: number; start: number; x: number;
         backgroundColor: C.panel,
         border: `2px solid ${C.line}`,
         overflow: 'hidden',
-        opacity: Math.min(1, p * 1.5) * (1 - fadeForPush),
-        transform: `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${mix(0.86, 1, p)})`,
+        opacity: (f >= start ? 1 : 0) * (1 - fadeForPush),
+        transform: `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${mix(0.8, 1, p)})`,
       }}
     >
       {children}
@@ -68,6 +68,30 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
   const steps = ['New invoice email', 'Extract & classify', 'Update records', 'Request approval', 'Notify the team'];
   return (
     <AbsoluteFill style={{backgroundColor: C.purple, overflow: 'hidden'}}>
+      {[
+        {x: -260, y: 120, w: 760, h: 520, c: '#6c2cf2', sp: 1.0},
+        {x: 620, y: 1240, w: 700, h: 760, c: '#8a52ff', sp: -0.7},
+        {x: 560, y: -180, w: 620, h: 420, c: '#8a52ff', sp: 0.55},
+        {x: -200, y: 1500, w: 640, h: 380, c: '#6c2cf2', sp: -1.2},
+      ].map((b, i) => {
+        const grow = lerp(f, 318 + i * 3, 336 + i * 3, 0, 1, ease.out);
+        const t = (f - 318) * b.sp;
+        return (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: b.x + t * 2.2,
+              top: b.y - t * 1.4,
+              width: b.w,
+              height: b.h,
+              borderRadius: 60,
+              backgroundColor: b.c,
+              transform: `scale(${grow}) rotate(${-8 + i * 5}deg)`,
+            }}
+          />
+        );
+      })}
       <AbsoluteFill style={{transform: `translate(${(W / 2 - fx) * push}px, ${(960 - fy) * push}px) scale(${cs})`, transformOrigin: `${fx}px ${fy}px`}}>
         <div style={{position: 'absolute', left: ax, top: ay, width: aw, height: ah, borderRadius: mix(22, 44, open), backgroundColor: C.bg, overflow: 'hidden'}}>
           {/* header */}
