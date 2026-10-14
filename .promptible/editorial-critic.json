@@ -1,49 +1,43 @@
 {
   "candidate": "/home/user/ads/out/noir-editorial.mp4",
-  "review_round": 2,
+  "review_round": 3,
   "measurements": {
     "video": "1080x1920, 30fps, 15.000s; audio 15.019s",
     "audio_peak_per_channel_dB": {"L": -1.5, "R": -1.5},
     "true_peak_dBTP": -1.4,
     "integrated_loudness_LUFS": -14.8,
-    "audio_alignment": "0 ms lag against track-full.mp3 cut at 8.04s",
-    "bass_drop_onset_s": 8.01,
-    "beat_grid": "downbeats at 7.99, 8.49, 8.99 ... 13.99 (10-20 ms early, under 1 frame); eighth notes at x.24/x.74",
-    "cut_vs_nearest_onset_s": {"2.0": 2.0, "4.5": 4.493, "8.0": 7.988, "11.0": 10.983},
-    "end_fade": "-20 dB at 14.5s, -47 dB at 14.95s",
-    "note_on_previous_round": "The coordinator is right. Video time = track time - start, so 8.04 (not 7.965) was the correct direction. My earlier suggestion had the sign reversed."
+    "bass_drop_onset_s": 8.011,
+    "cut_vs_nearest_onset_s": {"2.0": 1.997, "4.5": 4.493, "8.0": 7.988, "10.0": 9.985, "11.0": 10.983},
+    "beat_grid": "downbeats 10-20 ms ahead of the 0.5s video grid (under 1 frame)"
   },
   "verified_fixes": [
-    "Photos stay inside frames of 660x800 or smaller. The drop is a hard cut at 8.0s to three-quarter-r in the same 660x800 frame (x 210-870, y 610-1410). Softness is now acceptable.",
-    "Opening: the hairline is complete at about 0.2s and the slit with the cap opens at 0.43s (f13).",
-    "NOIR sits inside the frame (x≈60-1030) and builds on eighth notes 2.0-2.75s. The full word is clean from 2.75 to 3.5s, the window opens behind it, and the word fades out by 4.25s.",
-    "Contact sheet: one column (x 230-850) for the lead image, the studies and the two-line headline. Folios are at y≈232 and captions are 22-26px. The grid is clean.",
-    "SCENT. has a cap top at about y≈285, outside the top UI zone. The end card's hairline frame draws on the 13.0s downbeat, which is restrained and purposeful."
+    "10.0-11.0s: the dead page is gone. The 04 / ANGLE frame stays above the rising off-white page and travels and shrinks to the signature frame. The front view slides in over the three-quarter view at about 10.7-10.77s, and the signature page continues with no re-reveal. The product is on screen in every frame.",
+    "8.0-8.4s and 9.0-9.4s: the label and cap sit inside single bands. No frame edge or background is exposed, and the bands re-register cleanly.",
+    "3.73-3.97s: NOIR fades out while the window settles.",
+    "0.3s: the slit starts opening and the cap shows by about f10."
   ],
-  "hard_failures": [
-    "10.73-11.03s: about 9 frames of completely empty off-white page. The off-white wipe rises from 10.2s and covers the 04 / ANGLE frame and SCENT. entirely. The product then re-enters from nothing at 11.03s with a top-down reveal of a different photo (front). This is a dead moment and breaks the continuous-layout logic. The previous render carried the photo frame through this wipe."
-  ],
+  "hard_failures": [],
   "scores": {
     "editorial_art_direction": 8.5,
     "typography": 8.5,
-    "motion_purpose_and_rhythm": 8.0,
-    "transitions_continuity": 6.5,
+    "motion_purpose_and_rhythm": 8.5,
+    "transitions_continuity": 8.5,
     "photo_usage_quality": 8.0,
     "music_sync": 9.5,
     "restraint_no_cheap_effects": 8.5,
-    "overall_polish": 7.5
+    "overall_polish": 8.5
   },
-  "average": 8.13,
-  "verdict": "revise",
+  "average": 8.56,
+  "verdict": "pass",
   "issues": [
-    {"t": "10.2-11.1s", "severity": "hard", "area": "transitions_continuity", "issue": "The off-white wipe swallows the whole frame. The page is blank from 10.73 to 11.03s, then the front photo is revealed top-down at 11.03s. There is no carried element, so the shot-4 to shot-5 change reads as a reset instead of a layout change.", "fix": "Keep a photo frame above the wipe (higher z-index) the whole time. Either (a) transition the three-quarter-r frame (210-870 x 610-1410) to the signature frame (216-864 x 395-1042) over 10-12 frames, with a cross-dissolve or hard cut of the image inside a stable frame on the 11.0s downbeat, or (b) let the signature front frame already sit in place under the wipe so it is revealed as the wipe passes. There must be no frame without the product."},
-    {"t": "8.0-8.4s and 9.0-9.4s", "severity": "medium", "area": "restraint / photo", "issue": "The claim that band cuts avoid the label does not hold for three-quarter-r. A band boundary at y≈1105 runs through the silver label, so the 'NOIR' panel is torn and shifted at 8.05s and again at 9.1s. There are also visible 1px grey seams between the bands, and a black sliver of about 5px at the frame's left edge at 9.1s.", "fix": "Recompute the band edges for the three-quarter-r crop. The label spans about y 990-1165, so put the boundary at about y≈1180 or above y≈980. Remove the seam lines, or make them deliberate 1px silver rules that fade out once the bands re-register, and clip the band contents so no background shows at the frame edges."},
-    {"t": "3.5-4.2s", "severity": "low", "area": "typography", "issue": "The window behind NOIR places the bottle's own 'NOIR' label directly under the big O. The giant O crosses the small label wordmark, so two NOIRs collide for about 0.7s.", "fix": "Shift the window or the photo crop so the label sits between the O and the I, or under the counter of the O, or start the word's fade 4-6 frames earlier so the label shows only once the big word has dimmed."},
-    {"t": "0.2-0.43s", "severity": "low", "area": "motion", "issue": "The line is done by about f6, but the slit waits until f13. That leaves about 7 frames of a static line on an empty page. This is acceptable, but you could tighten it.", "fix": "Start the slit opening right as the line completes (about f8)."}
+    {"t": "3.57-3.73s", "severity": "low", "area": "typography", "issue": "For about 5 frames the big O still sits at full opacity over the bottle's 'NOIR' label before the fade starts.", "fix": "Optional: start the word fade about 4 frames earlier (around f107), or nudge the window crop so the label clears the O."},
+    {"t": "10.45-10.6s", "severity": "low", "area": "transitions", "issue": "SCENT. is cut off by the rising page edge instead of leaving on its own. This is acceptable, but slightly abrupt.", "fix": "Optional: fade SCENT. over 4-6 frames starting about f308, so it has cleared before the page edge reaches it."},
+    {"t": "8.0-9.4s", "severity": "low", "area": "restraint", "issue": "Faint 1px seam lines between the bands stay visible during the shift.", "fix": "Optional: let the seams fade to 0 as the bands re-register, so they read as intentional rules."},
+    {"t": "throughout", "severity": "low", "area": "photo_usage_quality", "issue": "The tiles are upscaled from about 341px sources. At the current 640-660px size the softness is acceptable, but the cap edges and label type are slightly soft at 1:1.", "fix": "Optional: a light unsharp mask and 1-2% grain on the tiles. Do not enlarge them further."}
   ],
   "strengths": [
-    "The match cuts in the first half are strong: the window becomes the lead frame at 4.5s and the lead frame grows into the drop frame from 7.6s to 8.0s.",
-    "The music lock is excellent. The bass drop lands at 8.01s, the beat grid is within 1 frame, and the letters land on eighth notes.",
-    "The palette and typography are disciplined: black and off-white fields, a one-column editorial grid, and a refined signature end card with an earned final accent."
+    "There is one continuous editorial layout system with no resets: hairline, slit, wordmark, window, lead frame, drop frame, travelling frame, then signature.",
+    "The music lock is exact: the bass drop lands at 8.01s and every cut is within about 15ms of an onset.",
+    "The palette and typography are disciplined (black and off-white, silver accents, Cormorant and Montserrat), with no cheap effects, and the end-card accent is earned."
   ]
 }

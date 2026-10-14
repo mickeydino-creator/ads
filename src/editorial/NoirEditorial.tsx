@@ -187,7 +187,7 @@ const ShotLetters: React.FC<{f: number}> = ({f}) => {
   const ww = winOpen * 300 + winGrow * (LEAD.w - 300);
   const wh = 760 + winGrow * (LEAD.h - 760);
   const wy = H / 2 - wh / 2 + winGrow * (LEAD.y - (H / 2 - LEAD.h / 2));
-  const wordOut = lerp(f, 112, 122, 0, 1, inOut);
+  const wordOut = lerp(f, 107, 118, 0, 1, inOut);
   return (
     <AbsoluteFill style={{backgroundColor: BLACK}}>
       {ww > 0.5 ? (
@@ -348,6 +348,7 @@ const ShotCut: React.FC<{f: number}> = ({f}) => {
           color: PAPER,
           letterSpacing: '0.06em',
           paddingLeft: '0.06em',
+          opacity: 1 - lerp(f, 304, 312, 0, 1, inOut),
         }}
       >
         <MaskRise start={T.scent} frame={f} dur={12} style={{height: 210}}>
