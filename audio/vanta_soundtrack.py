@@ -260,7 +260,7 @@ dyn = np.ones(N)
 tt = np.arange(N) / SR
 dyn[(tt >= s2) & (tt < drop)] = 0.68
 dyn[(tt >= drop - BEAT / 2) & (tt < drop)] = 0.08
-dyn[(tt >= sec(250)) & (tt < sec(300))] = 0.8
+dyn[(tt >= sec(250)) & (tt < sec(300))] = 0.72
 music[:, 0] *= dyn
 music[:, 1] *= dyn
 
@@ -283,7 +283,8 @@ fade = np.ones(N)
 fade[-int(0.7 * SR):] = np.linspace(1, 0, int(0.7 * SR)) ** 2
 mix *= fade[:, None]
 mix = np.tanh(mix * 0.9) / np.tanh(0.9)
-mix /= np.max(np.abs(mix)) / 10 ** (-1.5 / 20)
+# -3 dBFS sample peak keeps AAC inter-sample overs below -1 dBTP
+mix /= np.max(np.abs(mix)) / 10 ** (-3.0 / 20)
 
 dest = ROOT / "public" / "music" / "vanta-soundtrack.wav"
 with wave.open(str(dest), "wb") as w:

@@ -21,7 +21,7 @@ const Panel: React.FC<{fadeForPush: number; f: number; start: number; x: number;
   from = 'up',
   fadeForPush,
 }) => {
-  const p = spr(f, start, 230, 21);
+  const p = spr(f, start, 260, 12);
   const dx = from === 'left' ? -120 : from === 'right' ? 120 : 0;
   const dy = from === 'up' ? 90 : 0;
   return (
@@ -37,7 +37,7 @@ const Panel: React.FC<{fadeForPush: number; f: number; start: number; x: number;
         border: `2px solid ${C.line}`,
         overflow: 'hidden',
         opacity: Math.min(1, p * 1.5) * (1 - fadeForPush),
-        transform: `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px)`,
+        transform: `translate(${(1 - p) * dx}px, ${(1 - p) * dy}px) scale(${mix(0.86, 1, p)})`,
       }}
     >
       {children}
@@ -64,7 +64,7 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
   const tasks = Math.round(lerp(f, p2, p2 + 30, 0, 12480, ease.out));
   const hours = Math.round(lerp(f, p2 + 4, p2 + 34, 0, 326, ease.out));
   // knob opens into a white field
-  const knobR = mix(28, 1400, lerp(f, T.circleWipe - 4, T.impact - 1, 0, 1, ease.inOut));
+  const knobR = mix(28, 1120, lerp(f, T.circleWipe - 2, T.impact, 0, 1, ease.inOut));
   const steps = ['New invoice email', 'Extract & classify', 'Update records', 'Request approval', 'Notify the team'];
   return (
     <AbsoluteFill style={{backgroundColor: C.purple, overflow: 'hidden'}}>
@@ -142,7 +142,7 @@ export const Interface: React.FC<{f: number}> = ({f}) => {
           </Panel>
         </div>
       </AbsoluteFill>
-      {f >= T.circleWipe - 4 ? (
+      {f >= T.circleWipe - 2 ? (
         <div style={{position: 'absolute', left: W / 2 - knobR, top: 960 - knobR, width: knobR * 2, height: knobR * 2, borderRadius: knobR, backgroundColor: C.white}} />
       ) : null}
     </AbsoluteFill>

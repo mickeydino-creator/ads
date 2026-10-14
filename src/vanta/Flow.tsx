@@ -54,7 +54,7 @@ const ELS: El[] = [
   {kind: 'notif', title: '3 approvals waiting', sub: 'Finance · 2h overdue', accent: true, scatter: {x: 40, y: 1258, w: 560, h: 120, r: 5}, from: {x: -600, y: 1500, r: -25}, node: 3, primary: true},
   {kind: 'chat', title: 'Team chat', scatter: {x: 520, y: 1208, w: 500, h: 380, r: -6}, from: {x: 1500, y: 2200, r: 30}, node: 4, primary: true},
   {kind: 'notif', title: '12 new mentions', sub: '#ops · #finance', scatter: {x: 90, y: 1428, w: 520, h: 120, r: -3}, from: {x: 300, y: 2300, r: -20}, node: 4, primary: false},
-  {kind: 'notif', title: 'Reminder: send report', sub: 'Today 17:00', scatter: {x: 480, y: 1582, w: 540, h: 120, r: 3}, from: {x: 1500, y: 2100, r: 15}, node: 3, primary: false},
+  {kind: 'notif', title: 'Reminder: send report', sub: 'Today 17:00', scatter: {x: 480, y: 1430, w: 540, h: 120, r: 3}, from: {x: 1500, y: 2100, r: 15}, node: 3, primary: false},
 ];
 
 // 3x3 alignment grid used on the first snap
@@ -186,6 +186,9 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
             strokeDasharray={len}
             strokeDashoffset={len * (1 - draw)}
           />
+          {tokenOn ? (
+            <line x1={W / 2} y1={nodeCy(0)} x2={W / 2} y2={tokenTo === 0 ? nodeCy(4) : tokenY} stroke={C.purple} strokeWidth={18} strokeLinecap="round" />
+          ) : null}
           {pulses.length === 0 && tokenOn && tokenTo !== 0 ? (
             <circle cx={W / 2} cy={tokenY} r={22} fill={C.purple} stroke={white ? C.paper : C.bg} strokeWidth={8} />
           ) : null}
@@ -195,7 +198,7 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
           if (!s.visible) return null;
           const {x, y, w, h, r} = s.rect;
           const toNode = s.pp;
-          const fadeMerged = el.primary ? 1 : 1 - lerp(toNode, 0.55, 0.95, 0, 1, ease.inOut);
+          const fadeMerged = el.primary ? 1 : 1 - lerp(toNode, 0.15, 0.4, 0, 1, ease.inOut);
           const node = NODES[el.node];
           const radius = mix(el.kind === 'notif' ? 26 : 22, 40, toNode);
           return (
@@ -215,7 +218,7 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
                 opacity: fadeMerged,
               }}
             >
-              <div style={{position: 'absolute', inset: 0, opacity: 1 - lerp(toNode, 0.25, 0.55, 0, 1, ease.inOut)}}>
+              <div style={{position: 'absolute', inset: 0, opacity: 1 - lerp(toNode, 0.12, 0.36, 0, 1, ease.inOut)}}>
                 <div
                   style={{
                     width: el.scatter.w,
@@ -230,7 +233,7 @@ export const Flow: React.FC<{f: number}> = ({f}) => {
                   <Content el={el} f={f} />
                 </div>
               </div>
-              <div style={{position: 'absolute', inset: 0, opacity: lerp(toNode, 0.3, 0.6, 0, 1, ease.inOut)}}>
+              <div style={{position: 'absolute', inset: 0, opacity: el.primary ? lerp(toNode, 0.4, 0.62, 0, 1, ease.inOut) : 0}}>
                 <NodeBody label={node.label} kind={node.kind} ai={node.ai} inv={white} />
               </div>
               {/* step number badge on the finished nodes */}
