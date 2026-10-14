@@ -1,5 +1,6 @@
 import React from 'react';
-import {Composition} from 'remotion';
+import {Composition, Still} from 'remotion';
+import {CoverForm, CoverMusic, CoverVanta} from './covers/Covers';
 import {NoirCommercial} from './NoirCommercial';
 import T from './timeline.json';
 import {NoirEditorial} from './editorial/NoirEditorial';
@@ -54,6 +55,9 @@ export const RemotionRoot: React.FC = () => {
       width={1080}
       height={1920}
     />
+    <Still id="CoverVanta" component={CoverVanta} width={1080} height={1920} />
+    <Still id="CoverForm" component={CoverForm} width={1080} height={1920} />
+    <Still id="CoverMusic" component={CoverMusic} width={1080} height={1920} />
     </>
   );
 };
