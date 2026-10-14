@@ -2,3 +2,6 @@ node_modules
 out/*.png
 out/frames
 .promptible/frames
+.promptible/yavg.txt
+.promptible/flick.jpg
+out/render.log
