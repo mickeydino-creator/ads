@@ -15,7 +15,7 @@ const COOL_WHITE = new THREE.Color(0.93, 0.96, 1.0);
 const CAM = {
   az: [[0, 64], [45, 56], [90, 44], [150, 6], [210, -36], [240, -30], [262, -10], [268, -8], [305, -1], [330, 0], [450, 0]] as [number, number][],
   el: [[0, 1], [90, 5], [150, 7], [210, 9], [262, 3], [268, 3], [330, 4], [450, 4]] as [number, number][],
-  dist: [[0, 1.9], [60, 2.2], [90, 3.0], [150, 8.6], [210, 9.4], [235, 8.8], [252, 6.4], [262, 4.1], [268, 3.6], [300, 12.0], [330, 14.2], [450, 13.8]] as [number, number][],
+  dist: [[0, 1.9], [60, 2.2], [90, 3.0], [150, 8.6], [210, 9.4], [235, 8.8], [252, 6.4], [262, 4.0], [270, 3.5], [302, 11.6], [330, 14.2], [450, 13.8]] as [number, number][],
   tx: [[0, 0.5], [90, 0.35], [150, 0], [450, 0]] as [number, number][],
   ty: [[0, 1.0], [90, 0.8], [150, 0.36], [210, 0.32], [262, 0.2], [268, 0.2], [330, -0.28], [450, -0.28]] as [number, number][],
   fov: [[0, 24], [90, 22], [150, 20], [450, 20]] as [number, number][],
@@ -98,8 +98,8 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
     const sweep = panel(0.8, 9, true);
     const key = panel(2.4, 7, true);
     const fill = panel(1.6, 6, true);
-    const rimL = panel(0.9, 9);
-    const rimR = panel(0.9, 9);
+    const rimL = panel(1.1, 9, true);
+    const rimR = panel(1.1, 9, true);
     const front = panel(3.5, 2.5);
     const top = panel(4, 4);
     const rimTop = panel(7, 0.4);
@@ -125,7 +125,7 @@ const StudioEnvironment: React.FC<{frame: number}> = ({frame}) => {
     placeOnRing(rig.rimR, 168, 6, 0);
     rig.rimTop.position.set(0, 4.2, -4.5);
     rig.rimTop.lookAt(0, 0, 0);
-    const rim = spline(f, [[0, 0], [60, 0], [130, 3.5], [266, 3.5], [310, 14], [450, 14]]);
+    const rim = spline(f, [[0, 0], [60, 0], [130, 3], [200, 2.2], [262, 2.2], [310, 20], [450, 20]]);
     setIntensity(rig.rimL, rim);
     setIntensity(rig.rimR, rim);
     setIntensity(rig.rimTop, rim * 0.6);

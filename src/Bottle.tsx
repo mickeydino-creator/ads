@@ -188,6 +188,12 @@ export const Bottle: React.FC<{labelMap: THREE.Texture; frame: number}> = ({labe
   // the travelling strip may reveal the metal.
   const lightUp = spline(frame, [[0, 0], [70, 0.05], [150, 1], [450, 1]]);
   metal.emissiveIntensity = lightUp;
+  // Condensation burns off in the mist wave so the hero glass reads clean.
+  const dew = spline(frame, [[0, 1], [285, 1], [325, 0], [450, 0]]);
+  const dewMat = dropletMesh.material as THREE.MeshPhysicalMaterial;
+  dewMat.transparent = true;
+  dewMat.opacity = dew;
+  dropletMesh.visible = dew > 0.001;
   collarMat.emissiveIntensity = lightUp;
   labelMat.emissiveIntensity = lightUp;
 
