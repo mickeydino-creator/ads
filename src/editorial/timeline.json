@@ -1,0 +1,22 @@
+{
+  "fps": 30,
+  "durationInFrames": 450,
+  "musicStartSec": 7.99,
+  "beat": 15,
+  "drop": 240,
+  "shot2": 60,
+  "shot3": 135,
+  "shot4": 240,
+  "shot5": 330,
+  "letters": [60, 75, 90, 105],
+  "window": 108,
+  "sheetFrames": [150, 165],
+  "words": [180, 195, 210],
+  "slices": [240, 270],
+  "scent": 255,
+  "wipe": 300,
+  "wordmark": 345,
+  "rule": 360,
+  "tagline": 375,
+  "musicFadeStart": 405
+}

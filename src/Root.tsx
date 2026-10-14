@@ -2,9 +2,12 @@ import React from 'react';
 import {Composition} from 'remotion';
 import {NoirCommercial} from './NoirCommercial';
 import T from './timeline.json';
+import {NoirEditorial} from './editorial/NoirEditorial';
+import ET from './editorial/timeline.json';
 
 export const RemotionRoot: React.FC = () => {
   return (
+    <>
     <Composition
       id="NoirCommercial"
       component={NoirCommercial}
@@ -13,5 +16,14 @@ export const RemotionRoot: React.FC = () => {
       width={T.width}
       height={T.height}
     />
+    <Composition
+      id="NoirEditorial"
+      component={NoirEditorial}
+      durationInFrames={ET.durationInFrames}
+      fps={ET.fps}
+      width={1080}
+      height={1920}
+    />
+    </>
   );
 };
