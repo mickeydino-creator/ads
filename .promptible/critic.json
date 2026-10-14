@@ -1,25 +1,21 @@
 {
-  "hard_failures": [
-    "7.57-7.73s (frames 227-232): the left side face jumps from dark to near-white in one frame (mean luma 33.9->47.7), holds about 4 frames, then drops back in one frame (42.3->27.0). These are the two largest frame-to-frame changes in the film. It reads as a strobe or white panel switching on and off, not a graded sheen travelling across glass. The 5.8-6.0s pass is now a smooth travel and acceptable."
-  ],
+  "hard_failures": [],
   "scores": {
-    "product_fidelity": 8,
-    "lighting_materials": 7,
-    "camera_motion": 7,
+    "product_fidelity": 9,
+    "lighting_materials": 8,
+    "camera_motion": 8,
     "typography_branding": 9,
-    "sound_sync": 8,
-    "restraint_no_glow": 8,
-    "overall_polish": 7
+    "sound_sync": 9,
+    "restraint_no_glow": 9,
+    "overall_polish": 8
   },
-  "average": 7.71,
-  "verdict": "revise",
+  "average": 8.57,
+  "verdict": "pass",
   "issues": [
-    "7.5-7.8s: the side-face reflection must ramp over at least 8-10 frames, not 1. Make the rim or softbox gradient falloff much wider at the edge facing the side face, or cap the side-face specular so it peaks around luma 150-180 instead of near-white. Alternatively, re-time the orbit so the side face crosses the softbox reflection more slowly. Target: no frame-to-frame mean-luma change above about 6 in 0-11s.",
-    "11-15s hero: about 30-40 faint condensation droplets are still visible across the lower two-thirds of the body, plus a few dark air specks above the cap at 11-15s (for example top-right at 12s and 14s). For a clean hero matching the reference, fade the condensation to zero opacity by 11.0s, or cut it to under 10 droplets confined to the bottom 20% of the body. Remove any remaining air particles after 10.8s.",
-    "Audio: the actual peak is -0.05 dBFS, not the stated -3 dBFS. The 9.0-9.5s impact holds about -4 dB short-term RMS (10ms windows), and 265 samples exceed 0.89. Apply a true-peak limiter at -1 dBTP or -3 dBFS as intended, and confirm the change made it into the final mux. The impact onset timing is correct: the largest 50ms rise is at 9.00s and the bass peaks at 9.17s.",
-    "8.5-8.65s: the turnaround from label close-up to pull-back still produces luma diffs of about 10-11 per frame. Ease the camera velocity through the reversal over about 6 more frames.",
-    "9.0-10.5s mist: it is better and fades by 11s, but at 10.0s it still reads as soft blotchy cloud. Optionally add a directional streak or wave structure moving outward from the bottle at 9.0s.",
-    "11-15s rim: there is a thin rim on the shoulders and lower edge, but the vertical side edges are still weak against the background. Slightly brighten the side rim strips, hard-edged with no bloom.",
-    "Cap: the vertical highlight bands still read slightly fluted at 3.5-7s. Optionally merge them into one broader soft highlight."
+    "7.57-7.77s (optional polish): the side-face sheen now peaks at mid or light grey and builds over about 5 frames, so it reads as a travelling reflection, not a strobe. It still drops off within 1-2 frames at frame 232 (mean luma 37.4->27.0, the largest mean change in the film). Widening the falloff of the trailing softbox edge by 3-4 frames would remove the last hint of a snap.",
+    "5.8-7.8s (optional): condensation droplets cluster densely on the lit side face, and the dark dots stand out against the sheen. Slightly fewer droplets on the side faces would keep the glass reading cleaner.",
+    "0.0-0.03s (minor): the first frame-to-frame step (mean luma change about 5) suggests the opening does not start fully black or eased. A 4-6 frame fade-in from black would hide it.",
+    "Cap (minor): the vertical highlight bands still read faintly fluted at 3.5-7s. Optionally merge them into one broader soft highlight.",
+    "Correction to the previous review: the audio peak is -3.05 dBFS per channel (volumedetect max_volume -3.0 dB, mean -15.5 dB). My earlier -0.05 dBFS figure came from summing the channels in a mono downmix and was wrong. Audio is 15.02s long. The loudest transient onset is at 9.00s (largest 50ms RMS rise, +7.4 dB), and the bass rises from 9.00s to a peak at 9.17s. No action needed."
   ]
 }
