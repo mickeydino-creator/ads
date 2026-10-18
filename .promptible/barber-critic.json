@@ -1,46 +1,36 @@
 {
-  "round": 1,
-  "hard_failures": [
-    "Frames 391-394 (13.03-13.13 s): four fully empty cream frames. Coverage is 0.0% and the frame diff is 0. The EndFrame paper wipe is paper-coloured (K.paper) over the grown poster, so it erases the poster with no visible edge, and the end copy does not start until line1=394, so the spot flashes to blank right before the CTA.",
-    "Word cuts at 195/210/225/240 (6.5-8.0 s): at each cut the outgoing and incoming words are drawn on top of each other at near-full opacity for about 6-8 frames (e.g. 'תספורת' + 'זקן' at 196-203, 'זקן' + 'קו נקי' at 211-218, 'קו נקי' + 'גוונים', 'גוונים' + 'סטייל'), each with two red periods. In those frames the Hebrew is unreadable letter soup. Each word is clean for only about 7 frames."
-  ],
+  "round": 2,
+  "hard_failures": [],
   "scores": {
-    "concept_and_art_direction": 8,
-    "typography_hebrew": 6,
-    "animation_density_and_choreography": 6,
-    "transitions_and_match_cuts": 6,
-    "composition_and_safe_zone": 6,
-    "sound_sync": 7,
+    "concept_and_art_direction": 9,
+    "typography_hebrew": 9,
+    "animation_density_and_choreography": 8,
+    "transitions_and_match_cuts": 9,
+    "composition_and_safe_zone": 8,
+    "sound_sync": 9,
     "palette_restraint": 9,
-    "overall_polish": 6
+    "overall_polish": 9
   },
-  "average": 6.75,
-  "verdict": "revise",
+  "average": 8.75,
+  "verdict": "pass",
   "measurements": {
-    "video": "1080x1920, 30 fps, 450 frames, 15.0 s; audio 15.02 s",
-    "loudness": "Integrated -15.0 LUFS, LRA 5.2 LU, true peak -1.4 dBFS, mean -14.4 dB, 0 clipped samples",
-    "empty_frames": "391-394 (0.0% non-background pixels)",
-    "static_runs": "115-150 (36 frames, about 1.2 s, frame diff < 0.3); 429-449 is the intended end hold",
-    "hook_text_clipping": "Hook band 'ככה נראית הפרסומת שלך?' spans x 0-1079 at frame 0 and 6-1073 at frame 1, so the '?' and the first 'כ' are cut by the frame edges; it settles at x 97-982 from about frame 20. The same edge-to-edge clipping returns at 66-74 as the band leaves.",
-    "ad_section_vertical_extent": "Frames 165-255: content only spans y 368-1172; y 1172-1500 of the safe zone and everything below are empty. Frames 300-315: the stack spans y 644-1020 only.",
-    "drop_strobe": "Full-frame stripe flood 270-286: frame-to-frame mean diff is 15 while holding and 71-100 at 284-286, so the stripes jump about half a period per frame and strobe.",
-    "audio_onsets_vs_timeline": "Hits land on 15/30/45/60 (silence between them, -90 dB before each), 120, 135, 150, 195, 210, 225, 240 (+9 to +15 dB) and 270 (+12.5 dB, but the peak level of -5 dB arrives at 275-277, 5-7 frames after the drop). Pre-drop silence at 255 (-67 dB). The cut hit is at 360.25, about 1.75 frames before cp.cut=362. No accent at 62 strips (+1.7), 78 travel (-40 dB tape-stop gap), 288 stack[0] (+1.7), 340 labels (+1.0), 374 grow (+0.2) or 386 wipe (-2.7). The bed sags to -28..-31 dB over 372-389. The end hits are at 394 (+11.7), 401, 410 and 420. Clean fade from 437 to -79 dB at 449.",
-    "rtl_check": "RTL order is correct throughout: the '?' sits at the left end of the questions, the periods in 'בשישי.', 'תספורת.' and 'להיראות.' sit at the left, 'רחוב הגפן 17' is ordered correctly, and 'לפני' is on the right with 'אחרי' on the left. No reversed punctuation found.",
-    "palette": "The after section uses only paper #f2ede4, ink, one brick red and a muted grey. The stripes are red/paper/ink. No gradients, glow or 3D seen."
+    "video": "1080x1920, 30 fps, 450 frames, 15.0 s",
+    "loudness": "Integrated -14.4 LUFS, LRA 3.5 LU, true peak -1.2 dBFS, 0 clipped samples",
+    "empty_frames": "None. Minimum coverage is 1.7% at frames 286-288, where the lone word 'פתוח' sits on paper by design. Frames 386-396 stay at 9.8-25% while the after poster lifts off to reveal the end copy.",
+    "static_runs": "107-120 (0.45 s), 128-135 (0.25 s), 317-328 (0.4 s stack hold) and 423-449 (end hold). The round-1 1.2 s freeze at 115-150 is gone.",
+    "hook_frame0": "The hook band text sits fully inside the frame at frame 0, at about x 130-950. The band folds shut on the tear at 60-66, and the strips have ragged torn edges.",
+    "word_cuts": "At each cut the old word splits along the cut line on beat+1 and is gone by about beat+3. The new word is clean from about beat+3 with a single period. No two words overlap at readable opacity in any frame from 192 to 255.",
+    "drop": "The stripe field holds frame diff at about 18.5 (no strobe). 'פתוח', 'גם' and 'בשישי' appear at 277, 289 and 300, the first in a paper block over the flood. The flood retracts at 283-285.",
+    "transient_timing": "Each frame is the steepest audio rise, with the timeline frame in brackets: 15/30/45/60 at -0.25 frames; 90, 120, 135, 195, 210, 225, 240 and 330 exactly; drop 270.5 [270] (envelope peak 272.3); 276.6 [276]; 289.8 [288]; 300.6 [300]; cut 362.4 [362]; 388.0 [388]; pill 404.0 [404]; plane 414.0 [414].",
+    "rtl_check": "Correct throughout. Question marks and periods sit at the left end of each line, 'רחוב הגפן 17 • קובעים תור בהודעה' is ordered correctly, and 'לפני' is on the right with 'אחרי' on the left.",
+    "palette": "The after section uses only paper, ink, one brick red and a muted grey. No gradients, glow or 3D."
   },
   "issues": [
-    "13.03-13.13 s (frames 391-394): blank frames. Fix: either make the wipe visible (lead it with an ink or accent edge, or use the barber-pole stripe band as the wiping edge, which keeps the match-cut idea) or start l1 at cp.wipe+2 so 'רוצים פרסומת כזו' is already rising while the poster is still on screen. Better: actually grow the after poster INTO the end frame. Keep the wordmark/band and let them settle into the end composition as a sign-off, instead of covering the poster.",
-    "6.5-8.0 s (frames 195-203, 210-218, 225-233, 240-248): stacked words are illegible. Fix: make the scissors cut a real split. The old word separates along the cut line (top half slides up, bottom half drops, or the left half falls) and is masked out, and only then does the new word slide in from the cut line. No frame should show two words at more than 20% opacity together. Hold each new word clean for at least 9-10 frames, and draw only one red period.",
-    "3.0-3.4 s (frames 90-101): the restyle is a crossfade, not a transformation. Frame 91 ghosts the blue italic 'מספרה 17' over the serif one, frames 94-97 overlap 'תספורת גברים!!' with 'תספורת', and frame 100 overlaps 'פתוח גם בשישי!!!' with the grey 'פתוח גם בשישי'. Fix: morph by moving and scaling each element to its new position with a short hard swap (1 frame) at the midpoint, or mask-wipe the old style off the new style, instead of an opacity crossfade. 'תספורת' and 'זקן' also sit on different baselines (frames 96-101) before the bullet appears; keep them on one line.",
-    "3.8-5.0 s (frames 115-150): 1.2 s of completely static frames right after the restyle, in the middle of the spot. Fix: keep something alive on the beat (the red bullet ticks, the CTA pill pops at 120/135, the rule draws, the barber-pole band slides in early), or pull ad.start/band earlier so the wordmark move begins at 135.",
-    "5.4 s (frame 162): 'תספורת' fades in over the outgoing 'פתוח גם בשישי' and 'זקן', which is a collision. Fix: clear the old line out completely before the service word arrives, or bring the word in from the scissors side, away from the leftovers.",
-    "5-8.5 s (frames 165-255) and 10-11 s (300-330): weak composition. Everything sits in y 368-1172, the lower ~40% of the frame is empty, and the service word is small relative to the space. Fix: move the scissors/word line down to about y 1150-1300, or scale the word up to ~200 px. A secondary detail could use the lower third: the phone number, which disappears for good at ~3.7 s even though the brief says the same information is restyled. Its absence also weakens the before/after promise.",
-    "0.0-0.07 s (frames 0-1) and 2.2-2.5 s (66-74): the hook question 'ככה נראית הפרסומת שלך?' is cut at both frame edges. Frame 0 is also the default Reels cover. Fix: start the slam scale so the text never exceeds about x 60-1020 (start at 1.15x, not ~1.25x), or render frame 0 at the settled size and do the slam on frame 1-6.",
-    "9.0-9.55 s (frames 270-286): the stripe flood holds for ~0.5 s with no message, and the stripes jump about half a period per frame at 284-286 (diff 71-100), which reads as strobing on phones. Fix: limit the stripe scroll to ≤ 1/4 period per frame (or keep it still and just push the band), and put the 'פתוח' word on top of the flood from ~278, so the drop carries the message.",
-    "9.6 s (frames 288-289): the flood retracts and leaves an almost empty frame (8% coverage); 'פתוח' only arrives at ~290, not on stack[0]=288. The 288 audio accent is also missing (+1.7 dB). Fix: land the word on 288 together with a snare/clap.",
-    "11.0-11.5 s (330-345): the before/after thumbnails are only 40% scale (432x768) with lots of empty paper around them. Fix: go to 46-48% and tighten the gutter, or crop into the cards. At frame 370 the 'לפני' label is half hidden behind the growing after card; fade it out by 366.",
-    "9.0 s drop audio: the drop transient at 270 is -10 dB, and the loudest part (-5 dB) arrives at 275-277, so the hit feels late. Fix: put the kick/boom transient at sample-exact frame 270 and make it the loudest event of the section (+3 dB). Also shift the 362 cut hit 2 frames later to land on 362.",
-    "12.4-13.1 s (frames 372-392): the music sags to about -30 dB with no accents on grow (374) or wipe (386), and the labels at 340 are silent. Fix: add a swoosh on 374-386 and a tick on 340 so the compare section has the same density as the word-cut section.",
-    "2.0-2.7 s: the strips tear away as hard rectangles. That is OK, but there is no paper-tear edge or sound beyond the 60 hit (62 strips +1.7 dB). Optional: add a ragged tear mask and a rip noise at 62-66 to make the 'tear' concept concrete."
+    "Round 2: the round-1 hard failures are fixed. There are no blank frames at 386-396, because the poster now lifts away over end copy that is already set. The word cuts read cleanly. The restyle uses hard swaps with no ghosted double exposure, the frame-0 hook is uncut, the 115-150 freeze is broken up by the 104/112/120 beats, and the drop no longer strobes. The remaining items below are minor polish.",
+    "3.0-3.3 s (frames 89-97): 'זקן' arrives on a lower baseline than 'תספורת' for about 8 frames before it settles. Optional: snap both words to the shared baseline before the swap and animate only x.",
+    "3.6-4.5 s (frames 107-135): the restyled layout still only occupies about y 300-1210, and the lower ~35% of the frame is empty paper. It is short enough to accept. Optional: bring the DM pill in at about y 1300 here, as it is during 135-264, so the lower third is used from the moment the layout settles.",
+    "9.5-9.6 s (frames 285-288): after the flood retracts there are 3-4 frames with only the small 'פתוח' on paper (1.7% coverage) before 'גם' lands at 289. The 288 clap transient is about 1.8 frames late (289.8), together with the word. Optional: land 'גם' and its clap exactly on 288, or hold the flood 2 frames longer.",
+    "11.0-12.4 s (frames 330-374): at 46% the cards span x ≈ 30-1050. The before flyer's lower half (y ≈ 1150-1420) sits under the Reels right-side action rail. The flyer itself is not key text, but the 'לפני' card loses its right edge to the UI. Optional: shift both cards ~40 px left, or scale to 44%.",
+    "9.0 s drop: the steepest rise is exactly on 270, but the envelope peaks at 272.3, so the hit has a slightly soft front. Optional: shorten the attack by ~1 frame for a harder slam."
   ]
 }
