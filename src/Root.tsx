@@ -11,6 +11,8 @@ import {FormAd} from './form/FormAd';
 import FT from './form/timeline.json';
 import {PulseAd} from './pulse/PulseAd';
 import PT from './pulse/timeline.json';
+import {BarberAd} from './barber/BarberAd';
+import BT from './barber/timeline.json';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -52,6 +54,14 @@ export const RemotionRoot: React.FC = () => {
       component={PulseAd}
       durationInFrames={PT.durationInFrames}
       fps={PT.fps}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="BarberAd"
+      component={BarberAd}
+      durationInFrames={BT.durationInFrames}
+      fps={BT.fps}
       width={1080}
       height={1920}
     />
