@@ -10,31 +10,46 @@ const ad = T.ad;
 const cp = T.compare;
 const en = T.end;
 
-// ---------------- 0-5 s: loud flyer, tear-away, restyle ----------------
+// ---------------- 0-4.5 s: loud flyer, tear-away, restyle ----------------
 
 const STRIPS = 6;
+const SH = H / STRIPS;
+
+// ragged tear line between strip k-1 and strip k (shared, so the strips fit together)
+const tearLine = (k: number) => {
+  const pts: [number, number][] = [];
+  for (let x = -40, j = 0; x <= W + 40; x += 36, j++) {
+    const n = Math.sin(j * 12.9898 + k * 78.233) * 43758.5453;
+    pts.push([x, k * SH + (n - Math.floor(n) - 0.5) * 34]);
+  }
+  return pts;
+};
+const stripClip = (i: number) => {
+  const top = i === 0 ? [[-40, -40], [W + 40, -40]] : tearLine(i);
+  const bottom = i === STRIPS - 1 ? [[W + 40, H + 40], [-40, H + 40]] : tearLine(i + 1).slice().reverse();
+  return `polygon(${[...top, ...bottom].map(([x, y]) => `${x}px ${y}px`).join(', ')})`;
+};
+
+const jolts = (f: number) => hk.jolt.reduce((acc, at) => acc + (f >= at ? Math.exp(-(f - at) / 3) : 0), 0);
 
 const Opening: React.FC<{f: number}> = ({f}) => {
   const pops = hk.jolt.map((at) => pop(f, at, 420, 12));
-  const jolt = hk.jolt.reduce((acc, at) => acc + (f >= at ? Math.exp(-(f - at) / 3) : 0), 0);
+  const jolt = f < hk.tear ? jolts(f) : 0;
   const torn = f >= hk.strips;
-  const stripH = H / STRIPS;
 
-  // hook band: slides in from the right, leaves to the left on the tear
-  const bandIn = 0;
-  const bandPop = pop(f, hk.band, 380, 14);
-  const bandOut = lerp(f, hk.tear, hk.tear + 9, 0, -W * 1.1, ez.in);
+  // hook band: settled on frame 0 (the cover), small slam on frames 1-6, folds shut on the tear
+  const slam = f === 0 ? 1 : mix(1.12, 1, pop(f, 1, 380, 14));
+  const fold = lerp(f, hk.tear, hk.tear + 6, 1, 0, ez.in);
 
-  // header that replaces the hook
   const head = lerp(f, rs.header, rs.header + 14, 0, 1);
   const headOut = lerp(f, ad.start, ad.start + 10, 0, 1, ez.in);
-
-  // the thin rule under the clean wordmark
-  const rule = lerp(f, rs.travel + 30, rs.travel + 44, 0, 1, ez.inOut);
+  const rule = lerp(f, rs.rule, rs.rule + 12, 0, 1, ez.inOut);
+  const dot = pop(f, rs.dot, 420, 14);
+  const press = f >= rs.press ? 1 - 0.07 * Math.sin(Math.min(1, (f - rs.press) / 7) * Math.PI) : 1;
+  const clear = lerp(f, ad.start, ad.start + 8, 0, 1);
 
   return (
     <AbsoluteFill style={{backgroundColor: f < ad.start ? K.paper : 'transparent'}}>
-      {/* flyer: whole until the tear, then six strips peel off */}
       {!torn ? (
         <div style={{position: 'absolute', inset: 0, transform: `scale(${1 + jolt * 0.018}) rotate(${jolt * 0.5}deg)`}}>
           <Flyer hideKeys pops={pops} />
@@ -46,66 +61,43 @@ const Opening: React.FC<{f: number}> = ({f}) => {
           const p = lerp(f, at, at + 13, 0, 1, ez.in);
           if (p >= 1) return null;
           return (
-            <div
-              key={i}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                clipPath: `inset(${i * stripH}px 0 ${H - (i + 1) * stripH - 1}px 0)`,
-                transform: `translateX(${dir * p * W * 1.15}px) rotate(${dir * p * 4}deg)`,
-              }}
-            >
+            <div key={i} style={{position: 'absolute', inset: 0, clipPath: stripClip(i), transform: `translateX(${dir * p * W * 1.2}px) rotate(${dir * p * 5}deg)`}}>
               <Flyer hideKeys pops={[1, 1, 1]} />
             </div>
           );
         })
       )}
 
-      {/* the content that survives travels into the clean layout */}
+      {/* surviving content: moves + shrinks, hard style swap at the squash point (no crossfade) */}
       {KEYS.map((k, i) => {
+        if ((k.id === 'name' || k.id === 'phone') && f >= ad.start) return null;
         const start = rs.travel + i * 3;
-        const t = lerp(f, start, start + 26, 0, 1, ez.inOut);
+        const t = lerp(f, start, start + 24, 0, 1, ez.inOut);
         const x = mix(k.before.x, k.after.x, t);
         const y = mix(k.before.y, k.after.y, t);
         const rot = mix(k.before.rot, k.after.rot, t);
-        const squash = 1 - 0.14 * Math.sin(Math.PI * t);
-        const xf = lerp(t, 0.38, 0.62, 0, 1, ez.lin);
-        const shake = f < hk.tear ? hk.jolt.reduce((acc, at) => acc + (f >= at ? Math.exp(-(f - at) / 3) : 0), 0) : 0;
-        // exit when the ad takes over (the name stays, handled by <AdScene>)
-        const exit = k.id === 'name' ? 0 : lerp(f, ad.start + i * 2, ad.start + i * 2 + 12, 0, 1, ez.in);
-        if (k.id === 'name' && f >= ad.start) return null;
+        const swapped = t >= 0.5;
+        const squash = swapped ? mix(0.8, 1, lerp(t, 0.5, 0.8, 0, 1, ez.out)) : mix(1, 0.8, lerp(t, 0.2, 0.5, 0, 1, ez.in));
+        const shake = f < hk.tear ? jolts(f) : 0;
+        const exit = lerp(f, ad.start + i * 2, ad.start + i * 2 + 10, 0, 1, ez.in);
+        const s = squash * (1 + shake * 0.018) * (k.id === 'phone' ? press : 1);
         return (
-          <React.Fragment key={k.id}>
-            <Txt x={x} y={y + exit * 500} opacity={(1 - xf) * (1 - exit)} transform={`rotate(${rot + shake * 0.5}deg) scale(${squash * (1 + shake * 0.018)})`}>
-              <k.Before />
-            </Txt>
-            <Txt x={x} y={y + exit * 500} opacity={xf * (1 - exit)} transform={`rotate(${rot}deg) scale(${squash})`}>
-              <k.After />
-            </Txt>
-          </React.Fragment>
+          <Txt key={k.id} x={x} y={y + exit * 400} opacity={1 - exit} transform={`rotate(${rot + shake * 0.5}deg) scale(${s})`}>
+            {swapped ? <k.After /> : <k.Before />}
+          </Txt>
         );
       })}
 
-      {/* separator dot between the two services and the rule */}
-      <Txt x={518} y={885} opacity={lerp(f, rs.travel + 30, rs.travel + 38, 0, 1) * (1 - lerp(f, ad.start, ad.start + 8, 0, 1))} style={{fontFamily: UI, fontSize: 70, color: K.accent}}>
-        ·
-      </Txt>
-      <div
-        style={{
-          position: 'absolute',
-          left: 540 - 260 * rule,
-          width: 520 * rule,
-          top: 775,
-          height: 4,
-          backgroundColor: K.ink,
-          opacity: 1 - lerp(f, ad.start, ad.start + 8, 0, 1),
-        }}
-      />
+      {f >= rs.dot ? (
+        <Txt x={518} y={885} opacity={1 - clear} transform={`scale(${dot})`} style={{fontFamily: UI, fontSize: 70, color: K.accent}}>
+          ·
+        </Txt>
+      ) : null}
+      <div style={{position: 'absolute', left: 540 - 260 * rule, width: 520 * rule, top: 775, height: 4, backgroundColor: K.ink, opacity: 1 - clear}} />
 
-      {/* hook band */}
-      {f >= hk.band && f < hk.tear + 10 ? (
-        <div style={{position: 'absolute', left: 0, top: 236, width: W, height: 180, backgroundColor: K.ink, transform: `translateX(${bandIn + bandOut}px)`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <span style={{fontFamily: UI, fontWeight: 800, fontSize: 76, color: K.paper, direction: 'rtl', display: 'inline-block', transform: `scale(${mix(1.25, 1, bandPop)})`}}>ככה נראית הפרסומת שלך?</span>
+      {f < hk.tear + 6 ? (
+        <div style={{position: 'absolute', left: 0, top: 236, width: W, height: 180, backgroundColor: K.ink, transform: `scaleY(${fold})`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <span style={{fontFamily: UI, fontWeight: 800, fontSize: 70, color: K.paper, direction: 'rtl', display: 'inline-block', transform: `scale(${slam})`}}>ככה נראית הפרסומת שלך?</span>
         </div>
       ) : null}
 
@@ -118,68 +110,64 @@ const Opening: React.FC<{f: number}> = ({f}) => {
   );
 };
 
-// ---------------- 5-11 s: the ad itself ----------------
+// ---------------- 4.5-11 s: the ad itself ----------------
 
 const WORDS = ['תספורת', 'זקן', 'קו נקי', 'גוונים', 'סטייל'];
-const WORD_Y = 1080;
+const WORD_Y = 1010;
+const BAND_TOP = 560;
+const BAND_H = 170;
 
-const Word: React.FC<{text: string; half?: 'top' | 'bottom'; style?: React.CSSProperties}> = ({text, half, style}) => (
-  <div
-    style={{
-      position: 'absolute',
-      inset: 0,
-      clipPath: half === 'top' ? 'inset(0 0 50% 0)' : half === 'bottom' ? 'inset(50% 0 0 0)' : undefined,
-      ...style,
-    }}
-  >
-    <Txt x={540} y={WORD_Y} style={{fontFamily: SERIF, fontWeight: 900, fontSize: 200, color: K.ink}}>
+// a word drawn across the full frame so halves/reveals can be clipped in frame coordinates
+const Word: React.FC<{text: string; clip?: string; style?: React.CSSProperties}> = ({text, clip, style}) => (
+  <div style={{position: 'absolute', inset: 0, clipPath: clip, ...style}}>
+    <Txt x={540} y={WORD_Y} style={{fontFamily: SERIF, fontWeight: 900, fontSize: 210, color: K.ink}}>
       {text}
       <span style={{color: K.accent}}>.</span>
     </Txt>
   </div>
 );
 
-const AdScene: React.FC<{f: number}> = ({f}) => {
-  const shift = -f * 5;
-  // wordmark rises into place
-  const up = lerp(f, ad.start, ad.start + 12, 0, 1, ez.inOut);
-  const nameY = mix(640, 440, up);
-  const nameS = mix(1, 1.08, up);
+const reveal = (r: number) => `inset(${WORD_Y - 150 * r}px 0 ${H - WORD_Y - 150 * r}px 0)`;
 
-  // stripe band: opens right to left, then floods the frame on the drop, then leaves upward
+const AdScene: React.FC<{f: number}> = ({f}) => {
+  const up = lerp(f, ad.start, ad.start + 12, 0, 1, ez.inOut);
+  const nameY = mix(640, 420, up);
+  const nameS = mix(1, 1.08, up);
+  const pillY = mix(1165, 1300, up);
+  const pillOut = lerp(f, ad.gather, ad.gather + 9, 0, 1, ez.in);
+  const pillKick = f >= ad.first && f < ad.gather ? Math.exp(-((f - ad.first) % 15) / 3) * 0.03 : 0;
+
+  // stripe band as a clipped, screen-fixed stripe field: opens right-to-left, floods, retracts upward
   const open = lerp(f, ad.band, ad.band + 14, 0, 1, ez.out);
   const flood = lerp(f, ad.drop - 6, ad.drop, 0, 1, ez.in);
-  const leave = lerp(f, ad.drop + 12, ad.open + 8, 0, 1, ez.inOut);
-  const bandTop = mix(600, 0, flood);
-  const bandH = mix(170, H, flood);
+  const leave = lerp(f, ad.stack[0] + 6, ad.stack[1] - 2, 0, 1, ez.inOut);
+  const top = mix(BAND_TOP, 0, flood);
+  const bot = mix(BAND_TOP + BAND_H, H, flood) * (1 - leave);
+  const left = W * (1 - open);
 
-  // which word, and the cut between words
-  const cuts = ad.words;
   let idx = 0;
-  cuts.forEach((c) => {
+  ad.words.forEach((c) => {
     if (f >= c) idx++;
   });
-  const lastCut = idx > 0 ? cuts[idx - 1] : -100;
+  const lastCut = idx > 0 ? ad.words[idx - 1] : ad.first - 3;
   const since = f - lastCut;
-  const wordIn = idx === 0 ? pop(f, 176, 300, 16) : pop(f, lastCut + 1, 340, 15);
-  const wordsOut = lerp(f, ad.gather, ad.gather + 8, 0, 1, ez.in);
+  const r = lerp(since, 2, 6, 0, 1, ez.out);
+  const wordsOut = lerp(f, ad.gather, ad.gather + 6, 0, 1, ez.in);
 
-  // scissors: enter from the left, snip on each cut, then go to centre for the drop
-  const sIn = lerp(f, 168, 184, -300, 120, ez.out);
-  const next = cuts.find((c) => c >= f) ?? ad.drop;
+  const sIn = lerp(f, ad.first - 10, ad.first + 2, -300, 120, ez.out);
+  const next = ad.words.find((c) => c >= f) ?? ad.drop;
   const toNext = next - f;
   const snipOpen = f < ad.gather ? (toNext <= 6 ? toNext / 6 : 1) : f < ad.drop ? lerp(f, ad.drop - 6, ad.drop, 1, 0, ez.in) : 0;
   const gather = lerp(f, ad.gather, ad.gather + 12, 0, 1, ez.inOut);
   const sx = mix(sIn, 540, gather);
-  const sy = mix(WORD_Y, 1020, gather);
+  const sy = mix(WORD_Y, 1000, gather);
   const sSize = mix(200, 420, gather);
+  const lineP = f < ad.gather && f >= ad.first && toNext <= 4 ? 1 - toNext / 4 : 0;
 
-  // cut line racing across the word just before each cut
-  const lineP = f < ad.gather && toNext <= 4 ? 1 - toNext / 4 : 0;
-
-  // "open also on Friday" stack after the flood
   const stack = ['פתוח', 'גם', 'בשישי'];
-  const stackY = [720, 940, 1170];
+  const stackY = [700, 930, 1170];
+  const stackOut = (i: number) => lerp(f, cp.split - 4 + i, cp.split + 4 + i, 0, 1, ez.in);
+  const info = lerp(f, ad.info, ad.info + 10, 0, 1);
 
   return (
     <AbsoluteFill style={{backgroundColor: K.paper}}>
@@ -189,64 +177,60 @@ const AdScene: React.FC<{f: number}> = ({f}) => {
         </Txt>
       ) : null}
 
-      {/* words + their cut halves */}
-      {f >= 176 && f < ad.gather + 8 ? (
+      {f >= ad.first - 3 && f < ad.gather + 6 ? (
         <>
-          <div style={{position: 'absolute', inset: 0, opacity: 1 - wordsOut, transform: `scale(${mix(0.86, 1, wordIn)})`, transformOrigin: `540px ${WORD_Y}px`}}>
-            <Word text={WORDS[idx]} />
-          </div>
-          {idx > 0 && since < 12 ? (
+          <Word text={WORDS[idx]} clip={reveal(r)} style={{opacity: 1 - wordsOut}} />
+          {idx > 0 && since < 4 ? (
             <>
-              <Word text={WORDS[idx - 1]} half="top" style={{transform: `translate(${-since * 6}px, ${-since * 9}px) rotate(${-since * 0.4}deg)`, opacity: 1 - since / 12}} />
-              <Word text={WORDS[idx - 1]} half="bottom" style={{transform: `translate(${since * 6}px, ${since * 9}px) rotate(${since * 0.4}deg)`, opacity: 1 - since / 12}} />
+              <Word text={WORDS[idx - 1]} clip={`inset(0 0 ${H - WORD_Y}px 0)`} style={{transform: `translate(${-since * 8}px, ${-since * 26}px) rotate(${-since * 0.8}deg)`, opacity: Math.max(0, 1 - since / 2.5)}} />
+              <Word text={WORDS[idx - 1]} clip={`inset(${WORD_Y}px 0 0 0)`} style={{transform: `translate(${since * 8}px, ${since * 26}px) rotate(${since * 0.8}deg)`, opacity: Math.max(0, 1 - since / 2.5)}} />
             </>
           ) : null}
         </>
       ) : null}
-      {lineP > 0 ? <div style={{position: 'absolute', left: 200, top: WORD_Y - 2, width: 760 * lineP, height: 4, backgroundColor: K.accent}} /> : null}
+      {lineP > 0 ? <div style={{position: 'absolute', left: 210, top: WORD_Y - 2, width: 760 * lineP, height: 4, backgroundColor: K.accent}} /> : null}
 
-      {f < ad.drop + 2 && f >= 168 ? (
+      {f >= ad.first - 10 && f < ad.drop + 2 ? (
         <div style={{position: 'absolute', left: sx - sSize / 2, top: sy - sSize / 2}}>
           <Scissors size={sSize} open={snipOpen} />
         </div>
       ) : null}
 
-      {/* stripe band */}
-      {f >= ad.band && leave < 1 ? (
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: bandTop - leave * H,
-            width: W * open,
-            height: bandH,
-            borderTop: `5px solid ${K.ink}`,
-            borderBottom: `5px solid ${K.ink}`,
-            overflow: 'hidden',
-          }}
-        >
-          <Stripes shift={shift} w={mix(56, 110, flood)} />
-        </div>
+      {f < ad.gather + 9 ? (
+        <Txt x={540} y={pillY + pillOut * 300} opacity={1 - pillOut} transform={`scale(${1 + pillKick})`}>
+          <Pill label="קובעים תור בהודעה" />
+        </Txt>
       ) : null}
 
-      {/* the Friday stack */}
+      {f >= ad.band && bot > top + 1 ? (
+        <>
+          <div style={{position: 'absolute', inset: 0, clipPath: `inset(${top}px 0 ${H - bot}px ${left}px)`}}>
+            <Stripes shift={-f * 3} w={56} />
+          </div>
+          {top > 0 ? <div style={{position: 'absolute', left, right: 0, top: top - 5, height: 5, backgroundColor: K.ink}} /> : null}
+          {bot < H ? <div style={{position: 'absolute', left, right: 0, top: bot, height: 5, backgroundColor: K.ink}} /> : null}
+        </>
+      ) : null}
+
+      {/* the Friday stack lands on the flood in paper blocks, which merge with the paper as the stripes retract */}
       {f >= ad.stack[0]
         ? stack.map((w, i) => {
-            const p = pop(f, ad.stack[i], 280, 16);
-            const out = lerp(f, cp.split - 4 + i, cp.split + 4 + i, 0, 1, ez.in);
+            if (f < ad.stack[i]) return null;
+            const p = pop(f, ad.stack[i], 320, 16);
+            const o = stackOut(i);
             return (
-              <div key={w} style={{position: 'absolute', left: 0, right: 0, top: stackY[i] - 140, height: 280, overflow: 'hidden'}}>
-                <Txt x={540} y={140 + (1 - p) * 260 - out * 300} opacity={1 - out} style={{fontFamily: SERIF, fontWeight: 900, fontSize: 250, color: i === 2 ? K.accent : K.ink}}>
+              <Txt key={w} x={540} y={stackY[i] + (1 - p) * 120 - o * 160} opacity={Math.min(1, p * 3) * (1 - o)} transform={`scale(${mix(0.85, 1, p)})`}>
+                <span style={{display: 'inline-block', backgroundColor: K.paper, padding: '10px 40px 26px', fontFamily: SERIF, fontWeight: 900, fontSize: 250, color: i === 2 ? K.accent : K.ink}}>
                   {w}
                   {i === 2 ? <span style={{color: K.ink}}>.</span> : null}
-                </Txt>
-              </div>
+                </span>
+              </Txt>
             );
           })
         : null}
-      {f >= ad.stack[2] + 6 ? (
-        <Txt x={540} y={1380} opacity={lerp(f, ad.stack[2] + 6, ad.stack[2] + 14, 0, 1) * (1 - lerp(f, cp.split, cp.split + 6, 0, 1))} style={{fontFamily: UI, fontWeight: 500, fontSize: 44, color: K.muted}}>
-          רחוב הגפן 17
+      {f >= ad.info ? (
+        <Txt x={540} y={1400 + (1 - info) * 30} opacity={info * (1 - stackOut(2))} style={{fontFamily: UI, fontWeight: 500, fontSize: 46, color: K.muted}}>
+          רחוב הגפן 17 · קובעים תור בהודעה
         </Txt>
       ) : null}
     </AbsoluteFill>
@@ -255,80 +239,78 @@ const AdScene: React.FC<{f: number}> = ({f}) => {
 
 // ---------------- 11-13 s: before / after ----------------
 
-const THUMB = 0.4;
+const THUMB = 0.46;
 const TW = W * THUMB;
 const TH = H * THUMB;
 
 const Compare: React.FC<{f: number}> = ({f}) => {
   const inB = lerp(f, cp.split, cp.split + 14, 0, 1, ez.out);
   const inA = lerp(f, cp.split + 3, cp.split + 17, 0, 1, ez.out);
-  const labels = lerp(f, cp.labels, cp.labels + 10, 0, 1);
-  const cut = lerp(f, cp.cut, cp.cut + 5, 0, 1, ez.inOut);
-  const fall = lerp(f, cp.cut + 5, cp.cut + 20, 0, 1, ez.in);
+  const labels = lerp(f, cp.labels, cp.labels + 8, 0, 1);
+  const cut = lerp(f, cp.cut - 4, cp.cut, 0, 1, ez.in);
+  const fall = lerp(f, cp.cut + 2, cp.cut + 18, 0, 1, ez.in);
   const grow = lerp(f, cp.grow, cp.wipe, 0, 1, ez.inOut);
+  const lift = lerp(f, cp.wipe, cp.wipe + 12, 0, 1, ez.in);
 
   // before on the right (read first in Hebrew), after on the left
-  const bx = 790;
-  const ax = mix(290, 540, grow);
-  const cy = 960;
+  const bx = W - 28 - TW / 2;
+  const ax0 = 28 + TW / 2;
+  const cy = 980;
+  const ax = mix(ax0, W / 2, grow);
+  const ay = mix(cy, H / 2, grow) - lift * (H + 60);
   const aScale = mix(THUMB, 1, grow);
-  const ay = mix(cy, H / 2, grow);
+  const bLabel = labels * (1 - lerp(f, cp.cut - 2, cp.cut + 4, 0, 1));
 
   return (
     <AbsoluteFill>
       {fall < 1 ? (
-        <>
-          <div
-            style={{
-              position: 'absolute',
-              left: bx - TW / 2,
-              top: cy - TH / 2 - (1 - inB) * 1400 + fall * 1500,
-              width: TW,
-              height: TH,
-              overflow: 'hidden',
-              border: `4px solid ${K.ink}`,
-              transform: `rotate(${fall * 18}deg)`,
-            }}
-          >
-            <div style={{width: W, height: H, transform: `scale(${THUMB})`, transformOrigin: '0 0', position: 'relative'}}>
-              <Flyer />
-            </div>
+        <div
+          style={{
+            position: 'absolute',
+            left: bx - TW / 2,
+            top: cy - TH / 2 - (1 - inB) * 1500 + fall * 1500,
+            width: TW,
+            height: TH,
+            overflow: 'hidden',
+            border: `4px solid ${K.ink}`,
+            transform: `rotate(${fall * 18}deg)`,
+          }}
+        >
+          <div style={{width: W, height: H, transform: `scale(${THUMB})`, transformOrigin: '0 0', position: 'relative'}}>
+            <Flyer />
           </div>
-          <Txt x={bx} y={cy - TH / 2 - 80} opacity={labels * (1 - fall)} style={{fontFamily: UI, fontWeight: 800, fontSize: 64, color: K.ink}}>
-            לפני
-          </Txt>
-        </>
+        </div>
       ) : null}
-      {/* the scissors cut line across the old flyer */}
-      {cut > 0 && fall < 0.3 ? <div style={{position: 'absolute', left: bx + TW / 2 - (TW + 60) * cut, top: cy, width: (TW + 60) * cut, height: 6, backgroundColor: K.accent}} /> : null}
+      <Txt x={bx} y={cy - TH / 2 - 60} opacity={bLabel} style={{fontFamily: UI, fontWeight: 800, fontSize: 64, color: K.ink}}>
+        לפני
+      </Txt>
+      {cut > 0 && fall < 0.25 ? <div style={{position: 'absolute', left: bx + TW / 2 + 30 - (TW + 60) * cut, top: cy, width: (TW + 60) * cut, height: 6, backgroundColor: K.accent}} /> : null}
 
-      <Txt x={290} y={cy - TH / 2 - 80} opacity={labels * (1 - grow * 3)} style={{fontFamily: UI, fontWeight: 800, fontSize: 64, color: K.accent}}>
+      <Txt x={ax0} y={cy - TH / 2 - 60} opacity={labels * (1 - grow * 3)} style={{fontFamily: UI, fontWeight: 800, fontSize: 64, color: K.accent}}>
         אחרי
       </Txt>
       <div
         style={{
           position: 'absolute',
           left: ax - (W * aScale) / 2,
-          top: ay - (H * aScale) / 2 + (1 - inA) * 1400,
+          top: ay - (H * aScale) / 2 + (1 - inA) * 1500,
           width: W * aScale,
           height: H * aScale,
           overflow: 'hidden',
-          border: `${4 * (1 - grow)}px solid ${K.ink}`,
+          border: `${4 * (1 - grow) + 5 * lift}px solid ${K.ink}`,
         }}
       >
         <div style={{width: W, height: H, transform: `scale(${aScale})`, transformOrigin: '0 0', position: 'relative'}}>
-          <AfterPoster shift={-f * 5} />
+          <AfterPoster shift={-f * 3} />
         </div>
       </div>
     </AbsoluteFill>
   );
 };
 
-// ---------------- 13-15 s: end frame ----------------
+// ---------------- 13-15 s: end frame (revealed as the poster lifts away) ----------------
 
 const EndFrame: React.FC<{f: number}> = ({f}) => {
-  // paper rises over the grown poster
-  const wipe = lerp(f, cp.wipe, en.line1, 0, 1, ez.inOut);
   const l1 = lerp(f, en.line1, en.line1 + 12, 0, 1);
   const l2 = lerp(f, en.line2, en.line2 + 12, 0, 1);
   const pill = pop(f, en.pill, 320, 15);
@@ -336,7 +318,7 @@ const EndFrame: React.FC<{f: number}> = ({f}) => {
   const note = lerp(f, en.note, en.note + 2, 0, 1, ez.lin);
   const rule = lerp(f, en.line2 + 4, en.line2 + 16, 0, 1, ez.inOut);
   return (
-    <div style={{position: 'absolute', left: 0, top: H * (1 - wipe), width: W, height: H, backgroundColor: K.paper, overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: K.paper}}>
       <div style={{position: 'absolute', left: 0, right: 0, top: 560, height: 140, overflow: 'hidden'}}>
         <Txt x={540} y={70 + (1 - l1) * 140} style={{fontFamily: UI, fontWeight: 800, fontSize: 104, color: K.ink}}>
           רוצים פרסומת כזו
@@ -365,7 +347,7 @@ const EndFrame: React.FC<{f: number}> = ({f}) => {
       <Txt x={540} y={1250} opacity={note} style={{fontFamily: UI, fontWeight: 400, fontSize: 32, color: K.muted}}>
         העסק בסרטון בדיוני. קונספט להמחשה.
       </Txt>
-    </div>
+    </AbsoluteFill>
   );
 };
 
@@ -375,8 +357,8 @@ export const BarberAd: React.FC = () => {
     <AbsoluteFill style={{backgroundColor: K.paper}}>
       {f >= ad.start && f < cp.split + 14 ? <AdScene f={f} /> : null}
       {f < ad.start + 14 ? <Opening f={f} /> : null}
-      {f >= cp.split && f < en.line1 ? <Compare f={f} /> : null}
       {f >= cp.wipe ? <EndFrame f={f} /> : null}
+      {f >= cp.split && f < cp.wipe + 13 ? <Compare f={f} /> : null}
       <Audio src={staticFile('music/barber-soundtrack.wav')} />
     </AbsoluteFill>
   );

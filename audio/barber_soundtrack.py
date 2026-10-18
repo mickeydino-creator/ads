@@ -125,7 +125,8 @@ for i, fr in enumerate(h["jolt"]):
 put(sfx, whoosh(0.25, 1500, 9000, 0.4), sec(h["band"]) - 0.05, 0.35, 0.6)
 put(sfx, tick(1800, 0.05), sec(h["band"] + 8), 0.35)
 for i in range(6):
-    put(sfx, rip(), sec(h["strips"] + i * 2), 0.5, -0.6 if i % 2 == 0 else 0.6)
+    put(sfx, rip(), sec(h["strips"] + i * 2), 0.85, -0.6 if i % 2 == 0 else 0.6)
+put(sfx, whoosh(0.5, 300, 6000, 0.3), sec(h["strips"]), 0.45)
 
 # ---------------- 2-5 s: restyle, the clean groove arrives ----------------
 D1, Bb0, F1, C1 = 36.71, 29.14, 43.65, 32.70
@@ -161,7 +162,10 @@ pad = sum(np.sin(2 * np.pi * fq * np.arange(n) / SR) for fq in (146.8, 174.6, 22
 put(music, pad * np.sin(np.linspace(0, np.pi, n)) ** 1.5, sec(rs["travel"]), 0.2)
 groove(sec(90), sec(T["ad"]["start"]), gain=0.6, stabs=False, claps=False)
 put(sfx, snap(), sec(rs["header"]), 0.4)
-put(sfx, blip(990, 0.15), sec(rs["settle"] - 12), 0.12)
+put(sfx, whoosh(0.3, 1500, 9000, 0.5), sec(rs["rule"]), 0.2, -0.5)
+put(sfx, blip(990, 0.15), sec(rs["dot"]), 0.18)
+put(sfx, tick(1600, 0.05), sec(rs["press"]), 0.5)
+put(sfx, blip(1320, 0.2), sec(rs["press"]) + 0.03, 0.14)
 put(sfx, rev_cymbal(sec(20)), sec(T["ad"]["start"] - 20), 0.35)
 
 # ---------------- 5-11 s: the ad ----------------
@@ -172,22 +176,26 @@ put(music, boom(), sec(ad["start"]), 0.6)
 put(music, stab(prog[0][1], 0.5), sec(ad["start"]), 0.35)
 put(sfx, whoosh(0.4, 600, 8000, 0.4), sec(ad["band"]), 0.35, 0.6)
 groove(sec(ad["start"]) + BEAT, sec(ad["gather"]), gain=1.0)
-put(sfx, whoosh(0.3, 1200, 9000, 0.5), sec(168), 0.3, -0.6)
-put(sfx, blip(660, 0.18), sec(176), 0.15)
+put(sfx, whoosh(0.3, 1200, 9000, 0.5), sec(ad["first"] - 10), 0.3, -0.6)
+put(sfx, snip(), sec(ad["first"]), 0.4)
 for i, fr in enumerate(ad["words"]):
-    put(sfx, snip(), sec(fr) - 0.03, 0.55, -0.3 + i * 0.2)
+    put(sfx, snip(), sec(fr), 0.6, -0.3 + i * 0.2)
     put(sfx, whoosh(0.2, 2000, 12000, 0.3), sec(fr), 0.18)
 put(sfx, riser(sec(ad["drop"] - ad["gather"])), sec(ad["gather"]), 0.45)
 put(sfx, whoosh(0.4, 300, 5000, 0.6), sec(ad["gather"]), 0.3)
 put(music, kick(big=True), sec(ad["drop"]), 1.0)
 kicks.append(sec(ad["drop"]))
-put(music, boom(), sec(ad["drop"]), 0.95)
-put(sfx, snip(), sec(ad["drop"]) - 0.03, 0.8)
-put(sfx, clap(), sec(ad["drop"]), 0.7)
+put(music, boom(), sec(ad["drop"]), 0.6)
+put(sfx, snip(), sec(ad["drop"]), 0.9)
+put(sfx, clap(), sec(ad["drop"]), 1.0)
+put(sfx, snap(), sec(ad["drop"]), 0.9)
 put(music, stab([293.7, 349.2, 440.0, 587.3], 0.6), sec(ad["drop"]), 0.4)
 put(sfx, whoosh(0.5, 300, 7000, 0.4), sec(ad["drop"] + 12), 0.4)
 groove(sec(ad["drop"]) + BEAT, sec(T["compare"]["split"]), gain=1.0)
+put(sfx, tick(2400, 0.04), sec(ad["info"]), 0.3)
 for i, fr in enumerate(ad["stack"]):
+    put(sfx, clap(), sec(fr), 0.55)
+    put(music, kick(), sec(fr), 0.6)
     put(music, stab([[293.7, 349.2, 440.0], [349.2, 440.0, 523.3], [440.0, 523.3, 659.3]][i], 0.3), sec(fr), 0.3)
 
 # ---------------- 11-13 s: before / after ----------------
@@ -195,11 +203,12 @@ cp = T["compare"]
 put(sfx, whoosh(0.45, 400, 8000, 0.5), sec(cp["split"]), 0.45)
 put(sfx, tick(2400, 0.04), sec(cp["labels"]), 0.3, 0.4)
 put(sfx, tick(3000, 0.04), sec(cp["labels"] + 2), 0.3, -0.4)
-groove(sec(cp["split"]), sec(cp["cut"]), gain=0.75, stabs=False)
-put(sfx, snip(), sec(cp["cut"]) - 0.03, 0.7, 0.4)
+groove(sec(cp["split"]), sec(cp["wipe"]), gain=0.8, stabs=False)
+put(sfx, snip(), sec(cp["cut"]), 0.8, 0.4)
 put(sfx, rip(0.3), sec(cp["cut"] + 1), 0.5, 0.4)
 put(sfx, whoosh(0.5, 200, 3000, 0.8), sec(cp["cut"] + 5), 0.4, 0.5)
-put(sfx, whoosh(0.5, 600, 9000, 0.6), sec(cp["grow"]), 0.35, -0.4)
+put(sfx, whoosh(0.5, 600, 9000, 0.6), sec(cp["grow"]), 0.45, -0.4)
+put(sfx, whoosh(0.4, 400, 8000, 0.5), sec(cp["wipe"]), 0.5)
 put(sfx, rev_cymbal(sec(T["end"]["line1"]) - sec(cp["grow"])), sec(cp["grow"]), 0.35)
 
 # ---------------- 13-15 s: end frame ----------------

@@ -3,53 +3,9 @@
   "durationInFrames": 450,
   "bpm": 120,
   "beat": 15,
-  "hook": {
-    "flyer": 0,
-    "band": 0,
-    "jolt": [
-      15,
-      30,
-      45
-    ],
-    "tear": 60,
-    "strips": 62
-  },
-  "restyle": {
-    "travel": 78,
-    "header": 96,
-    "settle": 120
-  },
-  "ad": {
-    "start": 150,
-    "band": 162,
-    "words": [
-      195,
-      210,
-      225,
-      240
-    ],
-    "gather": 255,
-    "drop": 270,
-    "open": 285,
-    "stack": [
-      288,
-      300,
-      315
-    ]
-  },
-  "compare": {
-    "split": 330,
-    "labels": 340,
-    "cut": 362,
-    "grow": 374,
-    "wipe": 386
-  },
-  "end": {
-    "line1": 394,
-    "line2": 401,
-    "pill": 410,
-    "plane": 420,
-    "note": 426,
-    "hold": 428
-  }
+  "hook": {"flyer": 0, "band": 0, "jolt": [15, 30, 45], "tear": 60, "strips": 62},
+  "restyle": {"travel": 72, "header": 90, "settle": 108, "rule": 104, "dot": 112, "press": 120},
+  "ad": {"start": 135, "band": 145, "first": 165, "words": [195, 210, 225, 240], "gather": 255, "drop": 270, "stack": [276, 288, 300], "info": 312},
+  "compare": {"split": 330, "labels": 340, "cut": 362, "grow": 374, "wipe": 386},
+  "end": {"line1": 388, "line2": 395, "pill": 404, "plane": 414, "note": 420, "hold": 422}
 }
